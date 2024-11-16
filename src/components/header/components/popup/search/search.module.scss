@@ -1,0 +1,32 @@
+@use "scss/config" as *;
+
+.search__popup-predictive {
+    input {
+        outline: none;
+        padding: 10px;
+        border-bottom: 1px solid #333;
+    }
+}
+
+.search__popup-close-wrapper {
+    transform: rotate(0);
+    transition: transform 0.3s ease;
+
+    &:hover {
+        transform: rotate(180deg);
+    }
+}
+
+.search-popup {
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}

@@ -1,0 +1,8 @@
+@media (max-width: 768px) {
+    .section-image-banner {
+        flex-direction: column !important;
+        .image__banner-item {
+            width: 100% !important;
+        }
+    }
+}

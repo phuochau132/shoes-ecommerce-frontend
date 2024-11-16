@@ -1,0 +1,10 @@
+@use 'scss/config' as *;
+
+
+.message {
+  color: $red !important;
+  font-size: 14px;
+  font-style: inherit;
+  font-weight: 500;
+  letter-spacing: 0;
+}

@@ -1,0 +1,60 @@
+@use "scss/config" as *;
+
+.menu__item {
+  position: relative;
+  border-bottom: 1px solid #ebebeb;
+  z-index: 1;
+
+  &.menu-lv1 {
+    padding: 20px 0;
+    border-bottom: unset !important;
+  }
+
+  &.menu-lv2 {
+    padding: 10px 0;
+  }
+
+  &.menu-lv3 {
+    padding: 10px 0;
+  }
+
+  .text {
+    color: $black;
+    text-transform: uppercase;
+  }
+
+  &:hover {
+    > .menu-dropdown {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateY(0);
+      animation: animateMenuOpen 0.3s ease forwards;
+    }
+  }
+}
+
+.menu-dropdown {
+  box-shadow: 0 1px 4px 0 rgb(0 0 0 / 15%);
+  padding: 5px 0 5px 20px;
+  position: absolute;
+  width: 22rem;
+  top: 100%;
+  left: 0;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-1.5rem);
+  background: white;
+}
+
+@keyframes animateMenuOpen {
+  0% {
+    opacity: 0;
+    transform: translateY(-1.5rem);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
