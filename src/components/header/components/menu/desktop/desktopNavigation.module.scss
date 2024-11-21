@@ -1,6 +1,6 @@
 @use "scss/config" as *;
 
-.menu__item {
+.menu-item {
   position: relative;
   border-bottom: 1px solid #ebebeb;
   z-index: 1;
@@ -19,7 +19,7 @@
   }
 
   .text {
-    color: $black;
+    color: $main-black;
     text-transform: uppercase;
   }
 
@@ -46,7 +46,11 @@
   transform: translateY(-1.5rem);
   background: white;
 }
-
+.menu-dropdown {
+  .menu-item:last-child {
+    border: unset !important;
+  }
+}
 @keyframes animateMenuOpen {
   0% {
     opacity: 0;
