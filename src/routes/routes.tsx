@@ -22,6 +22,6 @@ export const PUBLIC_ROUTES: RouteType[] = [
     private: 'public',
     useHeader: true,
     useSidebar: true,
-    useFooter: false
+    useFooter: true
   }
 ];

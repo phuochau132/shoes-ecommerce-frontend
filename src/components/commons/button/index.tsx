@@ -12,7 +12,7 @@ interface ButtonComponentProps extends React.ButtonHTMLAttributes<HTMLButtonElem
 
 const ButtonComponent: React.FC<ButtonComponentProps> = memo(({ className, children, animation = false, ...props }) => {
   return (
-    <button className={cx('button', className, { animation: animation })} {...props}>
+    <button className={cx('button', className, { rotate: animation })} {...props}>
       {children}
     </button>
   );

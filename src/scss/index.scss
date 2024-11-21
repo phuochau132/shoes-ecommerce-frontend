@@ -17,8 +17,10 @@ input::placeholder {
 small {
   color: #e95144;
 }
+
 .image-box {
   position: relative;
+
   &:after {
     content: "";
     position: absolute;
@@ -65,6 +67,40 @@ small {
   }
 }
 
+.section-header {
+  .title {
+    text-align: center;
+    margin-bottom: 8px;
+
+    .text {
+      color: #232323 !important;
+      font-size: 24px !important;
+      font-weight: 900;
+      font-style: italic;
+    }
+  }
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+  color: $main-black;
+}
+
+.swiper-button-next:after,
+.swiper-button-prev:after {
+  font-size: 33px !important
+}
+
+.view-all {
+  text-align: center;
+  margin-bottom: 22px;
+  text-decoration: underline;
+}
+
+.text {
+  font-size: 12px;
+}
+
 input {
   font-size: 14px;
   outline: none;
@@ -82,17 +118,21 @@ input {
   background: #b3b0af;
   border-radius: 50%;
 }
+
 section {
   padding: 30px 0;
 }
+
 .container {
   padding: 0 50px;
 }
+
 @media (max-width: 1024px) {
   .container {
     padding: 0 10px;
   }
 }
+
 * {
   margin: 0;
   padding: 0;

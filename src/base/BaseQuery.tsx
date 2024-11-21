@@ -1,6 +1,6 @@
 import { BaseQueryFn } from '@reduxjs/toolkit/query/react';
 import axios, { AxiosRequestConfig, AxiosError } from 'axios';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 
 const baseURL = import.meta.env.VITE_SERVER_NAME;
 
