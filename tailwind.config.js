@@ -264,10 +264,9 @@ module.exports = {
       }
     },
     screens: {
-      phone: { max: '46.1875em' },
-      tablet: { min: '46.25em', max: '63.9375em' },
-      small_desktop: { min: '64em', max: '125em' },
-      desktop: { min: '125em' }
+      phone: { max: '767px' },
+      tablet: { min: '768px', max: '1024px' },
+      desktop: { min: '1025' }
     }
   },
   plugins: [],

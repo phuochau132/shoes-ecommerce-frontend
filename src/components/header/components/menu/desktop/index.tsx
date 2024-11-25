@@ -9,10 +9,10 @@ const DesktopNavigation: React.FC<{ menu: Navigation[] }> = memo(({ menu }) => {
   return (
     <div className={cx('main-menu header-item flex items-center gap-[50px]')}>
       <ul className={cx('list-menu', 'flex', 'gap-[50px]')}>
-        {menu.map((item) => {
+        {menu.map((item, index) => {
           if (item.style === 'dropdown') {
             return (
-              <li className={cx('menu-item', 'menu-lv1', 'text-[14px]')}>
+              <li key={index} className={cx('menu-item', 'menu-lv1', 'text-[14px]')}>
                 <a className={cx('menu__item-link')} href={item.link}>
                   <span className={cx('text', 'font-bold')}>{item.name}</span>
                 </a>

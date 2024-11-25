@@ -248,3 +248,25 @@ body.dark-mode {
     transform: rotate(180deg);
   }
 }
+
+section {
+  padding: 25px 0 50px 0;
+}
+
+
+.is-activated {
+  .collapsed-content {
+    height: auto;
+  }
+
+  .arrow-icon {
+    transition: all 0.3s ease;
+    transform: translateY(-50%) rotate(270deg);
+  }
+}
+
+.collapsed-content {
+  height: 0;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
