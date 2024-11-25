@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import 'swiper/swiper-bundle.css';
 import { useDispatch } from 'react-redux';
 import { LoginSidebar, SearchPopup } from './components/header';
+
 function App() {
   const location = window.location;
   const dispatch = useDispatch();
@@ -18,7 +19,6 @@ function App() {
   const theme = useSelector((state: any) => state.app.theme);
   const searchPopupState = useSelector((state: any) => state.app.searchPopupState);
   const loginSidebarState = useSelector((state: any) => state.app.loginSidebarState);
-  console.log('searchState:', searchPopupState);
 
   useEffect(() => {
     setPathname(location?.pathname?.split('/')[1]);

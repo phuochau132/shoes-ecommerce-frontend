@@ -3,7 +3,7 @@
 .menu-item {
   position: relative;
   border-bottom: 1px solid #ebebeb;
-  z-index: 1;
+  z-index: 2;
 
   &.menu-lv1 {
     padding: 20px 0;
@@ -24,7 +24,7 @@
   }
 
   &:hover {
-    > .menu-dropdown {
+    >.menu-dropdown {
       opacity: 1;
       visibility: visible;
       pointer-events: auto;
@@ -46,11 +46,13 @@
   transform: translateY(-1.5rem);
   background: white;
 }
+
 .menu-dropdown {
   .menu-item:last-child {
     border: unset !important;
   }
 }
+
 @keyframes animateMenuOpen {
   0% {
     opacity: 0;

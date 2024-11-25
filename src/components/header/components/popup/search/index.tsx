@@ -12,7 +12,7 @@ const SearchPopup: React.FC = memo(() => {
   const dispatch = useDispatch();
 
   return (
-    <div className={cx('search-popup', 'fixed left-0 right-0 top-0 z-[2] w-full bg-[white] px-[15%]')}>
+    <div className={cx('search-popup', 'fixed left-0 right-0 top-0 z-[3] w-full bg-[white] px-[15%]')}>
       <div className={cx('search__popup-close', 'h-[auto]', 'cursor-pointer', 'text-right')}>
         <div
           onClick={() => {
