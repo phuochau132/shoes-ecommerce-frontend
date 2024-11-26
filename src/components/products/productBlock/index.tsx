@@ -10,7 +10,7 @@ interface ProductBlockProps {
   style?: CSSProperties;
   collection: Collection;
   title: string;
-  viewAllButton: boolean;
+  viewAllButton?: boolean;
 }
 
 const cx = classNames.bind(styles);

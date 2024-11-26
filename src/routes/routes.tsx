@@ -14,6 +14,7 @@ export type RouteType = {
 };
 const LazyHomePage = LazyLoadComponent(() => import('../pages/Public/Home/HomePage'))(true);
 const LazyProductPage = LazyLoadComponent(() => import('../pages/Public/Product/ProductPage'))(true);
+const LazyCollectionPage = LazyLoadComponent(() => import('../pages/Public/Collection/CollectionPage'))(true);
 
 export const PUBLIC_ROUTES: RouteType[] = [
   {
@@ -28,6 +29,15 @@ export const PUBLIC_ROUTES: RouteType[] = [
   {
     path: paths.product,
     element: <LazyProductPage />,
+    layout: DefaultLayout,
+    private: 'public',
+    useHeader: true,
+    useSidebar: true,
+    useFooter: true
+  },
+  {
+    path: paths.collection,
+    element: <LazyCollectionPage />,
     layout: DefaultLayout,
     private: 'public',
     useHeader: true,

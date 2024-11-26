@@ -1,4 +1,5 @@
 export const paths = {
   home: '/',
-  product: '/product/:handle'
+  product: '/product/:handle',
+  collection: '/collection/:handle'
 };
