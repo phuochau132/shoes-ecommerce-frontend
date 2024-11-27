@@ -10,8 +10,19 @@ input:-webkit-autofill:active {
   -webkit-transition-delay: 9999s;
 }
 
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* For Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
 input::placeholder {
-  font-size: 14px;
+  font-size: 12px;
 }
 
 small {
@@ -102,7 +113,7 @@ small {
 }
 
 input {
-  font-size: 14px;
+  font-size: 12px;
   outline: none;
   padding: 12px;
 }
@@ -269,4 +280,10 @@ section {
   height: 0;
   transition: all 0.3s ease;
   overflow: hidden;
+}
+
+.swiper-pagination-bullet-active {
+  width: 40px !important;
+  border-radius: 5px !important;
+  background: rgb(160, 160, 160);
 }

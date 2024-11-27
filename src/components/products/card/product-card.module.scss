@@ -11,32 +11,6 @@
     }
 }
 
-.card {
-    &:hover {
-        .card-product {
-            .card-action {
-                transform: translateY(0);
-            }
-
-            .first-image {
-                opacity: 0;
-                visibility: hidden;
-            }
-
-            .second-image {
-                opacity: 1;
-                visibility: visible;
-                transform: scale(1.05)
-            }
-
-            .card-group {
-                transform: translateX(0%);
-            }
-
-        }
-    }
-}
-
 .card-product {
     position: relative;
     transition: transform 1s ease;
@@ -129,4 +103,56 @@
     right: 0;
     bottom: 0;
     z-index: 1;
+}
+
+@media(min-width: 768px) {
+    .card {
+        &:hover {
+            .card-product {
+                .card-action {
+                    transform: translateY(0);
+                }
+
+                .first-image {
+                    opacity: 0;
+                    visibility: hidden;
+                }
+
+                .second-image {
+                    opacity: 1;
+                    visibility: visible;
+                    transform: scale(1.05)
+                }
+
+                .card-group {
+                    transform: translateX(0%);
+                }
+
+            }
+        }
+    }
+}
+
+@media(max-width: 767px) {
+    .card-product {
+        .card-action {
+            transform: translateY(0);
+        }
+
+        .first-image {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .second-image {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1.05)
+        }
+
+        .card-group {
+            transform: translateX(0%);
+        }
+
+    }
 }

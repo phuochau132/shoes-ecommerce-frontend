@@ -40,8 +40,7 @@ $button-text-color-hover: #00163a;
 $button-background-color-hover: white;
 $button-border-color-hover: black;
 
-$box-shadow-base:
-  0 3px 6px -4px rgba(0, 0, 0, 0.12),
+$box-shadow-base: 0 3px 6px -4px rgba(0, 0, 0, 0.12),
   0 6px 16px 0 rgba(0, 0, 0, 0.08),
   0 9px 28px 8px rgba(0, 0, 0, 0.05);
 $bg-dark: #1d1d1d;
@@ -220,31 +219,31 @@ $second-orange: (
 );
 
 @mixin screen($breakpoint, $size: 1200px) {
-  @if $breakpoint == mobile {
+  @if $breakpoint ==mobile {
     @media only screen and (max-width: 549px) {
       @content;
     }
   }
 
-  @if $breakpoint == tablet {
+  @if $breakpoint ==tablet {
     @media only screen and (min-width: 550px) and (max-width: 767px) {
       @content;
     }
   }
 
-  @if $breakpoint == laptop {
+  @if $breakpoint ==laptop {
     @media only screen and (min-width: 768px) and (max-width: 1023px) {
       @content;
     }
   }
 
-  @if $breakpoint == desktop {
+  @if $breakpoint ==desktop {
     @media only screen and (min-width: 1024px) and (max-width: 1199px) {
       @content;
     }
   }
 
-  @if $breakpoint == large-desktop {
+  @if $breakpoint ==large-desktop {
     @media only screen and (min-width: 1200px) {
       @content;
     }
