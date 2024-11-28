@@ -99,7 +99,7 @@ small {
 
 .swiper-button-next:after,
 .swiper-button-prev:after {
-  font-size: 33px !important
+  font-size: 33px !important;
 }
 
 .view-all {
@@ -108,14 +108,16 @@ small {
   text-decoration: underline;
 }
 
-.text {
-  font-size: 12px;
-}
+
 
 input {
   font-size: 12px;
   outline: none;
   padding: 12px;
+}
+
+p {
+  font-size: 14px;
 }
 
 .sidebar {
@@ -248,7 +250,7 @@ body.dark-mode {
   width: 100%;
   height: 100%;
   background-color: rgba(35, 35, 35, 0.8);
-  z-index: 2;
+  z-index: 3;
 }
 
 .rotate {
@@ -263,7 +265,6 @@ body.dark-mode {
 section {
   padding: 25px 0 50px 0;
 }
-
 
 .is-activated {
   .collapsed-content {
@@ -286,4 +287,64 @@ section {
   width: 40px !important;
   border-radius: 5px !important;
   background: rgb(160, 160, 160);
+}
+
+.content-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+path,
+svg {
+  pointer-events: none;
+}
+
+.is-activated {
+  path {
+    fill: black !important;
+  }
+}
+
+.col-4 {
+  &>div {
+    max-width: 25%;
+    width: 100%;
+  }
+}
+
+.col-3 {
+  &>div {
+    max-width: 33%;
+    width: 100%;
+  }
+}
+
+.col-2 {
+  &>div {
+    max-width: 50%;
+    width: 100%;
+  }
+}
+
+@include screen(tablet) {
+
+  .col-4,
+  .col-3 {
+    &>div {
+      max-width: 33%;
+      width: 100%;
+    }
+  }
+}
+
+@include screen(mobile) {
+
+  .col-4,
+  .col-3 {
+    &>div {
+      max-width: 50%;
+      width: 100%;
+    }
+  }
 }

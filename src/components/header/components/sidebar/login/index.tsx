@@ -1,13 +1,13 @@
 // AnnouncementBar.tsx
 import React, { memo } from 'react';
 import styles from './login.module.scss';
-import classNames from 'classnames/bind';
 import { CloseIcon } from '@/utils/icons';
 import { ButtonComponent, InputComponent } from '../../../../commons';
 import { useDispatch } from 'react-redux';
 import { setLoginSidebarState } from '@/redux/app/app.slice';
+import { bindClassNames } from '@/utils/helpers/cx';
 
-const cx = classNames.bind(styles);
+const cx = bindClassNames(styles);
 
 const LoginSidebar: React.FC = memo(() => {
   const dispatch = useDispatch();
@@ -15,7 +15,7 @@ const LoginSidebar: React.FC = memo(() => {
     <div
       className={cx(
         'login-sidebar',
-        'fixed bottom-0 right-0 top-0 z-[2] w-full max-w-[340px] bg-[white] px-[24px] py-[25px]'
+        'fixed bottom-0 right-0 top-0 z-[3] w-full max-w-[340px] bg-[white] px-[24px] py-[25px]'
       )}
     >
       <div

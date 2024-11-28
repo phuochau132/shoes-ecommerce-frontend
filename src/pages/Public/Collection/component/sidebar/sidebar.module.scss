@@ -1,0 +1,138 @@
+@use "scss/config" as *;
+
+.footer-content-top {
+    color: white;
+
+    .container {
+        flex-wrap: wrap;
+        padding-top: 60px;
+        padding-bottom: 30px;
+        background-color: $main-black;
+        display: flex;
+        row-gap: 30px;
+
+        .footer-block-item {
+            max-width: 24%;
+            width: 100%;
+            padding: 0 16px;
+
+            @include screen(laptop) {
+                max-width: 33%;
+            }
+
+            @include screen(mobile) {
+                max-width: 50%;
+            }
+        }
+    }
+}
+
+.footer-block-item {
+    .title {
+        font-style: italic;
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .list-unstyled {
+        list-style: none;
+
+        li {
+            &:hover {
+                .text {
+                    border-bottom: 1px solid white;
+                }
+            }
+        }
+    }
+}
+
+.footer-social {
+    margin-top: 20px;
+}
+
+.footer__social-list {
+    .list-unstyled {
+        display: flex;
+        gap: 10px;
+
+        .social-item {
+            padding: 7px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+
+            &:hover {
+                border: 1px solid white;
+
+                .link {
+                    background-color: white;
+
+                    .icon {
+                        fill: $main-black;
+                    }
+                }
+            }
+
+            .link {
+                transition: all 0.3s ease;
+                display: block;
+                padding: 7px;
+                border-radius: 50%;
+            }
+        }
+
+        .icon {
+            fill: white;
+            transition: all 0.3s ease; // Smooth transition for icon
+        }
+    }
+}
+
+.text {
+    font-size: 14px !important;
+    font-weight: 200;
+}
+
+
+.facets__item {
+    input {
+        display: none !important;
+    }
+
+    label {
+        font-weight: 400;
+        cursor: pointer;
+        width: 100%;
+        display: flex;
+        gap: 10px;
+
+        svg {
+            opacity: 0;
+            visibility: hidden;
+        }
+    }
+}
+
+input {
+    &:checked {
+        +label {
+
+            >span {
+                background-color: black;
+
+                svg {
+                    opacity: 1;
+                    visibility: visible;
+
+                    path {
+                        fill: white !important
+                    }
+                }
+
+            }
+        }
+    }
+}
