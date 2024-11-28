@@ -1,0 +1,11 @@
+import React, { memo } from 'react';
+import styles from './footer.module.scss';
+import { bindClassNames } from '@/utils/helpers/cx';
+
+const cx = bindClassNames(styles);
+
+const SidebarComponent: React.FC = memo(() => {
+  return <div className={cx('sidebar-wrapper')}></div>;
+});
+
+export default SidebarComponent;

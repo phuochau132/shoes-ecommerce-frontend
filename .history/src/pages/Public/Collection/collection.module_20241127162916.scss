@@ -1,0 +1,21 @@
+@use "scss/config" as *;
+
+.collection__content-sidebar {
+    max-width: 300px;
+    width: 100%;
+}
+.collection__content-grid {
+    flex: 1;
+}
+.grid_mode-item {
+    cursor: pointer;
+    padding: 5px;
+    path {
+        fill: #cbcbcb;
+    }
+    &.is-activated {
+        path {
+            fill: black !important;
+        }
+    }
+}

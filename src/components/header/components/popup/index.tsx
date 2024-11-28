@@ -1,10 +1,10 @@
 // AnnouncementBar.tsx
 import React, { memo } from 'react';
 import styles from './announcement.module.scss';
-import classNames from 'classnames/bind';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { bindClassNames } from '@/utils/helpers/cx';
 
-const cx = classNames.bind(styles);
+const cx = bindClassNames(styles);
 
 const messages = [
   { text: 'SUMMER SALE: UP TO 70% OFF SELECTED ITEMS', link: 'https://shopify.pxf.io/oq3WaO' },

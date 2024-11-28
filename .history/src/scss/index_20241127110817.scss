@@ -1,0 +1,319 @@
+@use "../abstracts/mixin" as *;
+@use "./_config.scss" as *;
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-transition: "color 9999s ease-out, background-color 9999s ease-out";
+  -webkit-transition-delay: 9999s;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* For Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input::placeholder {
+  font-size: 12px;
+}
+
+small {
+  color: #e95144;
+}
+
+.image-box {
+  position: relative;
+
+  &:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 2;
+    background-size: 400% 100%;
+    background-position: 90% 0;
+    background-repeat: no-repeat;
+    transition:
+      background-position 1s ease,
+      opacity 0.5s ease;
+    mix-blend-mode: overlay;
+  }
+
+  &:hover {
+    &:after {
+      background-position: left;
+      opacity: 0.2;
+      background-image: linear-gradient(135deg, #fff0 45%, #fff, #fff0 55%);
+    }
+
+    .animation {
+      overflow: hidden;
+      transition:
+        transform 1s ease,
+        box-shadow 1s ease;
+      transform: rotate(2deg);
+      box-shadow:
+        -1rem -1rem 1rem -1rem #0000000d,
+        1rem 1rem 1rem -1rem #0000000d,
+        0 0 0.5rem #fff0,
+        0 2rem 3.5rem -2rem #00000080;
+
+      img {
+        transition: transform 1s ease;
+        transform: scale(1.06);
+      }
+    }
+  }
+}
+
+.section-header {
+  .title {
+    text-align: center;
+    margin-bottom: 8px;
+
+    .text {
+      color: #232323 !important;
+      font-size: 24px !important;
+      font-weight: 900;
+      font-style: italic;
+    }
+  }
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+  color: $main-black;
+}
+
+.swiper-button-next:after,
+.swiper-button-prev:after {
+  font-size: 33px !important;
+}
+
+.view-all {
+  text-align: center;
+  margin-bottom: 22px;
+  text-decoration: underline;
+}
+
+.text {
+  font-size: 12px;
+}
+
+input {
+  font-size: 12px;
+  outline: none;
+  padding: 12px;
+}
+
+.sidebar {
+  z-index: 2;
+}
+
+.close-btn {
+  padding: 10px;
+  width: 40px;
+  height: 40px;
+  background: #b3b0af;
+  border-radius: 50%;
+}
+
+section {
+  padding: 30px 0;
+}
+
+.container {
+  padding: 0 50px;
+}
+
+@media (max-width: 1024px) {
+  .container {
+    padding: 0 10px;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html *::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+html *::-webkit-scrollbar-thumb {
+  border-radius: 0.4rem;
+  background-color: rgb(138, 138, 138);
+}
+
+html *::-webkit-scrollbar-track {
+  background-color: rgba(202, 202, 202, 1);
+}
+
+html *::-webkit-scrollbar-thumb:hover {
+  transition: all 0.2s;
+  cursor: pointer;
+  background-color: rgba(73, 73, 73, 1);
+
+  html *::-webkit-scrollbar-track {
+    background-color: rgba(170, 146, 146);
+  }
+}
+
+html {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  width: 100%;
+  height: 100%;
+  font-family: "Inter", sans-serif !important;
+  line-height: 1.6;
+  font-weight: 500;
+  letter-spacing: -0.3px;
+  overflow-y: overlay;
+  scroll-behavior: smooth;
+  font-size: 14px;
+}
+
+label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.link-underline {
+  text-decoration: underline;
+}
+
+body.light-mode {
+  transition-duration: 300ms;
+  background-color: #fff;
+  color: #333;
+  transition: background-color 0.3s ease;
+}
+
+body.dark-mode {
+  transition-duration: 300ms;
+
+  background-color: rgb(26, 27, 28);
+  color: white;
+
+  html *::-webkit-scrollbar-thumb {
+    border-radius: 0.4rem;
+    background-color: rgba(209, 209, 209, 0.15);
+  }
+
+  html *::-webkit-scrollbar-track {
+    background-color: rgba(255, 255, 255, 0);
+  }
+
+  .input-mode {
+    background-color: rgba(209, 209, 209, 0.15) !important;
+    color: white !important;
+    transition: background-color 0.3s ease;
+  }
+
+  a:hover {
+    color: #21a1d3;
+  }
+}
+
+.fade-in-up {
+  &:hover {
+    transform: scale(1.2);
+  }
+}
+
+.background-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(35, 35, 35, 0.8);
+  z-index: 2;
+}
+
+.rotate {
+  transform: rotate(0);
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: rotate(180deg);
+  }
+}
+
+section {
+  padding: 25px 0 50px 0;
+}
+
+.is-activated {
+  .collapsed-content {
+    height: auto;
+  }
+
+  .arrow-icon {
+    transition: all 0.3s ease;
+    transform: translateY(-50%) rotate(270deg);
+  }
+}
+
+.collapsed-content {
+  height: 0;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.swiper-pagination-bullet-active {
+  width: 40px !important;
+  border-radius: 5px !important;
+  background: rgb(160, 160, 160);
+}
+
+.collapsible {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+.active,
+.collapsible:hover {
+  background-color: #ccc;
+}
+
+/* Style the collapsible content. Note: hidden by default */
+.collapsible-content {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  background-color: #f1f1f1;
+  padding: 0 18px;
+  background-color: white;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}

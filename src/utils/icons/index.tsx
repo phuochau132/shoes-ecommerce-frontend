@@ -224,6 +224,43 @@ const ArrowIcon: React.FC<IconProps> = ({ style, className }) => {
     </svg>
   );
 };
+const CheckedIcon: React.FC<IconProps> = ({ style, className }) => {
+  return (
+    <svg width="10" height="7" fill="none" className={className && `${className}`}>
+      <path
+        fill="currentColor"
+        d="M8.645.645a.503.503 0 0 1 .351-.141.496.496 0 0 1 .504.504c0 .133-.05.246-.152.34L3.852 6.855a.477.477 0 0 1-.352.141.477.477 0 0 1-.352-.14L.652 4.347a.446.446 0 0 1-.152-.34c0-.14.05-.262.152-.363a.463.463 0 0 1 .34-.141c.14 0 .262.047.363.14L3.5 5.79 8.645.645Z"
+      ></path>
+    </svg>
+  );
+};
+const GridModeIcon2: React.FC<IconProps> = ({ style, className }) => {
+  return (
+    <svg className={className && `${className}`} xmlns="http://www.w3.org/2000/svg" width="15" height="14" fill="none">
+      <g fill="currentColor">
+        <path d="M11.073 6a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM4.07 6a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM11.073 14a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM3.927 14a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"></path>
+      </g>
+    </svg>
+  );
+};
+const GridModeIcon3: React.FC<IconProps> = ({ style, className }) => {
+  return (
+    <svg className={className && `${className}`} xmlns="http://www.w3.org/2000/svg" width="15" height="14" fill="none">
+      <g fill="currentColor">
+        <path d="M2.073 4a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM2.073 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM2.073 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM7.073 4a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM7.073 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM7.073 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM12.073 4a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM12.073 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM12.073 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"></path>
+      </g>
+    </svg>
+  );
+};
+const GridModeIcon4: React.FC<IconProps> = ({ style, className }) => {
+  return (
+    <svg className={className && `${className}`} xmlns="http://www.w3.org/2000/svg" width="20" height="14" fill="none">
+      <g fill="currentColor">
+        <path d="M2.073 4a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM2.073 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM2.073 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM7.073 4a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM7.073 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM7.073 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM12.073 4a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM12.073 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM12.073 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM17.073 4a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM17.073 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM17.073 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"></path>
+      </g>
+    </svg>
+  );
+};
 export {
   SearchIcon,
   SignInIcon,
@@ -239,5 +276,9 @@ export {
   InstagramIcon,
   PinterestIcon,
   TwitterIcon,
-  ArrowIcon
+  ArrowIcon,
+  CheckedIcon,
+  GridModeIcon2,
+  GridModeIcon3,
+  GridModeIcon4
 };
