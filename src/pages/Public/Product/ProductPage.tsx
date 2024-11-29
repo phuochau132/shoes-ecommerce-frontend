@@ -146,7 +146,6 @@ const ProductPage = () => {
     }
   };
   useEffect(() => {
-    // handle product tab
     const tabs = document.querySelectorAll('.tab .collapsed');
     const handleClick = (event: any) => {
       const target = event.currentTarget;
@@ -158,7 +157,6 @@ const ProductPage = () => {
       item.addEventListener('click', handleClick);
     });
 
-    // handle event quantity button
     const updateQuantity = (event: any) => {
       const target = event.currentTarget;
       const parent = target.parentElement;

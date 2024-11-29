@@ -1,10 +1,10 @@
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import styles from './collection.module.scss';
 import { Collection } from '@/types/collection';
 import { bindClassNames } from '@/utils/helpers/cx';
 import SidebarComponent from './component/sidebar';
 import BreadcrumbComponent from '@/components/commons/breadcrumb';
 import ProductCardComponent from '@/components/products/card';
-import { useEffect } from 'react';
 import { GridModeIcon2, GridModeIcon3, GridModeIcon4 } from '@/utils/icons';
 
 const cx = bindClassNames(styles);
@@ -21,7 +21,43 @@ const sampleProducts: Collection = {
       ],
       description: 'Comfortable and lightweight running shoes.',
       link: '/product/classic-running-shoes',
-      vendor: 'Nike'
+      vendor: 'Nike',
+      variants: [
+        {
+          id: 1,
+          name: 'Color',
+          values: [
+            {
+              id: 54545454,
+              price: 20,
+              name: 'White'
+            },
+            {
+              id: 123123123,
+              price: 30,
+              name: 'Red'
+            }
+          ],
+          type: 'swatch'
+        },
+        {
+          id: 2,
+          name: 'Size',
+          values: [
+            {
+              id: 1,
+              price: 20,
+              name: 'X'
+            },
+            {
+              id: 2,
+              price: 30,
+              name: 'XL'
+            }
+          ],
+          type: 'Rectangle'
+        }
+      ]
     },
     {
       title: 'Leather Loafers',
@@ -32,7 +68,43 @@ const sampleProducts: Collection = {
       ],
       description: 'Elegant leather loafers perfect for formal occasions.',
       link: '/product/leather-loafers',
-      vendor: 'Clarks'
+      vendor: 'Clarks',
+      variants: [
+        {
+          id: 1,
+          name: 'Color',
+          values: [
+            {
+              id: 54545454,
+              price: 20,
+              name: 'White'
+            },
+            {
+              id: 123123123,
+              price: 30,
+              name: 'Red'
+            }
+          ],
+          type: 'swatch'
+        },
+        {
+          id: 2,
+          name: 'Size',
+          values: [
+            {
+              id: 1,
+              price: 20,
+              name: 'X'
+            },
+            {
+              id: 2,
+              price: 30,
+              name: 'XL'
+            }
+          ],
+          type: 'Rectangle'
+        }
+      ]
     },
     {
       title: 'High-Top Sneakers',
@@ -81,42 +153,31 @@ const sampleProducts: Collection = {
   ]
 };
 
-const CollectionPage = () => {
-  useEffect(() => {
-    const modeItems = document.querySelectorAll('[data-grid]');
+const CollectionPage: React.FC = () => {
+  const gridModeRefs = useRef<HTMLDivElement[]>([]);
+  const productGridRef = useRef<HTMLDivElement>(null);
 
-    const handleClick = (event: any) => {
-      const target = event.target;
-      const modeIsActivated = document.querySelector('[data-grid].is-activated');
-      modeIsActivated?.classList.remove('is-activated');
-      target.classList.add('is-activated');
+  const handleClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+    const target = event.target as HTMLDivElement;
+    const modeIsActivated = gridModeRefs.current.find((item) => item.classList.contains('is-activated'));
+    modeIsActivated?.classList.remove('is-activated');
+    target.classList.add('is-activated');
 
-      const productGrid = document.querySelector('.product-grid');
-      if (productGrid) {
-        productGrid.className = productGrid.className
-          .split(' ')
-          .filter((cls) => !cls.startsWith('col-'))
-          .join(' ');
-      }
+    if (productGridRef.current) {
+      productGridRef.current.className = productGridRef.current.className
+        .split(' ')
+        .filter((cls) => !cls.startsWith('col-'))
+        .join(' ');
 
-      // Lấy giá trị data-grid và thêm class mới
       const col = target.getAttribute('data-grid');
-      productGrid?.classList.add(`col-${col}`);
-    };
+      if (col) {
+        productGridRef.current.classList.add(`col-${col}`);
+      }
+    }
+  }, []);
 
-    modeItems.forEach((item) => {
-      item.addEventListener('click', handleClick);
-    });
-    const event = new Event('click', {
-      bubbles: true,
-      cancelable: true
-    });
-    modeItems[2]?.dispatchEvent(event);
-    return () => {
-      modeItems.forEach((item) => {
-        item.removeEventListener('click', handleClick);
-      });
-    };
+  useEffect(() => {
+    gridModeRefs.current[2]?.click();
   }, []);
   return (
     <div className={cx('container', 'collection-page')}>
@@ -137,7 +198,7 @@ const CollectionPage = () => {
       </div>
       <div className={cx('collection-content', 'flex')}>
         <div className={cx('collection__content-sidebar')}>
-          <SidebarComponent />
+          <SidebarComponent products={sampleProducts.products} />
         </div>
         <div className={cx('collection__content-grid', 'pl-[50px]')}>
           <div className={cx('toolbar', 'flex justify-between')}>
@@ -145,25 +206,25 @@ const CollectionPage = () => {
               <p className={cx('text font-[400] text-[#444444]')}>There are 18 results in total</p>
             </div>
             <div className={cx('grid-mode', 'flex gap-[10px]')}>
-              <div data-grid="2" className={cx('grid_mode-item')}>
-                <GridModeIcon2 />
-              </div>
-              <div data-grid="3" className={cx('grid_mode-item')}>
-                <GridModeIcon3 />
-              </div>
-              <div data-grid="4" className={cx('grid_mode-item')}>
-                <GridModeIcon4 />
-              </div>
+              {[2, 3, 4].map((grid, index) => (
+                <div
+                  key={grid}
+                  ref={(el) => (gridModeRefs.current[index] = el!)}
+                  data-grid={grid}
+                  className={cx('grid_mode-item')}
+                  onClick={handleClick}
+                >
+                  {grid === 2 ? <GridModeIcon2 /> : grid === 3 ? <GridModeIcon3 /> : <GridModeIcon4 />}
+                </div>
+              ))}
             </div>
           </div>
-          <div className={cx('product-grid', 'mt-[50px] flex flex-wrap')}>
-            {sampleProducts.products.map((product) => {
-              return (
-                <div className={cx('product', 'p-[10px]')}>
-                  <ProductCardComponent product={product} />
-                </div>
-              );
-            })}
+          <div ref={productGridRef} className={cx('product-grid', 'mt-[50px] flex flex-wrap')}>
+            {sampleProducts.products.map((product, index) => (
+              <div key={index} className={cx('product', 'p-[10px]')}>
+                <ProductCardComponent product={product} />
+              </div>
+            ))}
           </div>
         </div>
       </div>

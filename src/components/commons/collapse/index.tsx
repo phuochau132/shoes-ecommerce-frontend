@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import './collapse.scss';
 
 interface CollapseProps {
@@ -7,42 +7,32 @@ interface CollapseProps {
 }
 
 function CollapsibleBlock({ children, title }: CollapseProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const isExpandedRef = useRef(false);
 
-  useEffect(() => {
-    const container = containerRef.current;
-    if (container) {
-      const heading = container.querySelector<HTMLDivElement>('.collapsible-heading');
-      const content = container.querySelector<HTMLDivElement>('.collapsible-content');
+  const handleToggle = () => {
+    const content = contentRef.current;
 
-      if (heading && content) {
-        const handleClick = () => {
-          heading.classList.toggle('is-activated');
-          if (content.style.maxHeight) {
-            content.style.maxHeight = '';
-          } else {
-            console.log('content.scrollHeight', content.scrollHeight);
-
-            content.style.maxHeight = content.scrollHeight + 'px';
-          }
-        };
-
-        heading.addEventListener('click', handleClick);
-
-        return () => {
-          heading.removeEventListener('click', handleClick);
-        };
+    if (content) {
+      if (isExpandedRef.current) {
+        content.style.maxHeight = '';
+      } else {
+        content.style.maxHeight = `${content.scrollHeight}px`;
       }
+
+      isExpandedRef.current = !isExpandedRef.current;
     }
-  }, []);
+  };
 
   return (
-    <div className="collapsible-wrapper" ref={containerRef}>
-      <h3 className="collapsible-heading mb-[2rem] mt-[3px] cursor-pointer">
+    <div className="collapsible-wrapper">
+      <h3 className="collapsible-heading mb-[2rem] mt-[3px] cursor-pointer" onClick={handleToggle}>
         <span>{title}</span>
         <span className="icon_plus"></span>
       </h3>
-      <div className="collapsible-content">{children}</div>
+      <div className="collapsible-content" ref={contentRef}>
+        {children}
+      </div>
     </div>
   );
 }
