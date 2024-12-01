@@ -113,7 +113,7 @@ const MainHeader: React.FC = memo(() => {
             onClick={() => {
               dispatch(setSearchPopupState(true));
             }}
-            className={cx('header__icon-item header__icon--search -rotate-90')}
+            className={cx('header__icon-item', 'header__icon--search', '-rotate-90')}
           >
             <SearchIcon className={cx('icon', 'fade-in-up')} />
           </div>
@@ -150,22 +150,22 @@ const MainHeader: React.FC = memo(() => {
           onClick={() => {
             dispatch(setSearchPopupState(true));
           }}
-          className={cx('header__icon-item header__icon--search -rotate-90')}
+          className={cx('header__icon-item', 'header__icon--search', '-rotate-90')}
         >
           {!isMobile && <SearchIcon className={cx('icon', 'fade-in-up')} />}
         </div>
         <div
-          className={cx('header__icon-item header__icon--signIn')}
+          className={cx('header__icon-item', 'header__icon--signIn')}
           onClick={() => {
             dispatch(setLoginSidebarState(true));
           }}
         >
           <SignInIcon className={cx('icon', 'fade-in-up')} />
         </div>
-        <div className={cx('header__icon-item header__icon--wishList')}>
+        <div className={cx('header__icon-item', 'header__icon--wishList')}>
           <WishListIcon className={cx('icon', 'fade-in-up')} />
         </div>
-        <div className={cx('header__icon-item header__icon--cart')}>
+        <div className={cx('header__icon-item', 'header__icon--cart')}>
           <CartIcon className={cx('icon', 'fade-in-up')} />
         </div>
       </div>

@@ -319,6 +319,13 @@ svg {
   }
 }
 
+.col-1 {
+  &>div {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
 .col-2 {
   &>div {
     max-width: 50%;

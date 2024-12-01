@@ -234,6 +234,15 @@ const CheckedIcon: React.FC<IconProps> = ({ style, className }) => {
     </svg>
   );
 };
+const GridModeIcon1: React.FC<IconProps> = ({ style, className }) => {
+  return (
+    <svg className={className && `${className}`} xmlns="http://www.w3.org/2000/svg" width="20" height="14" fill="none">
+      <g fill="currentColor">
+        <path d="M2.073 4a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM2.073 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM2.073 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM19.073 2a1 1 0 0 1-1 1h-12a1 1 0 0 1 0-2h12a1 1 0 0 1 1 1ZM19.073 7a1 1 0 0 1-1 1h-12a1 1 0 0 1 0-2h12a1 1 0 0 1 1 1ZM19.073 12a1 1 0 0 1-1 1h-12a1 1 0 0 1 0-2h12a1 1 0 0 1 1 1Z"></path>
+      </g>
+    </svg>
+  );
+};
 const GridModeIcon2: React.FC<IconProps> = ({ style, className }) => {
   return (
     <svg className={className && `${className}`} xmlns="http://www.w3.org/2000/svg" width="15" height="14" fill="none">
@@ -261,6 +270,16 @@ const GridModeIcon4: React.FC<IconProps> = ({ style, className }) => {
     </svg>
   );
 };
+const FilterIcon: React.FC<IconProps> = ({ style, className }) => {
+  return (
+    <svg className={className && `${className}`} width="14" height="13" fill="none">
+      <path
+        fill="#fff"
+        d="M11.58 1.5H2.42l3.855 4.553a.474.474 0 0 1 .096.191.482.482 0 0 1 .041.192v3.459l1.176.574V6.436c0-.073.009-.142.027-.206a.72.72 0 0 1 .11-.177L11.58 1.5ZM12.838.338c.064 0 .128.014.191.04.064.02.123.051.178.097.128.1.196.232.205.396a.533.533 0 0 1-.137.424L8.75 6.655v4.757a.695.695 0 0 1-.014.137.587.587 0 0 1-.383.424.598.598 0 0 1-.45-.041L5.577 10.77a.597.597 0 0 1-.246-.205.648.648 0 0 1-.082-.315V6.654L.725 1.294a.719.719 0 0 1-.11-.177.743.743 0 0 1-.027-.205.54.54 0 0 1 .164-.396.563.563 0 0 1 .41-.178h11.676Z"
+      ></path>
+    </svg>
+  );
+};
 export {
   SearchIcon,
   SignInIcon,
@@ -280,5 +299,7 @@ export {
   CheckedIcon,
   GridModeIcon2,
   GridModeIcon3,
-  GridModeIcon4
+  GridModeIcon4,
+  FilterIcon,
+  GridModeIcon1
 };

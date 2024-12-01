@@ -5,7 +5,7 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { Fragment } from 'react/jsx-runtime';
 import DefaultLayout from './layouts/DefaultLayout/DefaultLayout';
 import NotFoundPage from './pages/ExceptionPage/NotFoundPage';
-import { setLoginSidebarState, setSearchPopupState, THEME } from './redux/app/app.slice';
+import { setFilterSidebarState, setLoginSidebarState, setSearchPopupState, THEME } from './redux/app/app.slice';
 import { PUBLIC_ROUTES, RouteType } from './routes/routes';
 import { useSelector } from 'react-redux';
 import 'swiper/swiper-bundle.css';
@@ -19,7 +19,7 @@ function App() {
   const theme = useSelector((state: any) => state.app.theme);
   const searchPopupState = useSelector((state: any) => state.app.searchPopupState);
   const loginSidebarState = useSelector((state: any) => state.app.loginSidebarState);
-
+  const filterSidebarState = useSelector((state: any) => state.app.filterSidebarState);
   useEffect(() => {
     setPathname(location?.pathname?.split('/')[1]);
   }, [location.pathname]);
@@ -44,7 +44,7 @@ function App() {
         algorithm: theme === THEME.DARK ? themeAntd.darkAlgorithm : themeAntd.defaultAlgorithm
       }}
     >
-      {(searchPopupState || loginSidebarState) && (
+      {(searchPopupState || loginSidebarState || filterSidebarState) && (
         <div
           onClick={() => {
             if (searchPopupState) {
@@ -52,6 +52,9 @@ function App() {
             }
             if (loginSidebarState) {
               dispatch(setLoginSidebarState(false));
+            }
+            if (filterSidebarState) {
+              dispatch(setFilterSidebarState(false));
             }
           }}
           className="background-overlay"
