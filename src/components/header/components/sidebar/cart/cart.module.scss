@@ -1,10 +1,68 @@
 @use 'scss/config' as *;
 
 
-.message {
-  color: $red !important;
-  font-size: 14px;
-  font-style: inherit;
-  font-weight: 500;
-  letter-spacing: 0;
+.item {
+  .totals-title {
+    position: relative;
+
+    &:after {
+      position: absolute;
+      content: "";
+      bottom: -12px;
+      left: 0;
+      height: 2px;
+      width: 100%;
+      background-color: red;
+    }
+  }
+
+  .product-image {
+    a {
+      .linked-icon {
+        position: absolute;
+        opacity: 0;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -40%);
+
+        svg {
+          fill: white;
+        }
+      }
+
+      &:after {
+        content: "";
+        opacity: 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: -10%;
+        background-color: rgba(118, 118, 118, 0.4);
+        transition: opacity 0.5s ease;
+      }
+    }
+
+    &:hover {
+      a {
+        .linked-icon {
+          opacity: 1;
+          transition: opacity 0.5s ease;
+        }
+
+        &:after {
+          opacity: 1;
+        }
+      }
+    }
+  }
+}
+
+.items::-webkit-scrollbar {
+  display: none !important;
+}
+
+.items {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
 }

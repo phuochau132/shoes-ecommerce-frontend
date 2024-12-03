@@ -10,13 +10,17 @@ type InitialStateProps = {
   searchPopupState: boolean;
   loginSidebarState: boolean;
   menuSidebarState: boolean;
+  filterSidebarState: boolean;
+  cartSidebarState: boolean;
 };
 
 const initialState: InitialStateProps = {
   theme: (localStorage.getItem('theme') as THEME) || THEME.LIGHT,
   searchPopupState: false,
   loginSidebarState: false,
-  menuSidebarState: false
+  menuSidebarState: false,
+  filterSidebarState: false,
+  cartSidebarState: false
 };
 
 export const appSlice = createSlice({
@@ -34,11 +38,24 @@ export const appSlice = createSlice({
     },
     setMenuSidebarState: (state, action) => {
       state.menuSidebarState = action.payload;
+    },
+    setFilterSidebarState: (state, action) => {
+      state.filterSidebarState = action.payload;
+    },
+    setCartSidebarState: (state, action) => {
+      state.cartSidebarState = action.payload;
     }
   }
 });
 
-export const { setTheme, setSearchPopupState, setLoginSidebarState, setMenuSidebarState } = appSlice.actions;
+export const {
+  setTheme,
+  setSearchPopupState,
+  setLoginSidebarState,
+  setMenuSidebarState,
+  setFilterSidebarState,
+  setCartSidebarState
+} = appSlice.actions;
 
 const rootReducer = {
   app: appSlice.reducer

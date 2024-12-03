@@ -116,22 +116,35 @@
     }
 }
 
-input {
-    &:checked {
-        +label {
+.filter-availability {
+    input {
+        &:checked {
+            +label {
 
-            >span {
-                background-color: black;
+                >span {
+                    background-color: black;
 
-                svg {
-                    opacity: 1;
-                    visibility: visible;
+                    svg {
+                        opacity: 1;
+                        visibility: visible;
 
-                    path {
-                        fill: white !important
+                        path {
+                            fill: white !important
+                        }
                     }
-                }
 
+                }
+            }
+        }
+    }
+}
+
+.filter-color,
+.filter-size {
+    input {
+        &:checked {
+            +label {
+                border: 1px solid black !important;
             }
         }
     }

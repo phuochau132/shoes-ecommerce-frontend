@@ -18,3 +18,9 @@
     }
 
 }
+
+@include screen(mobile) {
+    .collection__content-sidebar {
+        transition: transform 0.3s ease;
+    }
+}

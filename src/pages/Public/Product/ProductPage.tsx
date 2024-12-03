@@ -12,6 +12,7 @@ import { ArrowIcon, MinusIcon, PlusIcon, WishListIcon } from '@/utils/icons';
 import ProductBlockComponent from '@/components/products/productBlock';
 import { Collection } from '@/types/collection';
 import { bindClassNames } from '@/utils/helpers/cx';
+import QuantityBoxComponent from '@/components/products/quantity';
 
 const cx = bindClassNames(styles);
 const sampleProducts: Collection = {
@@ -156,35 +157,6 @@ const ProductPage = () => {
     tabs.forEach((item) => {
       item.addEventListener('click', handleClick);
     });
-
-    const updateQuantity = (event: any) => {
-      const target = event.currentTarget;
-      const parent = target.parentElement;
-      const quantityInput = parent.querySelector('input');
-      let currentQuantity = parseInt(quantityInput.value);
-      let newQuantity = currentQuantity;
-      if (target.classList.contains('plus')) {
-        newQuantity += 1;
-      } else {
-        newQuantity -= 1;
-      }
-      if (newQuantity < 1) {
-        return;
-      }
-      quantityInput.value = newQuantity;
-    };
-    const quantity_action = document.querySelectorAll('[data-quantity-change]');
-    quantity_action.forEach((item) => {
-      item.addEventListener('click', updateQuantity);
-    });
-    return () => {
-      tabs.forEach((item) => {
-        item.removeEventListener('click', handleClick);
-      });
-      quantity_action.forEach((item) => {
-        item.removeEventListener('click', updateQuantity);
-      });
-    };
   }, []);
   return (
     <div className={cx('container', 'product-page')}>
@@ -277,20 +249,8 @@ const ProductPage = () => {
             <label className={cx('quantity-label')} htmlFor="">
               Quantity:
             </label>
-            <div className={cx('form-action', 'mt-[10px]')}>
-              <button data-quantity-change className={cx('minus', 'quantity-action')}>
-                <MinusIcon></MinusIcon>
-              </button>
-              <input
-                data-inventory="100"
-                value="1"
-                type="number"
-                className={cx('quantity-input', 'text-center')}
-                pattern="[0-9]*"
-              ></input>
-              <button data-quantity-change data-target-input="quantity-input" className={cx('plus', 'quantity-action')}>
-                <PlusIcon></PlusIcon>
-              </button>
+            <div className={cx('mt-[10px]')}>
+              <QuantityBoxComponent />
             </div>
           </div>
           <div className={cx('productView__right-item', 'sub-total', 'mt-[20px] font-[400]')}>

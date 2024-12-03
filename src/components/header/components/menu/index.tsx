@@ -3,7 +3,12 @@ import React, { memo, useEffect, useState, lazy, Suspense } from 'react';
 import styles from './mainHeader.module.scss';
 import { CartIcon, HamburgerIcon, SearchIcon, SignInIcon, WishListIcon } from '@/utils/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { setLoginSidebarState, setMenuSidebarState, setSearchPopupState } from '@/redux/app/app.slice';
+import {
+  setCartSidebarState,
+  setLoginSidebarState,
+  setMenuSidebarState,
+  setSearchPopupState
+} from '@/redux/app/app.slice';
 import LoadingPage from '@/pages/commons/LoadingPage';
 import { bindClassNames } from '@/utils/helpers/cx';
 
@@ -113,7 +118,7 @@ const MainHeader: React.FC = memo(() => {
             onClick={() => {
               dispatch(setSearchPopupState(true));
             }}
-            className={cx('header__icon-item header__icon--search -rotate-90')}
+            className={cx('header__icon-item', 'header__icon--search', '-rotate-90')}
           >
             <SearchIcon className={cx('icon', 'fade-in-up')} />
           </div>
@@ -150,22 +155,27 @@ const MainHeader: React.FC = memo(() => {
           onClick={() => {
             dispatch(setSearchPopupState(true));
           }}
-          className={cx('header__icon-item header__icon--search -rotate-90')}
+          className={cx('header__icon-item', 'header__icon--search', '-rotate-90')}
         >
           {!isMobile && <SearchIcon className={cx('icon', 'fade-in-up')} />}
         </div>
         <div
-          className={cx('header__icon-item header__icon--signIn')}
+          className={cx('header__icon-item', 'header__icon--signIn')}
           onClick={() => {
             dispatch(setLoginSidebarState(true));
           }}
         >
           <SignInIcon className={cx('icon', 'fade-in-up')} />
         </div>
-        <div className={cx('header__icon-item header__icon--wishList')}>
+        <div className={cx('header__icon-item', 'header__icon--wishList')}>
           <WishListIcon className={cx('icon', 'fade-in-up')} />
         </div>
-        <div className={cx('header__icon-item header__icon--cart')}>
+        <div
+          onClick={() => {
+            dispatch(setCartSidebarState(true));
+          }}
+          className={cx('header__icon-item', 'header__icon--cart')}
+        >
           <CartIcon className={cx('icon', 'fade-in-up')} />
         </div>
       </div>
