@@ -1,7 +1,6 @@
 // AnnouncementBar.tsx
 import React, { memo } from 'react';
 import styles from './input.module.scss';
-import path from 'path';
 import { ArrowIcon } from '@/utils/icons';
 import { bindClassNames } from '@/utils/helpers/cx';
 
@@ -12,13 +11,14 @@ export type ComType = {
 };
 export type BreadcrumbType = {
   path: ComType[];
+  className?: any;
 };
-const BreadcrumbComponent: React.FC<BreadcrumbType> = memo(({ path }) => {
+const BreadcrumbComponent: React.FC<BreadcrumbType> = memo(({ path, className }) => {
   return (
-    <div className={cx('wrapper')}>
+    <div className={cx('wrapper', 'pb-[30px] pt-[20px]')}>
       {path?.map((item, index) => {
         return (
-          <div key={index} className={cx('breadcrumb-item')}>
+          <div key={index} className={cx('breadcrumb-item', className)}>
             <a className={cx('link')} href={item.link}>
               {item.title}
             </a>

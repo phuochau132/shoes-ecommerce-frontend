@@ -333,6 +333,11 @@ svg {
   }
 }
 
+.main-color {
+  color: $main-black;
+
+}
+
 @include screen(tablet) {
 
   .col-4,

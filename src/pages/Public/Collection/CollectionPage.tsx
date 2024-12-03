@@ -189,21 +189,16 @@ const CollectionPage: React.FC = () => {
   }, []);
   return (
     <div className={cx('container', 'collection-page')}>
-      <div className={cx('collection-heading', 'mb-[50px] pt-[40px]')}>
-        <div className={cx('breadcrumb', 'flex justify-center')}>
-          <BreadcrumbComponent
-            path={[
-              { link: '#', title: 'Home' },
-              { link: '#', title: 'Collection' },
-              { link: '#', title: sampleProducts.title }
-            ]}
-          />
-        </div>
-        <h1 className={cx('title', 'mb:text-[30px] text-center text-[35px] font-[700]')}>{sampleProducts.title}</h1>
-        <p className={cx('description', 'text-center text-[15px] font-[500] text-[bold]')}>
-          <span className={cx('text', 'font-[400]')}>{sampleProducts.description}</span>
-        </p>
+      <div className={cx('breadcrumb', 'flex phone:pl-[12px]')}>
+        <BreadcrumbComponent
+          path={[
+            { link: '#', title: 'Home' },
+            { link: '#', title: 'Collection' },
+            { link: '#', title: sampleProducts.title }
+          ]}
+        />
       </div>
+
       <div className={cx('collection-content', 'flex')}>
         <div
           className={cx(
@@ -219,6 +214,12 @@ const CollectionPage: React.FC = () => {
           <SidebarComponent products={sampleProducts.products} />
         </div>
         <div className={cx('collection__content-grid', 'pl-[50px] phone:pl-[0]')}>
+          <div className={cx('collection-heading', 'mb-[30px] pl-[10px] pr-[10px]')}>
+            <h1 className={cx('title', 'mb:text-[30px] text-[35px] font-[700]')}>{sampleProducts.title}</h1>
+            <p className={cx('description', 'text-[15px] font-[500] text-[bold]')}>
+              <span className={cx('text', 'font-[400]')}>{sampleProducts.description}</span>
+            </p>
+          </div>
           <div className={cx('toolbar', 'flex justify-between pl-[10px] pr-[10px]')}>
             <div className={cx('result', 'phone:hidden')}>
               <p className={cx('text font-[400] text-[#444444]')}>There are 18 results in total</p>

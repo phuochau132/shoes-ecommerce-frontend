@@ -5,12 +5,19 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { Fragment } from 'react/jsx-runtime';
 import DefaultLayout from './layouts/DefaultLayout/DefaultLayout';
 import NotFoundPage from './pages/ExceptionPage/NotFoundPage';
-import { setFilterSidebarState, setLoginSidebarState, setSearchPopupState, THEME } from './redux/app/app.slice';
+import {
+  setCartSidebarState,
+  setFilterSidebarState,
+  setLoginSidebarState,
+  setSearchPopupState,
+  THEME
+} from './redux/app/app.slice';
 import { PUBLIC_ROUTES, RouteType } from './routes/routes';
 import { useSelector } from 'react-redux';
 import 'swiper/swiper-bundle.css';
 import { useDispatch } from 'react-redux';
 import { LoginSidebar, SearchPopup } from './components/header';
+import CartSidebar from './components/header/components/sidebar/cart';
 
 function App() {
   const location = window.location;
@@ -20,6 +27,8 @@ function App() {
   const searchPopupState = useSelector((state: any) => state.app.searchPopupState);
   const loginSidebarState = useSelector((state: any) => state.app.loginSidebarState);
   const filterSidebarState = useSelector((state: any) => state.app.filterSidebarState);
+  const cartSidebarState = useSelector((state: any) => state.app.cartSidebarState);
+
   useEffect(() => {
     setPathname(location?.pathname?.split('/')[1]);
   }, [location.pathname]);
@@ -44,7 +53,7 @@ function App() {
         algorithm: theme === THEME.DARK ? themeAntd.darkAlgorithm : themeAntd.defaultAlgorithm
       }}
     >
-      {(searchPopupState || loginSidebarState || filterSidebarState) && (
+      {(searchPopupState || loginSidebarState || filterSidebarState || cartSidebarState) && (
         <div
           onClick={() => {
             if (searchPopupState) {
@@ -56,6 +65,9 @@ function App() {
             if (filterSidebarState) {
               dispatch(setFilterSidebarState(false));
             }
+            if (cartSidebarState) {
+              dispatch(setCartSidebarState(false));
+            }
           }}
           className="background-overlay"
         ></div>
@@ -66,6 +78,7 @@ function App() {
       </Helmet>
       {searchPopupState && <SearchPopup />}
       {loginSidebarState && <LoginSidebar />}
+      {cartSidebarState && <CartSidebar />}
 
       <main>
         <Router>
