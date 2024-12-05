@@ -220,7 +220,7 @@ $second-orange: (
 );
 
 @mixin screen($breakpoint, $size: 1200px) {
-  @if $breakpoint ==mobile {
+  @if $breakpoint ==phone {
     @media only screen and (max-width: 767px) {
       @content;
     }
@@ -233,13 +233,7 @@ $second-orange: (
   }
 
   @if $breakpoint ==laptop {
-    @media only screen and (min-width: 1025) and (max-width: 1200px) {
-      @content;
-    }
-  }
-
-  @if $breakpoint ==large-desktop {
-    @media only screen and (min-width: 1200px) {
+    @media only screen and (min-width: 1025px) {
       @content;
     }
   }

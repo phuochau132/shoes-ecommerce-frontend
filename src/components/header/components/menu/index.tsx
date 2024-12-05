@@ -105,11 +105,11 @@ const MainHeader: React.FC = memo(() => {
   return (
     <div className={cx('navigation', 'align-center container flex justify-between py-[10px]')}>
       {isMobile && (
-        <div className={cx('header-mobile-left', 'flex', 'gap-[27px]')}>
+        <div className={cx('header-mobile-left', 'flex gap-[27px] phone:min-w-[159px]')}>
           <button
             onClick={() => dispatch(setMenuSidebarState(true))}
             type="button"
-            className={cx('mobileMenu-hamburger', 'w-[auto]', 'h-[auto]', 'flex', 'p-[5px]')}
+            className={cx('mobileMenu-hamburger', 'flex h-[auto] w-[auto] p-[5px]')}
             aria-label="menu"
           >
             <HamburgerIcon />
@@ -125,10 +125,13 @@ const MainHeader: React.FC = memo(() => {
         </div>
       )}
       <div
-        className={cx('header-logo header-item flex items-center', { 'flex-[1]': isMobile, 'justify-center': true })}
+        className={cx('header-logo header-item phoneUp:min-w-[185px] flex items-center', {
+          'flex-1': isMobile,
+          'justify-center': isMobile
+        })}
       >
         <div className={cx('header__heading')}>
-          <a href="#" className={cx('header__heading-link')}>
+          <a href="/" className={cx('header__heading-link')}>
             <img
               src="https://www.khy.com/cdn/shop/files/KHY-Logo-Dark.png?v=1720636390&width=500"
               loading="lazy"

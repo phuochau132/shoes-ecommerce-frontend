@@ -16,6 +16,10 @@ const LazyHomePage = LazyLoadComponent(() => import('../pages/Public/Home/HomePa
 const LazyProductPage = LazyLoadComponent(() => import('../pages/Public/Product/ProductPage'))(true);
 const LazyCollectionPage = LazyLoadComponent(() => import('../pages/Public/Collection/CollectionPage'))(true);
 const LazyCartPage = LazyLoadComponent(() => import('../pages/Public/Cart/CartPage'))(true);
+const LazyCollectionListPage = LazyLoadComponent(() => import('../pages/Public/CollectionList/CollectionListPage'))(
+  true
+);
+
 
 export const PUBLIC_ROUTES: RouteType[] = [
   {
@@ -53,5 +57,14 @@ export const PUBLIC_ROUTES: RouteType[] = [
     useHeader: true,
     useSidebar: true,
     useFooter: true
-  }
+  },
+  {
+    path: paths.collectionsList,
+    element: <LazyCollectionListPage />,
+    layout: DefaultLayout,
+    private: 'public',
+    useHeader: true,
+    useSidebar: true,
+    useFooter: true
+  },
 ];
