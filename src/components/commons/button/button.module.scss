@@ -10,7 +10,9 @@
     border-radius: 30px;
     margin-top: 20px;
     border: 1px solid $button-background-color;
-    transition: all 1s ease;
+    transition: all 0.5s ease;
+    display: block;
+    text-align: center;
 
     &:hover {
         background-color: $button-background-color-hover;

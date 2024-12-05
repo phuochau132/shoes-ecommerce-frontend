@@ -1,4 +1,4 @@
-@use 'scss/config' as *;
+@use "scss/config" as *;
 
 @keyframes slideIn {
   0% {
@@ -16,6 +16,4 @@
 
 .sidebar {
   animation: slideIn 0.35s ease;
-
-
 }

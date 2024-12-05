@@ -12,15 +12,13 @@
         row-gap: 30px;
 
         .footer-block-item {
-            max-width: 24%;
+            max-width: 25%;
             width: 100%;
             padding: 0 16px;
-
-            @include screen(laptop) {
+            @include screen(tablet) {
                 max-width: 33%;
             }
-
-            @include screen(mobile) {
+            @include screen(phone) {
                 max-width: 50%;
             }
         }
@@ -91,8 +89,8 @@
     }
 }
 
-.text,
-p {
+.text {
     font-size: 14px !important;
-    font-weight: 200;
+    font-weight: 200 !important;
+    color: white !important;
 }
