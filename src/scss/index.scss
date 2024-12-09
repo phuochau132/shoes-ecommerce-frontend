@@ -22,7 +22,11 @@ input[type="number"] {
 }
 
 input::placeholder {
+<<<<<<< HEAD
   font-size: 14px;
+=======
+  font-size: 12px;
+>>>>>>> bfcdc125da075e20b95b86ddbaa96f506f3cced4
   color: rgba(17, 17, 17, 0.55);
 }
 
@@ -143,19 +147,33 @@ section {
 
 .container,
 .container-1570 {
+<<<<<<< HEAD
   padding: 0 50px 50px;
 }
 
 .container-1570 {
   max-width: 1570px;
   width: 100%;
+=======
+  padding: 0 50px;
+>>>>>>> bfcdc125da075e20b95b86ddbaa96f506f3cced4
 }
 
+.container-1570 {
+  max-width: 1570px;
+  width: 100%;
+}
 @media (max-width: 1024px) {
+<<<<<<< HEAD
 
   .container,
   .container-1570 {
     padding: 0 10px 20px;
+=======
+  .container,
+  .container-1570 {
+    padding: 0 10px;
+>>>>>>> bfcdc125da075e20b95b86ddbaa96f506f3cced4
   }
 }
 
@@ -320,28 +338,28 @@ svg {
 }
 
 .col-4 {
-  &>div {
+  & > div {
     max-width: 25%;
     width: 100%;
   }
 }
 
 .col-3 {
-  &>div {
+  & > div {
     max-width: 33%;
     width: 100%;
   }
 }
 
 .col-1 {
-  &>div {
+  & > div {
     max-width: 100%;
     width: 100%;
   }
 }
 
 .col-2 {
-  &>div {
+  & > div {
     max-width: 50%;
     width: 100%;
   }
@@ -349,6 +367,7 @@ svg {
 
 .main-color {
   color: $main-black;
+<<<<<<< HEAD
 }
 
 .checkbox-field {
@@ -416,13 +435,79 @@ svg {
   height: 0.5px;
   background-color: $border-color-base;
   margin: 20px 0;
+=======
+>>>>>>> bfcdc125da075e20b95b86ddbaa96f506f3cced4
 }
 
-@include screen(tablet) {
+.checkbox-field {
+  label {
+    font-weight: 400;
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    gap: 10px;
 
+    svg {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+
+  input {
+    display: none;
+
+    + label {
+      + a {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+    }
+
+    &:checked {
+      + label {
+        > span {
+          background-color: black;
+
+          svg {
+            opacity: 1;
+            visibility: visible;
+
+            path {
+              fill: white !important;
+            }
+          }
+        }
+
+        + a {
+          opacity: 1;
+          pointer-events: all;
+        }
+      }
+    }
+  }
+}
+
+.heading {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.page-heading {
+  .title {
+    font-size: 35px;
+    font-weight: 700;
+  }
+}
+.line {
+  width: 100%;
+  height: 1px;
+  background-color: $border-color-base;
+  margin: 20px 0;
+}
+@include screen(tablet) {
   .col-4,
   .col-3 {
-    &>div {
+    & > div {
       max-width: 33%;
       width: 100%;
     }
@@ -435,12 +520,16 @@ svg {
     width: 100%;
   }
 }
+<<<<<<< HEAD
 
 @include screen(phone) {
 
+=======
+@include screen(phone) {
+>>>>>>> bfcdc125da075e20b95b86ddbaa96f506f3cced4
   .col-4,
   .col-3 {
-    &>div {
+    & > div {
       max-width: 50%;
       width: 100%;
     }
@@ -453,6 +542,7 @@ svg {
     }
   }
 }
+<<<<<<< HEAD
 
 .breadcrumb {
   justify-content: center;
@@ -461,3 +551,11 @@ svg {
 .page-heading {
   text-align: center;
 }
+=======
+.breadcrumb {
+  justify-content: center;
+}
+.page-heading {
+  text-align: center;
+}
+>>>>>>> bfcdc125da075e20b95b86ddbaa96f506f3cced4

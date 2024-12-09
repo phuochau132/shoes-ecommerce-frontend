@@ -26,12 +26,16 @@ const DefaultLayout: React.FC<PropsWithChildren<DefaultLayoutProps>> = ({
   pageHeader = null,
   container = 'container'
 }) => {
+<<<<<<< HEAD
   console.log('pageHeader', pageHeader);
 
+=======
+>>>>>>> bfcdc125da075e20b95b86ddbaa96f506f3cced4
   return (
     <div className="default-layout">
       {/* Header */}
       {useHeader && <HeaderComponent />}
+<<<<<<< HEAD
 
       {/* Main Content */}
       <main className={cn(`${container} justify-center', useFooter ? 'pb-[80px]' : 'pb-[20px]' flex w-full`)}>
@@ -64,6 +68,14 @@ const DefaultLayout: React.FC<PropsWithChildren<DefaultLayoutProps>> = ({
 
       {/* Footer */}
       {useFooter && <FooterComponent />}
+=======
+      <div className={cn('flex', useFooter ? 'pb-[80px]' : 'pb-[20px]', 'flex w-full justify-center')}>
+        <Content style={{ minHeight: 'calc(100vh - 120px)' }} className={cn('duration-200', 'flex')}>
+          <div className="h-full w-full">{children}</div>
+        </Content>
+      </div>
+      <FooterComponent />
+>>>>>>> bfcdc125da075e20b95b86ddbaa96f506f3cced4
     </div>
   );
 };

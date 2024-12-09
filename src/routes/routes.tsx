@@ -19,10 +19,14 @@ const LazyCartPage = LazyLoadComponent(() => import('../pages/Public/Cart/CartPa
 const LazyCollectionListPage = LazyLoadComponent(() => import('../pages/Public/CollectionList/CollectionListPage'))(
   true
 );
+<<<<<<< HEAD
 const LazyContactUsPage = LazyLoadComponent(() => import('../pages/Public/ContactUs/ContactUsPage'))(true);
 const LazyFaq = LazyLoadComponent(() => import('../pages/Public/FAQ/FaqPage'))(true);
 const LazyWishlistPage = LazyLoadComponent(() => import('../pages/Public/Wishlist/WishlistPage'))(true);
 const LazyBlogsPage = LazyLoadComponent(() => import('../pages/Public/Blogs/BlogsPage'))(true);
+=======
+
+>>>>>>> bfcdc125da075e20b95b86ddbaa96f506f3cced4
 
 export const PUBLIC_ROUTES: RouteType[] = [
   {
@@ -70,6 +74,7 @@ export const PUBLIC_ROUTES: RouteType[] = [
     useSidebar: true,
     useFooter: true
   },
+<<<<<<< HEAD
   {
     path: paths.contact,
     element: <LazyContactUsPage />,
@@ -106,4 +111,6 @@ export const PUBLIC_ROUTES: RouteType[] = [
     useSidebar: true,
     useFooter: true
   }
+=======
+>>>>>>> bfcdc125da075e20b95b86ddbaa96f506f3cced4
 ];
