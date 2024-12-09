@@ -1,17 +1,17 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styles from './collection.module.scss';
-import { Collection } from '@/types/collection';
+import { CollectionType } from '@/types/collection';
 import { bindClassNames } from '@/utils/helpers/cx';
 import SidebarComponent from './component/sidebar';
 import BreadcrumbComponent from '@/components/commons/breadcrumb';
 import ProductCardComponent from '@/components/products/card';
 import { FilterIcon, GridModeIcon1, GridModeIcon2, GridModeIcon3, GridModeIcon4 } from '@/utils/icons';
 import { useDispatch } from 'react-redux';
-import { setFilterSidebarState } from '@/redux/app/app.slice';
+import { setFilterSidebarState, setPageInfo } from '@/redux/app/app.slice';
 import { useSelector } from 'react-redux';
 
 const cx = bindClassNames(styles);
-const sampleProducts: Collection = {
+const sampleProducts: CollectionType = {
   title: 'Skincare',
   description: 'Optimal skincare with serums, creams, and masks for a radiant complexion.',
   products: [
@@ -186,19 +186,18 @@ const CollectionPage: React.FC = () => {
     } else {
       gridModeRefs.current[2]?.click();
     }
+    dispatch(
+      setPageInfo({
+        breadcrumb: [
+          { path: '/', title: 'Home' },
+          { path: '#', title: sampleProducts.title }
+        ],
+        title: 'Products'
+      })
+    );
   }, []);
   return (
-    <div className={cx('container', 'collection-page')}>
-      <div className={cx('breadcrumb', 'flex phone:pl-[12px]')}>
-        <BreadcrumbComponent
-          path={[
-            { link: '#', title: 'Home' },
-            { link: '#', title: 'Collection' },
-            { link: '#', title: sampleProducts.title }
-          ]}
-        />
-      </div>
-
+    <div className={cx('collection-page')}>
       <div className={cx('collection-content', 'flex')}>
         <div
           className={cx(
@@ -215,14 +214,14 @@ const CollectionPage: React.FC = () => {
         </div>
         <div className={cx('collection__content-grid', 'pl-[50px] phone:pl-[0]')}>
           <div className={cx('collection-heading', 'mb-[30px] pl-[10px] pr-[10px]')}>
-            <h1 className={cx('title', 'mb:text-[30px] text-[35px] font-[700]')}>{sampleProducts.title}</h1>
+            <h1 className={cx('title', 'heading font-[700]')}>{sampleProducts.title}</h1>
             <p className={cx('description', 'text-[15px] font-[500] text-[bold]')}>
-              <span className={cx('text', 'font-[400]')}>{sampleProducts.description}</span>
+              <span className={cx('text', 'font-normal')}>{sampleProducts.description}</span>
             </p>
           </div>
           <div className={cx('toolbar', 'flex justify-between pl-[10px] pr-[10px]')}>
             <div className={cx('result', 'phone:hidden')}>
-              <p className={cx('text font-[400] text-[#444444]')}>There are 18 results in total</p>
+              <p className={cx('text font-normal text-[#444444]')}>There are 18 results in total</p>
             </div>
             <button
               onClick={() => {

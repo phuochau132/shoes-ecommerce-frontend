@@ -1,5 +1,5 @@
 import React, { memo, CSSProperties } from 'react';
-import styles from './product-card.module.scss';
+import styles from './product-block.module.scss';
 import { Collection } from '@/types/collection';
 import ProductCardComponent from '../card';
 import { Navigation } from 'swiper/modules';

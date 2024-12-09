@@ -1,7 +1,9 @@
-import { Product } from '../product';
+import { ProductType } from '../product';
 
-export type Collection = {
-  products: Product[];
+export type CollectionType = {
+  products: ProductType[];
   title: string;
-  description: string;
+  description?: string;
+  image?: string;
+  link: string;
 };

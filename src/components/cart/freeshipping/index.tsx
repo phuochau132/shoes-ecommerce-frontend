@@ -10,13 +10,13 @@ const FreeShippingComponent: React.FC = memo(({ total }) => {
     <div className={cx('wrapper')}>
       <div className="haloCalculatorShipping block w-[100%]">
         <div className="progress progress-60 h-[10px] w-[100%] rounded-[20px] bg-grey-bg">
-          <div className={cx('progress-meter', 'bg-free-shipping-bg relative h-[100%] w-[52%] rounded-[20px]')}>
+          <div className={cx('progress-meter', 'relative h-[100%] w-[52%] rounded-[20px] bg-free-shipping-bg')}>
             <div className="progress-truck-wrapper absolute right-0 top-[-100%] w-[30px]">
               <TruckIcon />
             </div>
           </div>
         </div>
-        <div className="message mt-[10px] font-[400] text-grey-color">
+        <div className="message mt-[10px] font-normal text-grey-color">
           <span>Only </span>
           <span className="money">$381.00</span>
           <span> away from </span>

@@ -1,21 +1,24 @@
-export type Product = {
+import { ReviewType } from '../review';
+
+export type ProductType = {
   title: string;
   price: number;
   images: string[];
   description: string;
   link: string;
   vendor: string;
-  variants?: Variant[];
+  variants?: VariantType[];
+  reviews?: ReviewType[];
 };
 
-export type Variant = {
+export type VariantType = {
   id: number;
   name: string;
-  values: Option[];
+  values: OptionType[];
   type?: string;
 };
 
-export type Option = {
+export type OptionType = {
   id: number;
   price: number;
   name: string;

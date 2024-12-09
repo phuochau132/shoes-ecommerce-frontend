@@ -1,17 +1,20 @@
 import BreadcrumbComponent from '@/components/commons/breadcrumb';
 import styles from './cart.module.scss';
 import { useEffect } from 'react';
-import { Product } from '@/types/product';
+import { ProductType } from '@/types/product';
 import { LinkIcon, MinusIcon, PlusIcon } from '@/utils/icons';
-import { Collection } from '@/types/collection';
+import { CollectionType } from '@/types/collection';
 import { bindClassNames } from '@/utils/helpers/cx';
 import QuantityBoxComponent from '@/components/products/quantity';
 import { ButtonComponent, InputComponent } from '@/components/commons';
 import ProductBlockComponent from '@/components/products/productBlock';
 import FreeShippingComponent from '@/components/cart/freeshipping';
+import { useDispatch } from 'react-redux';
+import { setPageInfo } from '@/redux/app/app.slice';
+import path from 'path';
 
 const cx = bindClassNames(styles);
-const sampleProducts: Collection = {
+const sampleProducts: CollectionType = {
   products: [
     {
       title: 'Classic Running Shoes',
@@ -81,7 +84,7 @@ const sampleProducts: Collection = {
     }
   ]
 };
-const product: Product = {
+const product: ProductType = {
   title: 'Classic Running Shoes',
   price: 99.99,
   images: [
@@ -134,24 +137,21 @@ const product: Product = {
 };
 
 const CartPage = () => {
-  useEffect(() => {}, []);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(
+      setPageInfo({
+        breadcrumb: [
+          { path: '/', title: 'Home' },
+          { path: '#', title: 'Cart' }
+        ],
+        title: 'Shopping Cart',
+        description: 'Review your selected items before purchase. Enjoy a seamless shopping experience!'
+      })
+    );
+  }, []);
   return (
-    <div className={cx('container', 'cart-page')}>
-      <div className={cx('breadcrumb', 'flex')}>
-        <BreadcrumbComponent
-          path={[
-            { link: '#', title: 'Home' },
-            { link: '#', title: 'Collection' },
-            { link: '#', title: 'Cart' }
-          ]}
-        />
-      </div>
-      <div className={cx('cart-heading', 'mb-[30px]')}>
-        <h1 className={cx('title', 'mb:text-[30px] text-[35px] font-[700]')}>Your cart</h1>
-        <div className={cx('free-shipping', 'mt-[20px]')}>
-          <FreeShippingComponent />
-        </div>
-      </div>
+    <div className={cx('cart-page')}>
       <div className={cx('cart-content', 'flex mobileTablet:flex-col')}>
         <div className={cx('cart_content-left', 'pr-[50px] mobileTablet:max-w-[100%] mobileTablet:pr-[0]')}>
           <table className={cx('cart__content-items', 'w-[100%] table-auto')}>

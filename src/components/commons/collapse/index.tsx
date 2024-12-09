@@ -1,39 +1,40 @@
 import React, { useRef } from 'react';
 import './collapse.scss';
+import classNames from 'classnames';
 
 interface CollapseProps {
   children: React.ReactNode;
   title: string;
+  className?: string;
+  classNameForHeading?: string;
 }
 
-function CollapsibleBlock({ children, title }: CollapseProps) {
+function CollapsibleBlock({ children, title, className, classNameForHeading }: CollapseProps) {
   const contentRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLDivElement>(null);
   const isExpandedRef = useRef(false);
 
-  const handleToggle = (event: React.MouseEvent) => {
+  const handleToggle = () => {
     const content = contentRef.current;
-    const target = event.target as HTMLDivElement;
 
-    if (content) {
+    if (content && headingRef.current) {
       if (isExpandedRef.current) {
         content.style.maxHeight = '';
-        target.classList.remove('is-activated');
+        headingRef.current.classList.remove('is-activated');
       } else {
         content.style.maxHeight = `${content.scrollHeight}px`;
-        target.classList.add('is-activated');
+        headingRef.current.classList.add('is-activated');
       }
-
       isExpandedRef.current = !isExpandedRef.current;
     }
   };
 
   return (
-    <div className="collapsible-wrapper">
+    <div className={`collapsible-wrapper ${className}`}>
       <h3
-        className="collapsible-heading mb-[2rem] mt-[3px] cursor-pointer"
-        onClick={(event) => {
-          handleToggle(event);
-        }}
+        ref={headingRef}
+        className={`collapsible-heading mb-[2rem] mt-[3px] cursor-pointer ${classNameForHeading && classNameForHeading}`}
+        onClick={handleToggle}
       >
         <span>{title}</span>
         <span className="icon_plus"></span>

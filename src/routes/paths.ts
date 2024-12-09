@@ -1,6 +1,11 @@
 export const paths = {
   home: '/',
   product: '/product/:handle',
-  collection: '/collection/:handle',
-  cart: '/cart'
+  collection: '/collections/:handle',
+  cart: '/cart',
+  collectionsList: '/collections',
+  contact: '/pages/contact-us',
+  faq: '/pages/faq',
+  wishlist: '/pages/wishlist',
+  blogs: '/blogs/:handle'
 };

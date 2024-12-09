@@ -16,6 +16,13 @@ const LazyHomePage = LazyLoadComponent(() => import('../pages/Public/Home/HomePa
 const LazyProductPage = LazyLoadComponent(() => import('../pages/Public/Product/ProductPage'))(true);
 const LazyCollectionPage = LazyLoadComponent(() => import('../pages/Public/Collection/CollectionPage'))(true);
 const LazyCartPage = LazyLoadComponent(() => import('../pages/Public/Cart/CartPage'))(true);
+const LazyCollectionListPage = LazyLoadComponent(() => import('../pages/Public/CollectionList/CollectionListPage'))(
+  true
+);
+const LazyContactUsPage = LazyLoadComponent(() => import('../pages/Public/ContactUs/ContactUsPage'))(true);
+const LazyFaq = LazyLoadComponent(() => import('../pages/Public/FAQ/FaqPage'))(true);
+const LazyWishlistPage = LazyLoadComponent(() => import('../pages/Public/Wishlist/WishlistPage'))(true);
+const LazyBlogsPage = LazyLoadComponent(() => import('../pages/Public/Blogs/BlogsPage'))(true);
 
 export const PUBLIC_ROUTES: RouteType[] = [
   {
@@ -48,6 +55,51 @@ export const PUBLIC_ROUTES: RouteType[] = [
   {
     path: paths.cart,
     element: <LazyCartPage />,
+    layout: DefaultLayout,
+    private: 'public',
+    useHeader: true,
+    useSidebar: true,
+    useFooter: true
+  },
+  {
+    path: paths.collectionsList,
+    element: <LazyCollectionListPage />,
+    layout: DefaultLayout,
+    private: 'public',
+    useHeader: true,
+    useSidebar: true,
+    useFooter: true
+  },
+  {
+    path: paths.contact,
+    element: <LazyContactUsPage />,
+    layout: DefaultLayout,
+    private: 'public',
+    useHeader: true,
+    useSidebar: true,
+    useFooter: true
+  },
+  {
+    path: paths.faq,
+    element: <LazyFaq />,
+    layout: DefaultLayout,
+    private: 'public',
+    useHeader: true,
+    useSidebar: true,
+    useFooter: true
+  },
+  {
+    path: paths.wishlist,
+    element: <LazyWishlistPage />,
+    layout: DefaultLayout,
+    private: 'public',
+    useHeader: true,
+    useSidebar: true,
+    useFooter: true
+  },
+  {
+    path: paths.blogs,
+    element: <LazyBlogsPage />,
     layout: DefaultLayout,
     private: 'public',
     useHeader: true,

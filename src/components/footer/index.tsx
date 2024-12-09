@@ -12,15 +12,17 @@ const FooterComponent: React.FC = memo(() => {
         <div className={cx('footer-content-top')}>
           <div className={cx('container')}>
             <div className={cx('footer-block-item', 'footer-text')}>
-              <p>685 Market Street</p>
-              <p>San Francisco, CA 94105,</p>
-              <p style={{ marginBottom: '20px' }}>United States</p>
+              <p className={cx('text')}> 685 Market Street</p>
+              <p className={cx('text')}>San Francisco, CA 94105,</p>
+              <p className={cx('text')} style={{ marginBottom: '20px' }}>
+                United States
+              </p>
               <div className="mb-[5px] flex gap-[5px]">
                 <span className="icon">
                   <Message2Icon className="h-[20px] w-[20px]" />
                 </span>
                 <div>
-                  <p>
+                  <p className={cx('text')}>
                     Text: <a href="tel:%20%20091-123-ELLA">(091)-123-ELLA</a>
                   </p>
                 </div>
@@ -30,7 +32,7 @@ const FooterComponent: React.FC = memo(() => {
                   <MessageIcon className="h-[20px] w-[20px]" />
                 </span>
                 <div>
-                  <p>
+                  <p className={cx('text')}>
                     <a href="mailto:email@domain.com">email@domain.com</a>
                   </p>
                 </div>

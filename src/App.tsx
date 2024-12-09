@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { Fragment } from 'react/jsx-runtime';
-import DefaultLayout from './layouts/DefaultLayout/DefaultLayout';
+import DefaultLayout, { pageHeaderType } from './layouts/DefaultLayout/DefaultLayout';
 import NotFoundPage from './pages/ExceptionPage/NotFoundPage';
 import {
   setCartSidebarState,
@@ -18,6 +18,7 @@ import 'swiper/swiper-bundle.css';
 import { useDispatch } from 'react-redux';
 import { LoginSidebar, SearchPopup } from './components/header';
 import CartSidebar from './components/header/components/sidebar/cart';
+import path from 'path';
 
 function App() {
   const location = window.location;
@@ -28,6 +29,7 @@ function App() {
   const loginSidebarState = useSelector((state: any) => state.app.loginSidebarState);
   const filterSidebarState = useSelector((state: any) => state.app.filterSidebarState);
   const cartSidebarState = useSelector((state: any) => state.app.cartSidebarState);
+  const pageInfo = useSelector((state: any) => state.app.pageInfo);
 
   useEffect(() => {
     setPathname(location?.pathname?.split('/')[1]);
@@ -87,13 +89,30 @@ function App() {
               let Layout: any = DefaultLayout;
               if (route?.layout) Layout = route.layout;
               else if (route.layout === null) Layout = Fragment;
+              let pageHeader: pageHeaderType = {};
+              let container = 'container';
+              pageHeader = {
+                breadcrumb: pageInfo.breadcrumb,
+                title: pageInfo.title,
+                description: pageInfo.description
+              };
+              if (route.path == 'wishlist' || route.path == '') {
+                container = 'container-1550';
+              }
               if (route.private === 'public')
                 return (
                   <Route
                     key={index}
                     path={route.path}
                     element={
-                      <Layout useHeader={route.useHeader} useSidebar={route.useSidebar} useFooter={route.useFooter}>
+                      <Layout
+                        {...(container && { container })}
+                        {...(pageHeader && { pageHeader })}
+                        pageHeader={pageHeader}
+                        useHeader={route.useHeader}
+                        useSidebar={route.useSidebar}
+                        useFooter={route.useFooter}
+                      >
                         {route.element}
                       </Layout>
                     }

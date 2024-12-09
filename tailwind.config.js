@@ -5,8 +5,8 @@ module.exports = {
   theme: {
     extend: {
       fontWeight: {
-        normal: '500',
-        label: '600'
+        normal: '400',
+        label: '700'
       },
       colors: {
         'primary-color': '#00163a',
@@ -16,7 +16,7 @@ module.exports = {
         'danger-color-disabled': '#F76F7F',
 
         'color-border': '#d2ddec',
-        'grey-color': '#868686',
+        'grey-color': 'rgba(17, 17, 17, 0.55)',
         'grey-bg': '#f5f5f5',
 
         'free-shipping-bg': '#ffc206'
@@ -47,9 +47,11 @@ module.exports = {
     },
     screens: {
       phone: { max: '767px' },
+      phoneUp: { min: '768px' },
       tablet: { min: '768px', max: '1024px' },
       desktop: { min: '1025' },
-      mobileTablet: { max: '1023px' }
+      mobileTablet: { max: '1023px' },
+      tabletUp: { min: '768px' }
     }
   },
   plugins: [],
