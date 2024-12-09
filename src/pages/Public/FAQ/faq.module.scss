@@ -1,0 +1,82 @@
+@use "scss/config" as *;
+
+.productView-top {
+    display: flex;
+    margin-top: 15px;
+
+    .productView-left,
+    .productView-right {
+        width: 50%;
+    }
+}
+
+.productView-left {
+    .productView-nav {
+        width: 100%;
+    }
+}
+
+.productView-right {
+    .productView__right-item {
+        margin-bottom: 10px;
+        width: 100%;
+    }
+
+    .description {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-wrap: wrap;
+    }
+
+    .product-action {
+        .wish-list {
+            transition: all 0.2s ease;
+
+            &:hover {
+                background-color: black;
+
+                svg {
+                    transition: all 0.2s ease;
+                    fill: white
+                }
+            }
+        }
+    }
+
+
+}
+
+@media(max-width:767px) {
+    .productView-top {
+        flex-direction: column;
+
+        .productView-left {
+            width: 100%;
+        }
+
+        .productView-right {
+            width: 100%;
+        }
+    }
+}
+
+.price-item {
+    font-size: 20px;
+    font-weight: bold;
+    color: red;
+}
+
+.tab-title {
+    position: relative;
+    cursor: pointer;
+
+    svg {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%) rotate(90deg);
+    }
+}
