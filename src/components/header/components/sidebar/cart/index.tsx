@@ -14,7 +14,7 @@ import { ButtonComponent } from '@/components/commons';
 import TermAndConditionComponent from '@/components/cart/termAndConditionButton';
 
 const cx = bindClassNames(styles);
-const sampleProducts: CollectionType = {
+export const sampleProducts: CollectionType = {
   title: 'Skincare',
   description: 'Optimal skincare with serums, creams, and masks for a radiant complexion.',
   products: [

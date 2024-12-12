@@ -8,6 +8,21 @@ module.exports = {
         normal: '400',
         label: '700'
       },
+      animation: {
+        slide: 'slide 0.2s ease-in-out'
+      },
+      keyframes: {
+        slide: {
+          '0%': {
+            opacity: 0,
+            transform: 'translateY(-20px)'
+          },
+          '100%': {
+            opacity: 1,
+            transform: 'translateY(0)'
+          }
+        }
+      },
       colors: {
         'primary-color': '#00163a',
         'primary-color-hover': '#48bae0',

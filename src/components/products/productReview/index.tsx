@@ -9,7 +9,6 @@ interface ProductReviewComponentProps {
 }
 const ProductReviewComponent: React.FC<ProductReviewComponentProps> = memo(({ product }) => {
   const totalReview = calTotalReview({ product });
-  console.log('totalReview', product.reviews);
   const renderStar = useCallback((total: number): JSX.Element => {
     const stars = [];
 
