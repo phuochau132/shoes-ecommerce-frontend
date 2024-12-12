@@ -23,13 +23,15 @@
     text-transform: uppercase;
   }
 
-  &:hover {
-    >.menu-dropdown {
-      opacity: 1;
-      visibility: visible;
-      pointer-events: auto;
-      transform: translateY(0);
-      animation: animateMenuOpen 0.3s ease forwards;
+  @include screen(phoneUp) {
+    &:hover {
+      >.menu-dropdown {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transform: translateY(0);
+        animation: animateMenuOpen 0.3s ease forwards;
+      }
     }
   }
 }

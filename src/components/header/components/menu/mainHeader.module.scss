@@ -20,10 +20,24 @@
     bottom 0.1s ease-in 0.15s;
 }
 
+
 .header__icon-item {
   cursor: pointer;
 }
 
 .navigation {
   border-bottom: 1px solid $border-color-base;
+}
+
+.currency {
+  padding: 10px;
+  display: flex;
+  min-width: 90px;
+  gap: 10px;
+  align-items: center;
+
+  .icon {
+    width: 16px;
+    height: 16px;
+  }
 }

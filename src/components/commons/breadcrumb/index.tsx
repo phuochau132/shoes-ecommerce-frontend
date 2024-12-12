@@ -15,11 +15,7 @@ export type BreadcrumbComponentType = {
 };
 const BreadcrumbComponent: React.FC<BreadcrumbComponentType> = memo(({ path, className }) => {
   return (
-<<<<<<< HEAD
     <div className={cx('wrapper', 'flex justify-center gap-[10px] pb-[10px] pt-[20px] text-grey-color')}>
-=======
-    <div className={cx('wrapper', 'flex gap-[10px] pb-[10px] pt-[20px] text-grey-color')}>
->>>>>>> bfcdc125da075e20b95b86ddbaa96f506f3cced4
       {path?.map((item, index) => {
         return (
           <div key={index} className={cx('breadcrumb-item', className, { 'text-black': index == path.length - 1 })}>

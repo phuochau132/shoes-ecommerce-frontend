@@ -226,6 +226,12 @@ $second-orange: (
     }
   }
 
+  @if $breakpoint ==phoneUp {
+    @media only screen and (min-width: 768px) {
+      @content;
+    }
+  }
+
   @if $breakpoint ==tablet {
     @media only screen and (min-width: 767px) and (max-width: 1024px) {
       @content;

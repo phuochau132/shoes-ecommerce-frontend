@@ -9,6 +9,8 @@ import {
   setCartSidebarState,
   setFilterSidebarState,
   setLoginSidebarState,
+  setMenuSidebarState,
+  setQuickViewPopup,
   setSearchPopupState,
   THEME
 } from './redux/app/app.slice';
@@ -18,7 +20,8 @@ import 'swiper/swiper-bundle.css';
 import { useDispatch } from 'react-redux';
 import { LoginSidebar, SearchPopup } from './components/header';
 import CartSidebar from './components/header/components/sidebar/cart';
-import path from 'path';
+import QuickViewComponent from './components/products/quickView';
+import { CloseIcon } from './utils/icons';
 
 function App() {
   const location = window.location;
@@ -29,8 +32,10 @@ function App() {
   const loginSidebarState = useSelector((state: any) => state.app.loginSidebarState);
   const filterSidebarState = useSelector((state: any) => state.app.filterSidebarState);
   const cartSidebarState = useSelector((state: any) => state.app.cartSidebarState);
-  const pageInfo = useSelector((state: any) => state.app.pageInfo);
+  const menuSidebarState = useSelector((state: any) => state.app.menuSidebarState);
+  const quickViewInfo = useSelector((state: any) => state.app.quickViewInfo);
 
+  const pageInfo = useSelector((state: any) => state.app.pageInfo);
   useEffect(() => {
     setPathname(location?.pathname?.split('/')[1]);
   }, [location.pathname]);
@@ -40,6 +45,24 @@ function App() {
     document.body.classList.remove('dark-mode', 'light-mode');
     document.body.classList.add(bodyClass);
   }, [theme]);
+  useEffect(() => {
+    const anchors = document.querySelectorAll('a[href^="#"]') as NodeListOf<HTMLElement>;
+    anchors.forEach((anchor) => {
+      anchor.addEventListener('click', function (e: Event) {
+        e.preventDefault();
+        const targetAnchor = e.currentTarget as HTMLElement | null;
+        if (targetAnchor) {
+          const target = document.querySelector(targetAnchor.getAttribute('href')!) as HTMLElement | null;
+          if (target) {
+            target.scrollIntoView({
+              behavior: 'smooth'
+            });
+          }
+        }
+      });
+    });
+  }, []);
+
   return (
     <ConfigProvider
       theme={{
@@ -55,7 +78,12 @@ function App() {
         algorithm: theme === THEME.DARK ? themeAntd.darkAlgorithm : themeAntd.defaultAlgorithm
       }}
     >
-      {(searchPopupState || loginSidebarState || filterSidebarState || cartSidebarState) && (
+      {(searchPopupState ||
+        loginSidebarState ||
+        filterSidebarState ||
+        cartSidebarState ||
+        menuSidebarState ||
+        quickViewInfo.isShowed) && (
         <div
           onClick={() => {
             if (searchPopupState) {
@@ -70,8 +98,14 @@ function App() {
             if (cartSidebarState) {
               dispatch(setCartSidebarState(false));
             }
+            if (menuSidebarState) {
+              dispatch(setMenuSidebarState(false));
+            }
+            if (quickViewInfo.isShowed) {
+              dispatch(setQuickViewPopup({ product: null, isShowed: false }));
+            }
           }}
-          className="background-overlay"
+          className="background-overlay cursor-pointer"
         ></div>
       )}
 
@@ -81,7 +115,25 @@ function App() {
       {searchPopupState && <SearchPopup />}
       {loginSidebarState && <LoginSidebar />}
       {cartSidebarState && <CartSidebar />}
-
+      {quickViewInfo.isShowed && quickViewInfo.product && (
+        <div className="modal">
+          <div className="modal-content flex phone:flex-col">
+            {quickViewInfo.isShowed && <QuickViewComponent product={quickViewInfo.product} />}
+          </div>
+          <div
+            onClick={() => {
+              if (quickViewInfo.isShowed) {
+                if (quickViewInfo.isShowed) {
+                  dispatch(setQuickViewPopup({ product: null, isShowed: false }));
+                }
+              }
+            }}
+            className="popup-close-wrapper rotate absolute right-[20px] top-[10px] z-[3] cursor-pointer p-[10px]"
+          >
+            <CloseIcon style={{ float: 'right' }} />
+          </div>
+        </div>
+      )}
       <main>
         <Router>
           <Routes>

@@ -5,11 +5,7 @@ module.exports = {
   theme: {
     extend: {
       fontWeight: {
-<<<<<<< HEAD
         normal: '400',
-=======
-        normal: '500',
->>>>>>> bfcdc125da075e20b95b86ddbaa96f506f3cced4
         label: '700'
       },
       colors: {
@@ -55,11 +51,10 @@ module.exports = {
       tablet: { min: '768px', max: '1024px' },
       desktop: { min: '1025' },
       mobileTablet: { max: '1023px' },
-<<<<<<< HEAD
       tabletUp: { min: '768px' }
-=======
-      tabletUp:  { min: '768px' },
->>>>>>> bfcdc125da075e20b95b86ddbaa96f506f3cced4
+    },
+    boxShadow: {
+      custom: ' 0 0 40px 0 rgba(0,0,0,.45);'
     }
   },
   plugins: [],

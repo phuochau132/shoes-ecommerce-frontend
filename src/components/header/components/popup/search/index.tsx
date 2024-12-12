@@ -12,7 +12,12 @@ const SearchPopup: React.FC = memo(() => {
   const dispatch = useDispatch();
 
   return (
-    <div className={cx('search-popup', 'fixed left-0 right-0 top-0 z-[3] w-full bg-[white] px-[15%]')}>
+    <div
+      className={cx(
+        'search-popup',
+        'fixed left-0 right-0 top-0 z-[3] w-full bg-[white] phone:px-[10px] phoneUp:px-[15%]'
+      )}
+    >
       <div className={cx('search__popup-close', 'h-[auto]', 'cursor-pointer', 'text-right')}>
         <div
           onClick={() => {
@@ -23,8 +28,12 @@ const SearchPopup: React.FC = memo(() => {
           <CloseIcon style={{ float: 'right' }} />
         </div>
       </div>
-      <div className={cx('search__popup-predictive', 'flex', 'gap-[20px]', 'py-[20px]', 'w-full', 'items-center')}>
-        <input type="text" placeholder="Search for a product..." className="flex-1" />
+      <div className={cx('search__popup-inputSearch', 'flex', 'gap-[20px]', 'py-[20px]', 'w-full', 'items-center')}>
+        <input
+          type="text"
+          placeholder="Search for a product..."
+          className="flex-1 border-b border-[#333] p-[10px] outline-none"
+        />
         <SearchIcon style={{ cursor: 'pointer' }} />
       </div>
     </div>

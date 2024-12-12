@@ -14,13 +14,15 @@
     display: block;
     text-align: center;
 
-    &:hover {
-        background-color: $button-background-color-hover;
-        color: $button-text-color-hover;
-        border: 1px solid $button-border-color-hover;
+    @include screen(phoneUp) {
+        &:hover {
+            background-color: $button-background-color-hover;
+            color: $button-text-color-hover;
+            border: 1px solid $button-border-color-hover;
 
-        &.rotate {
-            transform: rotate(2deg);
+            &.rotate {
+                transform: rotate(2deg);
+            }
         }
     }
 }

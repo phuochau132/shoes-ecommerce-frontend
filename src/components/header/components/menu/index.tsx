@@ -1,7 +1,8 @@
 // AnnouncementBar.tsx
-import React, { memo, useEffect, useState, lazy, Suspense } from 'react';
+import React, { memo, useEffect, useState, lazy, Suspense, useCallback, useRef } from 'react';
 import styles from './mainHeader.module.scss';
-import { CartIcon, HamburgerIcon, SearchIcon, SignInIcon, WishListIcon } from '@/utils/icons';
+import ReactDOMServer from 'react-dom/server';
+import { CartIcon, CurrenciesIcon, HamburgerIcon, SearchIcon, SignInIcon, WishListIcon } from '@/utils/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   setCartSidebarState,
@@ -11,6 +12,7 @@ import {
 } from '@/redux/app/app.slice';
 import LoadingPage from '@/pages/commons/LoadingPage';
 import { bindClassNames } from '@/utils/helpers/cx';
+import { Currency } from '@/utils/helpers/CurrenciesFormat';
 
 export type Navigation = {
   name: string;
@@ -20,6 +22,8 @@ export type Navigation = {
 };
 
 const cx = bindClassNames(styles);
+
+const currencies = [{ isoCode: 'USD' }, { isoCode: 'EUR' }, { isoCode: 'GBP' }, { isoCode: 'CHF' }];
 
 const menu = [
   {
@@ -61,6 +65,10 @@ const menu = [
           { name: 'Blog Default 1', link: '#' },
           { name: 'Blog Default 2', link: '#' },
           { name: 'Blog Default 3', link: '#' },
+          { name: 'Blog Default 4', link: '#' },
+          { name: 'Blog Default 1', link: '#' },
+          { name: 'Blog Default 2', link: '#' },
+          { name: 'Blog Default 3', link: '#' },
           { name: 'Blog Default 4', link: '#' }
         ]
       },
@@ -84,32 +92,91 @@ const MobileNavigation = lazy(() => import('./mobile'));
 const MainHeader: React.FC = memo(() => {
   const dispatch = useDispatch();
   const [isMobile, setIsMobile] = useState(false);
+  const currenciesToggleEl = useRef<HTMLDivElement>(null);
+  const currentlyCurrencyEl = useRef<HTMLDivElement>(null);
   const menuSidebarState = useSelector((state: any) => state.app.menuSidebarState);
 
-  const handleResize = () => {
+  const handleResize = useCallback(() => {
     if (window.innerWidth < 768) {
       setIsMobile(true);
     } else {
       setIsMobile(false);
     }
-  };
+  }, []);
+  const renderCurrencies = useCallback(() => {
+    return currencies.map((currency, index) => {
+      return (
+        <div key={index} data-currency={currency.isoCode} className={cx('currency')}>
+          <div className={cx('icon', 'pointer-events-none')}>{CurrenciesIcon({ currency: currency.isoCode })}</div>
+          <div className="isoCode pointer-events-none">{currency.isoCode}</div>
+        </div>
+      );
+    });
+  }, []);
+
+  const handleCurrencyChange = useCallback(() => {
+    const $currencies = document.querySelectorAll(`.${styles.currency}`);
+
+    const handleClick = (event: Event, index: number) => {
+      const $target = event.target as HTMLElement;
+      const isoCode = $target.querySelector('.isoCode') as HTMLElement;
+      $currencies.forEach((item, i) => {
+        if (index != i) {
+          item.classList.remove('is-activated');
+        }
+      });
+      $target.classList.add('is-activated');
+      if (isoCode) {
+        const selectedIsoCode = isoCode.textContent || 'USD';
+        Currency.convertAll('.money', 'USD', selectedIsoCode);
+        localStorage.setItem('currency', selectedIsoCode);
+        currenciesToggleEl.current?.classList.remove('is-toggled');
+        const currencyContainer = currentlyCurrencyEl.current as HTMLElement;
+        // change content
+        const iconElement = currencyContainer?.querySelector(`.${styles.icon}`);
+        const isoCodeElement = currencyContainer.querySelector('.isoCode');
+        if (iconElement && isoCodeElement) {
+          iconElement.innerHTML = ReactDOMServer.renderToStaticMarkup(
+            React.createElement(CurrenciesIcon, { currency: selectedIsoCode })
+          );
+          isoCodeElement.innerHTML = selectedIsoCode;
+        }
+      }
+    };
+
+    $currencies.forEach((item, index) => {
+      item.addEventListener('click', (event) => {
+        handleClick(event, index);
+      });
+    });
+
+    return () => {
+      $currencies.forEach((item, index) => {
+        item.addEventListener('click', (event) => {
+          handleClick(event, index);
+        });
+      });
+    };
+  }, []);
 
   useEffect(() => {
     handleResize();
     window.addEventListener('resize', handleResize);
+    const removeEvent = handleCurrencyChange();
     return () => {
+      removeEvent();
       window.removeEventListener('resize', handleResize);
     };
   }, []);
 
   return (
-    <div className={cx('navigation', 'align-center container flex justify-between py-[10px]')}>
+    <div className={cx('navigation', 'align-center container flex justify-between py-[10px] phone:pr-[15px]')}>
       {isMobile && (
-        <div className={cx('header-mobile-left', 'flex gap-[27px] phone:min-w-[159px]')}>
+        <div className={cx('header-mobile-left', 'flex items-center gap-[10px] phone:min-w-[159px]')}>
           <button
             onClick={() => dispatch(setMenuSidebarState(true))}
             type="button"
-            className={cx('mobileMenu-hamburger', 'flex h-[auto] w-[auto] p-[5px]')}
+            className={cx('mobileMenu-hamburger', 'flex h-[auto] w-[auto]')}
             aria-label="menu"
           >
             <HamburgerIcon />
@@ -125,7 +192,7 @@ const MainHeader: React.FC = memo(() => {
         </div>
       )}
       <div
-        className={cx('header-logo header-item phoneUp:min-w-[185px] flex items-center', {
+        className={cx('header-logo header-item flex items-center phoneUp:w-full phoneUp:max-w-[194px]', {
           'flex-1': isMobile,
           'justify-center': isMobile
         })}
@@ -135,7 +202,7 @@ const MainHeader: React.FC = memo(() => {
             <img
               src="https://www.khy.com/cdn/shop/files/KHY-Logo-Dark.png?v=1720636390&width=500"
               loading="lazy"
-              className={cx('header__heading-logo')}
+              className={cx('header__heading-logo', 'rounded-none')}
               alt="new-ella-demo"
               width="70"
               height="28"
@@ -153,7 +220,7 @@ const MainHeader: React.FC = memo(() => {
           <DesktopNavigation menu={menu} />
         </Suspense>
       )}
-      <div className={cx('header-icons header-item my-auto flex items-center gap-[27px]')}>
+      <div className={cx('header-icons header-item my-auto flex items-center gap-[20px]')}>
         <div
           onClick={() => {
             dispatch(setSearchPopupState(true));
@@ -170,9 +237,9 @@ const MainHeader: React.FC = memo(() => {
         >
           <SignInIcon className={cx('icon', 'fade-in-up')} />
         </div>
-        <div className={cx('header__icon-item', 'header__icon--wishList')}>
+        {/* <div className={cx('header__icon-item', 'header__icon--wishList')}>
           <WishListIcon className={cx('icon', 'fade-in-up')} />
-        </div>
+        </div> */}
         <div
           onClick={() => {
             dispatch(setCartSidebarState(true));
@@ -180,6 +247,24 @@ const MainHeader: React.FC = memo(() => {
           className={cx('header__icon-item', 'header__icon--cart')}
         >
           <CartIcon className={cx('icon', 'fade-in-up')} />
+        </div>
+        <div className={cx('header__icon-item', 'header__icon--currency', 'relative')}>
+          <div
+            onClick={() => {
+              currenciesToggleEl.current?.classList.toggle('is-toggled');
+            }}
+            ref={currentlyCurrencyEl}
+            className={cx('icon', 'currently-currency', 'flex min-h-[70px] w-[100%] items-center p-[0px]')}
+          >
+            <div className={cx('icon', 'h-[16px] w-[16px]')}>{CurrenciesIcon({ currency: 'USD' })}</div>
+            <div className="isoCode min-w-[40px] text-end">USD</div>
+          </div>
+          <div
+            ref={currenciesToggleEl}
+            className="currency-dropdown invisible absolute right-[0] top-[100%] z-[2] bg-[white] opacity-[0] shadow-custom duration-300"
+          >
+            {renderCurrencies()}
+          </div>
         </div>
       </div>
     </div>

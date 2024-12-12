@@ -56,15 +56,17 @@ td {
             }
         }
 
-        &:hover {
-            a {
-                .linked-icon {
-                    opacity: 1;
-                    transition: opacity 0.5s ease;
-                }
+        @include screen(phoneUp) {
+            &:hover {
+                a {
+                    .linked-icon {
+                        opacity: 1;
+                        transition: opacity 0.5s ease;
+                    }
 
-                &:after {
-                    opacity: 1;
+                    &:after {
+                        opacity: 1;
+                    }
                 }
             }
         }

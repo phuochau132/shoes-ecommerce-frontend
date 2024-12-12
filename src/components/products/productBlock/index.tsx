@@ -40,7 +40,8 @@ const ProductBlockComponent: React.FC<ProductBlockProps> = memo(
             navigation
             pagination={{ clickable: true }}
             breakpoints={{
-              1024: { slidesPerView: 5 },
+              1200: { slidesPerView: 5 },
+              1024: { slidesPerView: 4 },
               768: { slidesPerView: 3 },
               0: { slidesPerView: 2 }
             }}

@@ -1,6 +1,6 @@
 import styles from './wishlist.module.scss';
 import { bindClassNames } from '@/utils/helpers/cx';
-import { Collection } from '@/types/collection';
+import { CollectionType } from '@/types/collection';
 import ProductCardComponent from '@/components/products/card';
 import ProductBlockComponent from '@/components/products/productBlock';
 import { useDispatch } from 'react-redux';
@@ -8,9 +8,12 @@ import { useEffect } from 'react';
 import { setPageInfo } from '@/redux/app/app.slice';
 
 const cx = bindClassNames(styles);
-const sampleProducts: Collection = {
+const sampleProducts: CollectionType = {
+  title: 'Skincare',
+  description: 'Optimal skincare with serums, creams, and masks for a radiant complexion.',
   products: [
     {
+      id: 1,
       title: 'Classic Running Shoes',
       price: 99.99,
       images: [
@@ -19,9 +22,47 @@ const sampleProducts: Collection = {
       ],
       description: 'Comfortable and lightweight running shoes.',
       link: '/product/classic-running-shoes',
-      vendor: 'Nike'
+      vendor: 'Nike',
+      variants: [
+        {
+          id: 1,
+          name: 'Color',
+          values: [
+            {
+              id: 54545454,
+              price: 20,
+              name: 'White'
+            },
+            {
+              id: 123123123,
+              price: 30,
+              name: 'Red'
+            }
+          ],
+          type: 'swatch'
+        },
+        {
+          id: 2,
+          name: 'Size',
+          values: [
+            {
+              id: 1,
+              price: 20,
+              name: 'X'
+            },
+            {
+              id: 2,
+              price: 30,
+              name: 'XL'
+            }
+          ],
+          type: 'Rectangle'
+        }
+      ],
+      reviews: []
     },
     {
+      id: 2,
       title: 'Leather Loafers',
       price: 120.0,
       images: [
@@ -30,9 +71,47 @@ const sampleProducts: Collection = {
       ],
       description: 'Elegant leather loafers perfect for formal occasions.',
       link: '/product/leather-loafers',
-      vendor: 'Clarks'
+      vendor: 'Clarks',
+      variants: [
+        {
+          id: 1,
+          name: 'Color',
+          values: [
+            {
+              id: 54545454,
+              price: 20,
+              name: 'White'
+            },
+            {
+              id: 123123123,
+              price: 30,
+              name: 'Red'
+            }
+          ],
+          type: 'swatch'
+        },
+        {
+          id: 2,
+          name: 'Size',
+          values: [
+            {
+              id: 1,
+              price: 20,
+              name: 'X'
+            },
+            {
+              id: 2,
+              price: 30,
+              name: 'XL'
+            }
+          ],
+          type: 'Rectangle'
+        }
+      ],
+      reviews: []
     },
     {
+      id: 3,
       title: 'High-Top Sneakers',
       price: 89.99,
       images: [
@@ -41,9 +120,11 @@ const sampleProducts: Collection = {
       ],
       description: 'Trendy high-top sneakers with durable soles.',
       link: '/product/high-top-sneakers',
-      vendor: 'Adidas'
+      vendor: 'Adidas',
+      reviews: []
     },
     {
+      id: 4,
       title: 'High-Top Sneakers',
       price: 89.99,
       images: [
@@ -52,9 +133,11 @@ const sampleProducts: Collection = {
       ],
       description: 'Trendy high-top sneakers with durable soles.',
       link: '/product/high-top-sneakers',
-      vendor: 'Adidas'
+      vendor: 'Adidas',
+      reviews: []
     },
     {
+      id: 5,
       title: 'High-Top Sneakers',
       price: 89.99,
       images: [
@@ -63,9 +146,11 @@ const sampleProducts: Collection = {
       ],
       description: 'Trendy high-top sneakers with durable soles.',
       link: '/product/high-top-sneakers',
-      vendor: 'Adidas'
+      vendor: 'Adidas',
+      reviews: []
     },
     {
+      id: 6,
       title: 'High-Top Sneakers',
       price: 89.99,
       images: [
@@ -74,7 +159,8 @@ const sampleProducts: Collection = {
       ],
       description: 'Trendy high-top sneakers with durable soles.',
       link: '/product/high-top-sneakers',
-      vendor: 'Adidas'
+      vendor: 'Adidas',
+      reviews: []
     }
   ]
 };

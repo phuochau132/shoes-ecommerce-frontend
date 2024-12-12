@@ -3,7 +3,6 @@ import styles from './collection.module.scss';
 import { CollectionType } from '@/types/collection';
 import { bindClassNames } from '@/utils/helpers/cx';
 import SidebarComponent from './component/sidebar';
-import BreadcrumbComponent from '@/components/commons/breadcrumb';
 import ProductCardComponent from '@/components/products/card';
 import { FilterIcon, GridModeIcon1, GridModeIcon2, GridModeIcon3, GridModeIcon4 } from '@/utils/icons';
 import { useDispatch } from 'react-redux';
@@ -16,6 +15,7 @@ const sampleProducts: CollectionType = {
   description: 'Optimal skincare with serums, creams, and masks for a radiant complexion.',
   products: [
     {
+      id: 1,
       title: 'Classic Running Shoes',
       price: 99.99,
       images: [
@@ -60,9 +60,11 @@ const sampleProducts: CollectionType = {
           ],
           type: 'Rectangle'
         }
-      ]
+      ],
+      reviews: []
     },
     {
+      id: 2,
       title: 'Leather Loafers',
       price: 120.0,
       images: [
@@ -107,9 +109,11 @@ const sampleProducts: CollectionType = {
           ],
           type: 'Rectangle'
         }
-      ]
+      ],
+      reviews: []
     },
     {
+      id: 3,
       title: 'High-Top Sneakers',
       price: 89.99,
       images: [
@@ -118,9 +122,11 @@ const sampleProducts: CollectionType = {
       ],
       description: 'Trendy high-top sneakers with durable soles.',
       link: '/product/high-top-sneakers',
-      vendor: 'Adidas'
+      vendor: 'Adidas',
+      reviews: []
     },
     {
+      id: 4,
       title: 'High-Top Sneakers',
       price: 89.99,
       images: [
@@ -129,9 +135,11 @@ const sampleProducts: CollectionType = {
       ],
       description: 'Trendy high-top sneakers with durable soles.',
       link: '/product/high-top-sneakers',
-      vendor: 'Adidas'
+      vendor: 'Adidas',
+      reviews: []
     },
     {
+      id: 5,
       title: 'High-Top Sneakers',
       price: 89.99,
       images: [
@@ -140,9 +148,11 @@ const sampleProducts: CollectionType = {
       ],
       description: 'Trendy high-top sneakers with durable soles.',
       link: '/product/high-top-sneakers',
-      vendor: 'Adidas'
+      vendor: 'Adidas',
+      reviews: []
     },
     {
+      id: 6,
       title: 'High-Top Sneakers',
       price: 89.99,
       images: [
@@ -151,7 +161,8 @@ const sampleProducts: CollectionType = {
       ],
       description: 'Trendy high-top sneakers with durable soles.',
       link: '/product/high-top-sneakers',
-      vendor: 'Adidas'
+      vendor: 'Adidas',
+      reviews: []
     }
   ]
 };
@@ -207,15 +218,15 @@ const CollectionPage: React.FC = () => {
               'phone:translate-x-[0%]': filterSidebarState,
               'phone:-translate-x-full': !filterSidebarState
             },
-            'top-[0] z-[3] bg-[white] phone:fixed phone:bottom-[0] phone:left-[0] phone:p-[20px] phone:opacity-[0]'
+            'top-[0] bg-[white] phone:fixed phone:bottom-[0] phone:left-[0] phone:z-[3] phone:p-[20px] phone:opacity-[0]'
           )}
         >
           <SidebarComponent products={sampleProducts.products} />
         </div>
         <div className={cx('collection__content-grid', 'pl-[50px] phone:pl-[0]')}>
-          <div className={cx('collection-heading', 'mb-[30px] pl-[10px] pr-[10px]')}>
+          <div className={cx('collection-heading', 'mb-[20px] pl-[10px] pr-[10px]')}>
             <h1 className={cx('title', 'heading font-[700]')}>{sampleProducts.title}</h1>
-            <p className={cx('description', 'text-[15px] font-[500] text-[bold]')}>
+            <p className={cx('description', 'mt-[10px] text-[15px] font-[500] text-[bold]')}>
               <span className={cx('text', 'font-normal')}>{sampleProducts.description}</span>
             </p>
           </div>
