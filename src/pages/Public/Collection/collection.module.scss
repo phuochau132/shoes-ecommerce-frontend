@@ -1,8 +1,9 @@
 @use "scss/config" as *;
 
 .collection__content-sidebar {
-    max-width: 300px;
+    max-width: 400px;
     width: 100%;
+    transition: all 0.3s ease
 }
 
 .collection__content-grid {

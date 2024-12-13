@@ -1,3 +1,5 @@
+@use "scss/config" as *;
+
 .card-information {
     color: #00163a;
 
@@ -68,14 +70,14 @@
         transform: translateX(150%);
         transition: transform 0.5s ease;
 
-        .card__group-wishlist {
+        .cart__group-action {
             background-color: white;
             border-radius: 50%;
             cursor: pointer;
 
             .icon {
-                width: 20px !important;
-                height: 20px !important;
+                width: 15px !important;
+                height: 15px !important;
             }
         }
     }
@@ -94,6 +96,7 @@
             border-radius: 4px;
         }
     }
+
 }
 
 .card-link {
@@ -105,7 +108,7 @@
     z-index: 1;
 }
 
-@media (min-width: 768px) {
+@include screen(phoneUp) {
     .card {
         &:hover {
             .card-product {

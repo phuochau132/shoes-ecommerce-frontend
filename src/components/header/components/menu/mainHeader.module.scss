@@ -1,10 +1,15 @@
 @use "scss/config" as *;
 
 .icon {
-  width: 26px;
-  height: 26px;
+  width: 18px;
+  height: 18px;
   cursor: pointer;
   transition: transform 0.3s ease;
+
+  @include screen(phone) {
+    width: 18px;
+    height: 18px;
+  }
 }
 
 .mobileMenu__hamburger-toggle {
@@ -20,10 +25,28 @@
     bottom 0.1s ease-in 0.15s;
 }
 
+
 .header__icon-item {
   cursor: pointer;
+
+  svg {
+    pointer-events: all !important;
+  }
 }
 
 .navigation {
   border-bottom: 1px solid $border-color-base;
+}
+
+.currency {
+  padding: 10px;
+  display: flex;
+  min-width: 90px;
+  gap: 10px;
+  align-items: center;
+
+  .icon {
+    width: 16px;
+    height: 16px;
+  }
 }

@@ -1,20 +1,15 @@
 @use "scss/config" as *;
 
-.search__popup-predictive {
-    input {
-        outline: none;
-        padding: 10px;
-        border-bottom: 1px solid #333;
-    }
-}
-
 .search__popup-close-wrapper {
     transform: rotate(0);
     transition: transform 0.3s ease;
 
-    &:hover {
-        transform: rotate(180deg);
+    @include screen(phoneUp) {
+        &:hover {
+            transform: rotate(180deg);
+        }
     }
+
 }
 
 .search-popup {

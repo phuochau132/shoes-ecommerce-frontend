@@ -40,7 +40,7 @@ const QuantityBoxComponent: React.FC<QuantityBoxComponentProps> = memo(() => {
         data-inventory="100"
         defaultValue="1"
         type="number"
-        className={cx('quantity-input', 'text-center')}
+        className={cx('quantity-input', 'border-none text-center')}
         pattern="[0-9]*"
       />
       <button className={cx('plus', 'quantity-action')} onClick={() => updateQuantity('increment')}>

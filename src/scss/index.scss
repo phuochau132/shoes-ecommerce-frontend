@@ -21,12 +21,43 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
+input {
+  border: 2px solid #ccc;
+}
+
+input:focus {
+  animation: focusGlow 0.3s ease-in-out;
+  border-color: #333;
+}
+
+input:not(:focus) {
+  animation: blurGlow 0.3s ease-in-out;
+}
+
+// currency
+
+@keyframes focusGlow {
+  0% {
+    border-color: white;
+  }
+
+  100% {
+    border-color: #333;
+  }
+}
+
+@keyframes blurGlow {
+  0% {
+    border-color: #333;
+  }
+
+  100% {
+    border-color: white;
+  }
+}
+
 input::placeholder {
-<<<<<<< HEAD
   font-size: 14px;
-=======
-  font-size: 12px;
->>>>>>> bfcdc125da075e20b95b86ddbaa96f506f3cced4
   color: rgba(17, 17, 17, 0.55);
 }
 
@@ -41,6 +72,17 @@ small {
 
 .image-box {
   position: relative;
+
+  .animation {
+    overflow: hidden;
+    transition:
+      transform 1s ease,
+      box-shadow 1s ease;
+
+    img {
+      transition: transform 1s ease;
+    }
+  }
 
   &:after {
     content: "";
@@ -61,28 +103,30 @@ small {
     mix-blend-mode: overlay;
   }
 
-  &:hover {
-    &:after {
-      background-position: left;
-      opacity: 0.2;
-      background-image: linear-gradient(135deg, #fff0 45%, #fff, #fff0 55%);
-    }
+  @include screen(phoneUp) {
+    &:hover {
+      &:after {
+        background-position: left;
+        opacity: 0.2;
+        background-image: linear-gradient(135deg, #fff0 45%, #fff, #fff0 55%);
+      }
 
-    .animation {
-      overflow: hidden;
-      transition:
-        transform 1s ease,
-        box-shadow 1s ease;
-      transform: rotate(2deg);
-      box-shadow:
-        -1rem -1rem 1rem -1rem #0000000d,
-        1rem 1rem 1rem -1rem #0000000d,
-        0 0 0.5rem #fff0,
-        0 2rem 3.5rem -2rem #00000080;
+      .animation {
+        overflow: hidden;
+        transition:
+          transform 1s ease,
+          box-shadow 1s ease;
+        transform: rotate(2deg);
+        box-shadow:
+          -1rem -1rem 1rem -1rem #0000000d,
+          1rem 1rem 1rem -1rem #0000000d,
+          0 0 0.5rem #fff0,
+          0 2rem 3.5rem -2rem #00000080;
 
-      img {
-        transition: transform 1s ease;
-        transform: scale(1.06);
+        img {
+          transition: transform 1s ease;
+          transform: scale(1.06);
+        }
       }
     }
   }
@@ -95,7 +139,7 @@ small {
 
     .text {
       color: #232323 !important;
-      font-size: 24px !important;
+      font-size: 24px;
       font-weight: 900;
       font-style: italic;
     }
@@ -133,11 +177,11 @@ p {
   z-index: 2;
 }
 
+
 .close-btn {
   padding: 10px;
   width: 40px;
   height: 40px;
-  background: #b3b0af;
   border-radius: 50%;
 }
 
@@ -147,33 +191,25 @@ section {
 
 .container,
 .container-1570 {
-<<<<<<< HEAD
   padding: 0 50px 50px;
 }
 
 .container-1570 {
   max-width: 1570px;
   width: 100%;
-=======
   padding: 0 50px;
->>>>>>> bfcdc125da075e20b95b86ddbaa96f506f3cced4
 }
 
 .container-1570 {
   max-width: 1570px;
   width: 100%;
 }
+
 @media (max-width: 1024px) {
-<<<<<<< HEAD
 
   .container,
   .container-1570 {
     padding: 0 10px 20px;
-=======
-  .container,
-  .container-1570 {
-    padding: 0 10px;
->>>>>>> bfcdc125da075e20b95b86ddbaa96f506f3cced4
   }
 }
 
@@ -266,9 +302,11 @@ body.dark-mode {
   }
 }
 
-.fade-in-up {
-  &:hover {
-    transform: scale(1.2);
+@include screen(phoneUp) {
+  .fade-in-up {
+    &:hover {
+      transform: scale(1.2);
+    }
   }
 }
 
@@ -288,8 +326,10 @@ body.dark-mode {
   transform: rotate(0);
   transition: transform 0.3s ease;
 
-  &:hover {
-    transform: rotate(180deg);
+  @include screen(phoneUp) {
+    &:hover {
+      transform: rotate(180deg);
+    }
   }
 }
 
@@ -318,6 +358,11 @@ section {
   width: 40px !important;
   border-radius: 5px !important;
   background: rgb(160, 160, 160);
+  transition: width 0.3s ease;
+}
+
+.swiper-pagination-bullet {
+  width: 8px;
 }
 
 .content-center {
@@ -331,35 +376,45 @@ svg {
   pointer-events: none;
 }
 
-.is-activated {
-  path {
-    fill: black !important;
+.toolbar {
+  .is-activated {
+    path {
+      fill: black !important;
+    }
+  }
+}
+
+.header__icon--currency {
+  .is-activated {
+    .isoCode {
+      border-bottom: 1px solid #333;
+    }
   }
 }
 
 .col-4 {
-  & > div {
+  &>div {
     max-width: 25%;
     width: 100%;
   }
 }
 
 .col-3 {
-  & > div {
+  &>div {
     max-width: 33%;
     width: 100%;
   }
 }
 
 .col-1 {
-  & > div {
+  &>div {
     max-width: 100%;
     width: 100%;
   }
 }
 
 .col-2 {
-  & > div {
+  &>div {
     max-width: 50%;
     width: 100%;
   }
@@ -367,7 +422,6 @@ svg {
 
 .main-color {
   color: $main-black;
-<<<<<<< HEAD
 }
 
 .checkbox-field {
@@ -435,8 +489,6 @@ svg {
   height: 0.5px;
   background-color: $border-color-base;
   margin: 20px 0;
-=======
->>>>>>> bfcdc125da075e20b95b86ddbaa96f506f3cced4
 }
 
 .checkbox-field {
@@ -456,16 +508,16 @@ svg {
   input {
     display: none;
 
-    + label {
-      + a {
+    +label {
+      +a {
         opacity: 0.5;
         pointer-events: none;
       }
     }
 
     &:checked {
-      + label {
-        > span {
+      +label {
+        >span {
           background-color: black;
 
           svg {
@@ -478,7 +530,7 @@ svg {
           }
         }
 
-        + a {
+        +a {
           opacity: 1;
           pointer-events: all;
         }
@@ -498,20 +550,208 @@ svg {
     font-weight: 700;
   }
 }
+
 .line {
   width: 100%;
   height: 1px;
   background-color: $border-color-base;
   margin: 20px 0;
 }
+
+.currency-dropdown {
+  transform: translateY(-30%);
+}
+
+.currency-dropdown {
+  &.is-toggled {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0%);
+  }
+}
+
 @include screen(tablet) {
+
   .col-4,
   .col-3 {
-    & > div {
+    &>div {
       max-width: 33%;
       width: 100%;
     }
   }
+}
+
+// Modal
+.modal {
+  position: fixed;
+  z-index: 3;
+  left: 50%;
+  top: 50%;
+  max-height: auto;
+  transform: translate(-50%, -50%);
+  max-width: 1024px;
+  width: 100%;
+  border-radius: 10px;
+  background-color: white;
+  padding: 20px;
+  animation: slideToTop 0.5s ease;
+}
+
+@include screen(phone) {
+  .modal {
+    padding: unset;
+    max-height: 80%;
+    max-width: 95vw;
+    height: 100%;
+
+    .modal-content {
+      overflow-y: auto;
+      max-height: 100%;
+    }
+
+    .popup-close-wrapper {
+      background-color: white;
+      border-radius: 50%;
+    }
+  }
+
+}
+
+
+.loader {
+  transform: rotateZ(45deg);
+  perspective: 1000px;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  color: black;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+.loader:before,
+.loader:after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: inherit;
+  height: inherit;
+  border-radius: 50%;
+  transform: rotateX(70deg);
+  animation: 1s spin linear infinite;
+}
+
+.loader:after {
+  color: #FF3D00;
+  transform: rotateY(70deg);
+  animation-delay: .4s;
+}
+
+@keyframes rotate {
+  0% {
+    transform: translate(-50%, -50%) rotateZ(0deg);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) rotateZ(360deg);
+  }
+}
+
+@keyframes rotateccw {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) rotate(-360deg);
+  }
+}
+
+@keyframes spin {
+
+  0%,
+  100% {
+    box-shadow: .2em 0px 0 0px currentcolor;
+  }
+
+  12% {
+    box-shadow: .2em .2em 0 0 currentcolor;
+  }
+
+  25% {
+    box-shadow: 0 .2em 0 0px currentcolor;
+  }
+
+  37% {
+    box-shadow: -.2em .2em 0 0 currentcolor;
+  }
+
+  50% {
+    box-shadow: -.2em 0 0 0 currentcolor;
+  }
+
+  62% {
+    box-shadow: -.2em -.2em 0 0 currentcolor;
+  }
+
+  75% {
+    box-shadow: 0px -.2em 0 0 currentcolor;
+  }
+
+  87% {
+    box-shadow: .2em -.2em 0 0 currentcolor;
+  }
+}
+
+
+@keyframes animloader {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes slideToTop {
+  0% {
+    opacity: 0;
+    top: 20%;
+  }
+
+  100% {
+    opacity: 1;
+    top: 50%;
+  }
+}
+
+.opacity-100 {
+  opacity: 1;
+}
+
+.opacity-0 {
+  opacity: 0;
+}
+
+// Section Review 
+
+.star,
+.no-rating {
+  color: #FF9C05;
+  font-size: 20px;
+  padding: 0 1px 0 0 !important;
+  vertical-align: 1px;
+}
+
+
+svg {
+  pointer-events: none;
 }
 
 @media (max-width: 1569px) {
@@ -520,16 +760,13 @@ svg {
     width: 100%;
   }
 }
-<<<<<<< HEAD
+
 
 @include screen(phone) {
 
-=======
-@include screen(phone) {
->>>>>>> bfcdc125da075e20b95b86ddbaa96f506f3cced4
   .col-4,
   .col-3 {
-    & > div {
+    &>div {
       max-width: 50%;
       width: 100%;
     }
@@ -542,7 +779,6 @@ svg {
     }
   }
 }
-<<<<<<< HEAD
 
 .breadcrumb {
   justify-content: center;
@@ -551,11 +787,3 @@ svg {
 .page-heading {
   text-align: center;
 }
-=======
-.breadcrumb {
-  justify-content: center;
-}
-.page-heading {
-  text-align: center;
-}
->>>>>>> bfcdc125da075e20b95b86ddbaa96f506f3cced4

@@ -15,9 +15,11 @@
             max-width: 25%;
             width: 100%;
             padding: 0 16px;
+
             @include screen(tablet) {
                 max-width: 33%;
             }
+
             @include screen(phone) {
                 max-width: 50%;
             }
@@ -36,10 +38,12 @@
     .list-unstyled {
         list-style: none;
 
-        li {
-            &:hover {
-                .text {
-                    border-bottom: 1px solid white;
+        @include screen(phoneUp) {
+            li {
+                &:hover {
+                    .text {
+                        border-bottom: 1px solid white;
+                    }
                 }
             }
         }

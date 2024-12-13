@@ -1,4 +1,5 @@
 import { BreadcrumbItemType } from '@/components/commons/breadcrumb';
+import { ProductType } from '@/types/product';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export enum THEME {
@@ -19,6 +20,10 @@ export type InitialStateProps = {
   filterSidebarState: boolean;
   cartSidebarState: boolean;
   pageInfo: PageInfo;
+  quickViewInfo: {
+    isShowed: boolean;
+    product: ProductType | null;
+  };
 };
 
 const initialState: InitialStateProps = {
@@ -32,6 +37,10 @@ const initialState: InitialStateProps = {
     breadcrumb: null,
     title: null,
     description: null
+  },
+  quickViewInfo: {
+    product: null,
+    isShowed: false
   }
 };
 
@@ -59,6 +68,9 @@ export const appSlice = createSlice({
     },
     setPageInfo: (state, action) => {
       state.pageInfo = action.payload;
+    },
+    setQuickViewPopup: (state, action) => {
+      state.quickViewInfo = action.payload;
     }
   }
 });
@@ -70,7 +82,8 @@ export const {
   setMenuSidebarState,
   setFilterSidebarState,
   setCartSidebarState,
-  setPageInfo
+  setPageInfo,
+  setQuickViewPopup
 } = appSlice.actions;
 
 const rootReducer = {

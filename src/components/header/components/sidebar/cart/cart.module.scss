@@ -42,15 +42,17 @@
       }
     }
 
-    &:hover {
-      a {
-        .linked-icon {
-          opacity: 1;
-          transition: opacity 0.5s ease;
-        }
+    @include screen(phoneUp) {
+      &:hover {
+        a {
+          .linked-icon {
+            opacity: 1;
+            transition: opacity 0.5s ease;
+          }
 
-        &:after {
-          opacity: 1;
+          &:after {
+            opacity: 1;
+          }
         }
       }
     }
@@ -60,15 +62,14 @@
 .previewCart-addons {
   border-top: 1px solid $border-color-base;
   border-bottom: 1px solid $border-color-base;
+
   div:not(:last-child) {
     border-right: 1px solid $border-color-base;
   }
+
   button {
     padding-inline: 30px;
   }
-}
-.previewCart-items::-webkit-scrollbar {
-  display: none !important;
 }
 
 .previewCart-items {

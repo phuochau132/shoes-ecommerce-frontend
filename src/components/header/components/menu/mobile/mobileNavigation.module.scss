@@ -16,25 +16,26 @@
     text-transform: uppercase;
 
     .menu-dropdown {
-      height: auto;
+      max-height: 700px;
+      overflow: hidden;
+      transition: max-height 0.3s ease-in-out;
       opacity: 1;
-      visibility: visible;
-      transition: opacity 0.3s ease;
-      margin-left: 10px;
+    }
 
-      .link {
-        flex: 0 0 50%;
-      }
+    .menu-dropdown.invisible {
+      max-height: 0;
     }
   }
 }
 
 @keyframes slideRight {
   from {
+    opacity: 0;
     transform: translateX(-100%);
   }
 
   to {
+    opacity: 1;
     transform: translateX(0);
   }
 }

@@ -25,11 +25,7 @@ const TermAndConditionComponent: React.FC<ElementProps> = memo(({ callback }) =>
             <CheckedIcon />
           </span>
           <p className="font-bold">
-<<<<<<< HEAD
             I agree with <span className="font-normal">Terms & Conditions</span>
-=======
-            I agree with <span className="font-[400]">Terms & Conditions</span>
->>>>>>> bfcdc125da075e20b95b86ddbaa96f506f3cced4
           </p>
         </label>
       </div>
