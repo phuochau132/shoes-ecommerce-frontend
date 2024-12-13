@@ -10,8 +10,8 @@ interface InputComponentProps extends React.InputHTMLAttributes<HTMLInputElement
   placeholder?: string;
 }
 
-const InputComponent: React.FC<InputComponentProps> = memo(({ className, placeholder, ...props }) => {
-  return <input placeholder={placeholder} className={cx('input', className)} type="text" {...props} />;
+const InputComponent: React.FC<InputComponentProps> = memo(({ className, type = 'text', placeholder, ...props }) => {
+  return <input placeholder={placeholder} className={cx('input', className)} type={type} {...props}></input>;
 });
 
 export default InputComponent;

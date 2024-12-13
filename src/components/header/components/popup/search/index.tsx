@@ -58,7 +58,7 @@ const SearchPopup: React.FC = memo(() => {
           }}
           type="text"
           placeholder="Search for a product..."
-          className="flex-1 border-b border-[#333] p-[10px] outline-none"
+          className="flex-1 border-x-0 border-b border-t-0 border-[#333] p-[10px] outline-none"
         />
         <SearchIcon style={{ cursor: 'pointer' }} />
       </div>
@@ -67,7 +67,7 @@ const SearchPopup: React.FC = memo(() => {
           style={{ maxHeight: 'calc(80vh - 130px)' }}
           className={cx(
             'search__popup-predictSearch',
-            'margin animate-slide absolute top-[100%] w-full overflow-y-auto border-t bg-white px-[15px] py-[18px] phone:left-[0] phoneUp:max-w-[70vw]'
+            'margin absolute top-[100%] w-full animate-slide overflow-y-auto border-t bg-white px-[15px] py-[18px] phone:left-[0] phoneUp:max-w-[70vw]'
           )}
         >
           {showSearchBlock && (

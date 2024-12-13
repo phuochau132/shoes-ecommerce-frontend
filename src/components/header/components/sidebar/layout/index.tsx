@@ -22,7 +22,7 @@ const SidebarLayout: React.FC<SidebarLayoutType> = memo(({ children, title, call
       )}
     >
       <div className={cx('login__sidebar-header', 'mb-[10px] flex h-[auto] items-center justify-between text-right')}>
-        <span className={cx('sidebar-header-title', 'heading font-bold italic')}>{title}</span>
+        <span className={cx('sidebar-header-title', 'heading font-bold')}>{title}</span>
         <div onClick={callback} className={cx('sidebar-close-wrapper rotate', 'py-[10px]', 'cursor-pointer')}>
           <CloseIcon style={{ float: 'right' }} />
         </div>

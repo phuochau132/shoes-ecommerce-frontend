@@ -21,6 +21,41 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
+input {
+  border: 2px solid #ccc;
+}
+
+input:focus {
+  animation: focusGlow 0.3s ease-in-out;
+  border-color: #333;
+}
+
+input:not(:focus) {
+  animation: blurGlow 0.3s ease-in-out;
+}
+
+// currency
+
+@keyframes focusGlow {
+  0% {
+    border-color: white;
+  }
+
+  100% {
+    border-color: #333;
+  }
+}
+
+@keyframes blurGlow {
+  0% {
+    border-color: #333;
+  }
+
+  100% {
+    border-color: white;
+  }
+}
+
 input::placeholder {
   font-size: 14px;
   color: rgba(17, 17, 17, 0.55);

@@ -1,9 +1,7 @@
 @use 'scss/config' as *;
 
-.login__sidebar-form {
-
-    .form-fields {
-        display: flex;
-        flex-direction: column;
-    }
+.form-fields {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
 }

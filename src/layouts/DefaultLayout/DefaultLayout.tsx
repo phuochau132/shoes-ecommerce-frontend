@@ -28,11 +28,9 @@ const DefaultLayout: React.FC<PropsWithChildren<DefaultLayoutProps>> = ({
 }) => {
   return (
     <div className="default-layout">
-      {/* Header */}
       {useHeader && <HeaderComponent />}
 
-      {/* Main Content */}
-      <main className={cn(`${container} justify-center', useFooter ? 'pb-[80px]' : 'pb-[20px]' flex w-full`)}>
+      <main className={`justify-center', ${useFooter && 'pb-[80px]'} : 'pb-[20px]' flex w-full`}>
         <Content style={{ minHeight: 'calc(100vh - 120px)' }} className={`flex w-full duration-200`}>
           <div className="h-full w-full">
             {/* Page Header (Breadcrumb, Title, Description) */}

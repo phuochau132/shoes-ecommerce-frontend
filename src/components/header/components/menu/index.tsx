@@ -172,14 +172,14 @@ const MainHeader: React.FC = memo(() => {
   return (
     <div className={cx('navigation', 'align-center container flex justify-between py-[10px] phone:pr-[15px]')}>
       {isMobile && (
-        <div className={cx('header-mobile-left', 'flex items-center gap-[10px] phone:min-w-[159px]')}>
+        <div className={cx('header-mobile-left', 'flex items-center gap-[10px] phone:min-w-[97px]')}>
           <button
             onClick={() => dispatch(setMenuSidebarState(true))}
             type="button"
             className={cx('mobileMenu-hamburger', 'flex h-[auto] w-[auto]')}
             aria-label="menu"
           >
-            <HamburgerIcon />
+            <HamburgerIcon className={cx('h-[26px] w-[26px]')} />
           </button>
           <div
             onClick={() => {
@@ -187,12 +187,12 @@ const MainHeader: React.FC = memo(() => {
             }}
             className={cx('header__icon-item', 'header__icon--search', '-rotate-90')}
           >
-            <SearchIcon className={cx('icon', 'fade-in-up')} />
+            <SearchIcon className={cx('h-[22px] w-[22px]', 'fade-in-up')} />
           </div>
         </div>
       )}
       <div
-        className={cx('header-logo header-item flex items-center phoneUp:w-full phoneUp:max-w-[194px]', {
+        className={cx('header-logo header-item flex items-center phoneUp:w-full phoneUp:max-w-[165px]', {
           'flex-1': isMobile,
           'justify-center': isMobile
         })}
@@ -220,7 +220,7 @@ const MainHeader: React.FC = memo(() => {
           <DesktopNavigation menu={menu} />
         </Suspense>
       )}
-      <div className={cx('header-icons header-item my-auto flex items-center gap-[20px]')}>
+      <div className={cx('header-icons header-item my-auto flex items-center gap-[20px] phone:gap-[15px]')}>
         <div
           onClick={() => {
             dispatch(setSearchPopupState(true));
@@ -257,7 +257,7 @@ const MainHeader: React.FC = memo(() => {
             className={cx('icon', 'currently-currency', 'flex min-h-[70px] w-[100%] items-center p-[0px]')}
           >
             <div className={cx('icon', 'h-[16px] w-[16px]')}>{CurrenciesIcon({ currency: 'USD' })}</div>
-            <div className="isoCode min-w-[40px] text-end">USD</div>
+            <div className="isoCode min-w-[35px] text-end phone:hidden">USD</div>
           </div>
           <div
             ref={currenciesToggleEl}
