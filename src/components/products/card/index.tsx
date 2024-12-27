@@ -6,7 +6,7 @@ import { ProductType } from '@/types/product';
 import ProductVariantComponent from '../productVariant';
 import AddToCartComponent from '../addToCart';
 import { useDispatch } from 'react-redux';
-import { setQuickViewPopup } from '@/redux/app/app.slice';
+import { setQuickViewPopup } from '@/redux/slice/app/app.slice';
 import ProductReviewComponent from '../productReview';
 
 interface ProductCardComponentProps {
@@ -36,7 +36,12 @@ const ProductCardComponent: React.FC<ProductCardComponentProps> = memo(
             <a href={product.link} className={cx('card-link', 'cursor-pointer')}></a>
           </div>
           <div className={cx('card-action')}>
-            <AddToCartComponent handleSelectionOption={handleQuicView} product={product}></AddToCartComponent>
+            <AddToCartComponent
+              className="mt-[10px] p-[5px]"
+              isCard={true}
+              handleSelectionOption={handleQuicView}
+              product={product}
+            ></AddToCartComponent>
           </div>
           <div className={cx('card-group')}>
             <div className={cx('card__group-wishlist', 'cart__group-action', 'p-[10px]')}>

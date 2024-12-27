@@ -20,10 +20,10 @@ const LazyCollectionListPage = LazyLoadComponent(() => import('../pages/Public/C
   true
 );
 const LazyContactUsPage = LazyLoadComponent(() => import('../pages/Public/ContactUs/ContactUsPage'))(true);
-const LazyFaq = LazyLoadComponent(() => import('../pages/Public/FAQ/FaqPage'))(true);
+const LazyFaqPage = LazyLoadComponent(() => import('../pages/Public/FAQ/FaqPage'))(true);
 const LazyWishlistPage = LazyLoadComponent(() => import('../pages/Public/Wishlist/WishlistPage'))(true);
 // Account
-const LazyRegisterPage = LazyLoadComponent(() => import('../pages/Public/Account/Register/RegisterPage'))(true);
+const LazyAccountPage = LazyLoadComponent(() => import('../pages/Public/Account/AccountPage'))(true);
 
 export const PUBLIC_ROUTES: RouteType[] = [
   {
@@ -81,8 +81,26 @@ export const PUBLIC_ROUTES: RouteType[] = [
     useFooter: true
   },
   {
+    path: paths.wishlist,
+    element: <LazyWishlistPage />,
+    layout: DefaultLayout,
+    private: 'public',
+    useHeader: true,
+    useSidebar: true,
+    useFooter: true
+  },
+  {
     path: paths.faq,
-    element: <LazyFaq />,
+    element: <LazyFaqPage />,
+    layout: DefaultLayout,
+    private: 'public',
+    useHeader: true,
+    useSidebar: true,
+    useFooter: true
+  },
+  {
+    path: paths.account,
+    element: <LazyAccountPage />,
     layout: DefaultLayout,
     private: 'public',
     useHeader: true,

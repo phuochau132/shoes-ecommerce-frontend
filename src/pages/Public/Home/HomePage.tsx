@@ -184,7 +184,7 @@ const HomePage = () => {
     Currency.initializeCurrency();
   }, []);
   return (
-    <div className={cx('container')}>
+    <div className={cx('wrapper')}>
       <div className={cx('slide-show')}>
         <ImageComponent src="//new-ella-demo.myshopify.com/cdn/shop/files/home-shoes-slider-01.jpg?v=1655787469" />
       </div>

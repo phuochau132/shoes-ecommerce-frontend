@@ -5,7 +5,7 @@ import ProductCardComponent from '@/components/products/card';
 import ProductBlockComponent from '@/components/products/productBlock';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { setPageInfo } from '@/redux/app/app.slice';
+import { setPageInfo } from '@/redux/slice/app/app.slice';
 
 const cx = bindClassNames(styles);
 const sampleProducts: CollectionType = {
@@ -179,7 +179,7 @@ const WishlistPage = () => {
     );
   }, []);
   return (
-    <div className={cx('mx-[auto]', 'wishlist-page')}>
+    <div className={cx('container mx-[auto]', 'wishlist-page')}>
       <div className={cx('page-content')}>
         <div className={cx('product-grid', 'mt-[40px] flex flex-wrap border-b border-dashed pb-[60px]')}>
           {sampleProducts.products?.map((product) => {

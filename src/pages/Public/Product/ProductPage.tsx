@@ -13,7 +13,7 @@ import { CollectionType } from '@/types/collection';
 import { bindClassNames } from '@/utils/helpers/cx';
 import QuantityBoxComponent from '@/components/products/quantity';
 import { useDispatch } from 'react-redux';
-import { setPageInfo } from '@/redux/app/app.slice';
+import { setPageInfo } from '@/redux/slice/app/app.slice';
 import CollapsibleBlock from '@/components/commons/collapse';
 import ReviewItemComponent from '@/components/products/reviewItem';
 import { calTotalReview } from '@/utils/helpers/review';
@@ -21,6 +21,7 @@ import { Currency } from '@/utils/helpers/CurrenciesFormat';
 import { Image, Rate, Upload, UploadFile, UploadProps } from 'antd';
 import { FileType, getBase64 } from '@/utils/helpers/base64';
 import { PlusOutlined } from '@ant-design/icons';
+import AddToCartComponent from '@/components/products/addToCart';
 const cx = bindClassNames(styles);
 const sampleProducts: CollectionType = {
   title: 'Skincare',
@@ -447,37 +448,40 @@ const ProductPage = () => {
             <div className={cx('productView__right-item', 'description', 'font-normal opacity-80')}>
               {product.description}
             </div>
-
-            {product.variants && (
-              <div className={cx('productView__right-item', 'product-variant')}>
-                <ProductVariantComponent product={product} />
+            <div className="form-AddToCart">
+              {product.variants && (
+                <div className={cx('productView__right-item', 'product-variant')}>
+                  <ProductVariantComponent product={product} />
+                </div>
+              )}
+              <div className={cx('productView__right-item', 'product-quantity', 'mt-[20px]')}>
+                <label className={cx('quantity-label')} htmlFor="">
+                  Quantity:
+                </label>
+                <div className={cx('mt-[10px]')}>
+                  <QuantityBoxComponent />
+                </div>
               </div>
-            )}
-            <div className={cx('productView__right-item', 'product-quantity', 'mt-[20px]')}>
-              <label className={cx('quantity-label')} htmlFor="">
-                Quantity:
-              </label>
-              <div className={cx('mt-[10px]')}>
-                <QuantityBoxComponent />
-              </div>
-            </div>
-            <div className={cx('productView__right-item', 'sub-total', 'mt-[20px] font-normal')}>
-              Subtotal:
-              <span className="sub-total-value ml-[5px] font-[900]">
-                <span data-currency-value="10000" className="money">
-                  10000
+              <div className={cx('productView__right-item', 'sub-total', 'mt-[20px] font-normal')}>
+                Subtotal:
+                <span className="sub-total-value ml-[5px] font-[900]">
+                  <span data-currency-value="10000" className="money">
+                    10000
+                  </span>
                 </span>
-              </span>
-            </div>
-            <div className={cx('productView__right-item', 'product-action', 'mt-[20px] flex items-center gap-[10px]')}>
-              <ButtonComponent className={cx('mt-[unset] w-[100%]')}>Add to cart</ButtonComponent>
+              </div>
               <div
-                className={cx(
-                  'wish-list',
-                  'cursor-pointer rounded-[50%] border border-solid border-[#c7c7c7] p-[10px]'
-                )}
+                className={cx('productView__right-item', 'product-action', 'mt-[20px] flex items-center gap-[10px]')}
               >
-                <WishListIcon />
+                <AddToCartComponent product={product} className={cx('mt-[unset] w-[100%]')} />
+                <div
+                  className={cx(
+                    'wish-list',
+                    'cursor-pointer rounded-[50%] border border-solid border-[#c7c7c7] p-[10px]'
+                  )}
+                >
+                  <WishListIcon />
+                </div>
               </div>
             </div>
             <div className={cx('productView__right-item', 'delivery-return', 'mt-[20px] flex items-center gap-[20px]')}>
@@ -617,10 +621,10 @@ const ProductPage = () => {
             <div className={cx('review-list mt-[50px]')}>
               {product.reviews.map((review, index) => {
                 return (
-                  <>
+                  <div key={index}>
                     <ReviewItemComponent callback={renderStar} review={review}></ReviewItemComponent>
                     {index != product.reviews?.length - 1 && <div className="line my-[30px]"></div>}
-                  </>
+                  </div>
                 );
               })}
             </div>

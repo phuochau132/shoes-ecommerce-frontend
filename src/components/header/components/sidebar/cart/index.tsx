@@ -5,7 +5,7 @@ import './cart.scss';
 import { bindClassNames } from '@/utils/helpers/cx';
 import SidebarLayout from '../layout';
 import { useDispatch } from 'react-redux';
-import { setCartSidebarState } from '@/redux/app/app.slice';
+import { setCartSidebarState } from '@/redux/slice/app/app.slice';
 import FreeShippingComponent from '@/components/cart/freeshipping';
 import { CollectionType } from '@/types/collection';
 import { EditingIcon, GiftIcon, LinkIcon, NoteIcon, RemoveIcon } from '@/utils/icons';

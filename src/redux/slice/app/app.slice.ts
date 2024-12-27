@@ -15,7 +15,7 @@ type PageInfo = {
 export type InitialStateProps = {
   theme: THEME;
   searchPopupState: boolean;
-  loginSidebarState: boolean;
+  accountSidebarState: boolean;
   menuSidebarState: boolean;
   filterSidebarState: boolean;
   cartSidebarState: boolean;
@@ -29,7 +29,7 @@ export type InitialStateProps = {
 const initialState: InitialStateProps = {
   theme: (localStorage.getItem('theme') as THEME) || THEME.LIGHT,
   searchPopupState: false,
-  loginSidebarState: false,
+  accountSidebarState: false,
   menuSidebarState: false,
   filterSidebarState: false,
   cartSidebarState: false,
@@ -54,8 +54,8 @@ export const appSlice = createSlice({
     setSearchPopupState: (state, action) => {
       state.searchPopupState = action.payload;
     },
-    setLoginSidebarState: (state, action) => {
-      state.loginSidebarState = action.payload;
+    setAccountSidebarState: (state, action) => {
+      state.accountSidebarState = action.payload;
     },
     setMenuSidebarState: (state, action) => {
       state.menuSidebarState = action.payload;
@@ -78,7 +78,7 @@ export const appSlice = createSlice({
 export const {
   setTheme,
   setSearchPopupState,
-  setLoginSidebarState,
+  setAccountSidebarState,
   setMenuSidebarState,
   setFilterSidebarState,
   setCartSidebarState,

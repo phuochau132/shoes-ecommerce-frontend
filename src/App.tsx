@@ -8,20 +8,22 @@ import NotFoundPage from './pages/ExceptionPage/NotFoundPage';
 import {
   setCartSidebarState,
   setFilterSidebarState,
-  setLoginSidebarState,
+  setAccountSidebarState,
   setMenuSidebarState,
   setQuickViewPopup,
   setSearchPopupState,
   THEME
-} from './redux/app/app.slice';
+} from '@/redux/slice/app/app.slice';
 import { PUBLIC_ROUTES, RouteType } from './routes/routes';
 import { useSelector } from 'react-redux';
 import 'swiper/swiper-bundle.css';
 import { useDispatch } from 'react-redux';
-import { LoginSidebar, SearchPopup } from './components/header';
+import { AccountSidebar, SearchPopup } from './components/header';
 import CartSidebar from './components/header/components/sidebar/cart';
 import QuickViewComponent from './components/products/quickView';
 import { CloseIcon } from './utils/icons';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const location = window.location;
@@ -29,7 +31,7 @@ function App() {
   const [pathname, setPathname] = useState(location?.pathname?.split('/')[1]);
   const theme = useSelector((state: any) => state.app.theme);
   const searchPopupState = useSelector((state: any) => state.app.searchPopupState);
-  const loginSidebarState = useSelector((state: any) => state.app.loginSidebarState);
+  const accountSidebarState = useSelector((state: any) => state.app.accountSidebarState);
   const filterSidebarState = useSelector((state: any) => state.app.filterSidebarState);
   const cartSidebarState = useSelector((state: any) => state.app.cartSidebarState);
   const menuSidebarState = useSelector((state: any) => state.app.menuSidebarState);
@@ -78,8 +80,9 @@ function App() {
         algorithm: theme === THEME.DARK ? themeAntd.darkAlgorithm : themeAntd.defaultAlgorithm
       }}
     >
+      <ToastContainer />
       {(searchPopupState ||
-        loginSidebarState ||
+        accountSidebarState ||
         filterSidebarState ||
         cartSidebarState ||
         menuSidebarState ||
@@ -89,8 +92,8 @@ function App() {
             if (searchPopupState) {
               dispatch(setSearchPopupState(false));
             }
-            if (loginSidebarState) {
-              dispatch(setLoginSidebarState(false));
+            if (accountSidebarState) {
+              dispatch(setAccountSidebarState(false));
             }
             if (filterSidebarState) {
               dispatch(setFilterSidebarState(false));
@@ -113,10 +116,10 @@ function App() {
         <title>{`Ecommerce-${pathname}`}</title>
       </Helmet>
       {searchPopupState && <SearchPopup />}
-      {loginSidebarState && <LoginSidebar />}
+      {accountSidebarState && <AccountSidebar />}
       {cartSidebarState && <CartSidebar />}
       {quickViewInfo.isShowed && quickViewInfo.product && (
-        <div className="modal">
+        <div className="modal overflow-hidden">
           <div className="modal-content flex phone:flex-col">
             {quickViewInfo.isShowed && <QuickViewComponent product={quickViewInfo.product} />}
           </div>
@@ -148,8 +151,8 @@ function App() {
                 title: pageInfo.title,
                 description: pageInfo.description
               };
-              if (route.path == 'wishlist' || route.path == '') {
-                container = 'container-1550';
+              if (route.path == '/pages/wishlist' || route.path == '/pages/contact-us' || route.path == '/pages/faq') {
+                container = 'container-1470';
               }
               if (route.private === 'public')
                 return (

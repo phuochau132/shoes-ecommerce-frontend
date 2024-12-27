@@ -1,8 +1,9 @@
-import React, { memo, CSSProperties } from 'react';
+import React, { memo, CSSProperties, useCallback, ChangeEvent } from 'react';
 import styles from './product-variant.module.scss';
 import { ProductType, VariantType } from '@/types/product';
 import { bindClassNames } from '@/utils/helpers/cx';
 import { ProductVariantEnum } from '@/types/enum/products';
+import { getParentsByClass } from '@/utils/helpers/$.parents';
 
 interface ProductBlockProps {
   style?: CSSProperties;
@@ -14,6 +15,15 @@ interface ProductBlockProps {
 const cx = bindClassNames(styles);
 
 const ProductVariantComponent: React.FC<ProductBlockProps> = memo(({ product, className, isCard = false }) => {
+  const handleChangingVariant = useCallback((e: ChangeEvent) => {
+    const target = e.target as HTMLElement;
+    const parent = getParentsByClass(target, 'form-AddToCart');
+    if (parent) {
+      const btn_addToCart = parent.querySelector('button[data-btn-addToCart]');
+      console.log('btn_addToCart', btn_addToCart);
+      console.log('product', product.variants);
+    }
+  }, []);
   return (
     <>
       {product.variants?.map((variant, index) => {
@@ -35,6 +45,7 @@ const ProductVariantComponent: React.FC<ProductBlockProps> = memo(({ product, cl
                 return (
                   <div key={optionIndex}>
                     <input
+                      onChange={(e) => handleChangingVariant(e)}
                       id={`option-${product.id}-${variant.name}-${option.id}`}
                       data-variant-id={variant.id}
                       type="radio"

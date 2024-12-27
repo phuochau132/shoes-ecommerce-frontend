@@ -2,13 +2,13 @@ import styles from './faq.module.scss';
 import { bindClassNames } from '@/utils/helpers/cx';
 import { ButtonComponent } from '@/components/commons';
 import CollapsibleBlock from '@/components/commons/collapse';
-import { ListFAQ } from '@/types/faq';
+import { ListFAQType } from '@/types/faq';
 import { useEffect } from 'react';
-import { setPageInfo } from '@/redux/app/app.slice';
+import { setPageInfo } from '@/redux/slice/app/app.slice';
 import { useDispatch } from 'react-redux';
 
 const cx = bindClassNames(styles);
-const listfaqs: ListFAQ[] = [
+const listfaqs: ListFAQType[] = [
   {
     title: 'Shopping Information',
     faqs: [
@@ -126,7 +126,7 @@ const ContactUsPage = () => {
     );
   }, []);
   return (
-    <div className={cx('container-1570 mx-[auto]', 'contact-page')}>
+    <div className={cx('mx-[auto]', 'contact-page')}>
       <div className={cx('page-content', 'flex gap-[50px] phone:flex-col-reverse tabletUp:relative')}>
         <div
           className={cx(
@@ -134,7 +134,7 @@ const ContactUsPage = () => {
             'h-[max-content] rounded-[10px] bg-grey-bg p-[40px] tabletUp:sticky tabletUp:top-[2%] tabletUp:max-w-[30%]'
           )}
         >
-          <div className={cx('left__content-contactUs')}>
+          <div className={cx('left__content')}>
             <div className={cx('heading')}>
               <h3>Contact Us</h3>
             </div>

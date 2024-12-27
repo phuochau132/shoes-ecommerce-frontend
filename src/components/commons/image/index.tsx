@@ -1,6 +1,7 @@
 import React, { useState, memo } from 'react';
 import styles from './image.module.scss';
 import { bindClassNames } from '@/utils/helpers/cx';
+import LoaderComponent from '../loader';
 interface ImageComponentProps {
   src: string;
   aspect_ratio?: string;
@@ -16,7 +17,7 @@ const ImageComponent: React.FC<ImageComponentProps> = memo(({ src, aspect_ratio 
   return (
     <div className={cx('adaptive-height', 'animation', 'border')} style={{ paddingTop: aspect_ratio }}>
       <a href="#" className={cx('image')}>
-        {isLoading && <span className="loader"></span>}
+        {isLoading && <LoaderComponent />}
         <img
           src={src}
           sizes="100vw"

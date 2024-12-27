@@ -2,17 +2,19 @@
 import React, { memo, useEffect, useState, lazy, Suspense, useCallback, useRef } from 'react';
 import styles from './mainHeader.module.scss';
 import ReactDOMServer from 'react-dom/server';
-import { CartIcon, CurrenciesIcon, HamburgerIcon, SearchIcon, SignInIcon, WishListIcon } from '@/utils/icons';
+import { CartIcon, CurrenciesIcon, HamburgerIcon, LoggedInIcon, SearchIcon, SignInIcon } from '@/utils/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  setAccountSidebarState,
   setCartSidebarState,
-  setLoginSidebarState,
   setMenuSidebarState,
   setSearchPopupState
-} from '@/redux/app/app.slice';
+} from '@/redux/slice/app/app.slice';
 import LoadingPage from '@/pages/commons/LoadingPage';
 import { bindClassNames } from '@/utils/helpers/cx';
 import { Currency } from '@/utils/helpers/CurrenciesFormat';
+import { paths } from '@/routes/paths';
+import { useGetInfoMutation } from '@/apis/auth/auth.api';
 
 export type Navigation = {
   name: string;
@@ -91,10 +93,12 @@ const MobileNavigation = lazy(() => import('./mobile'));
 
 const MainHeader: React.FC = memo(() => {
   const dispatch = useDispatch();
+  const { user } = useSelector((state: any) => state.user);
   const [isMobile, setIsMobile] = useState(false);
   const currenciesToggleEl = useRef<HTMLDivElement>(null);
   const currentlyCurrencyEl = useRef<HTMLDivElement>(null);
   const menuSidebarState = useSelector((state: any) => state.app.menuSidebarState);
+  const [getInfo] = useGetInfoMutation();
 
   const handleResize = useCallback(() => {
     if (window.innerWidth < 768) {
@@ -200,7 +204,7 @@ const MainHeader: React.FC = memo(() => {
         <div className={cx('header__heading')}>
           <a href="/" className={cx('header__heading-link')}>
             <img
-              src="https://www.khy.com/cdn/shop/files/KHY-Logo-Dark.png?v=1720636390&width=500"
+              src="https://res.cloudinary.com/dvgjegefi/image/upload/v1734491076/logo_usfwfm.png"
               loading="lazy"
               className={cx('header__heading-logo', 'rounded-none')}
               alt="new-ella-demo"
@@ -229,17 +233,25 @@ const MainHeader: React.FC = memo(() => {
         >
           {!isMobile && <SearchIcon className={cx('icon', 'fade-in-up')} />}
         </div>
-        <div
-          className={cx('header__icon-item', 'header__icon--signIn')}
-          onClick={() => {
-            dispatch(setLoginSidebarState(true));
-          }}
-        >
-          <SignInIcon className={cx('icon', 'fade-in-up')} />
-        </div>
-        {/* <div className={cx('header__icon-item', 'header__icon--wishList')}>
-          <WishListIcon className={cx('icon', 'fade-in-up')} />
-        </div> */}
+        {user ? (
+          <div
+            className={cx('header__icon-item', 'header__icon--account')}
+            onClick={() => {
+              if (window.location.pathname != paths.account) window.location.pathname = paths.account;
+            }}
+          >
+            <LoggedInIcon className={cx('icon', 'fade-in-up')} />
+          </div>
+        ) : (
+          <div
+            className={cx('header__icon-item', 'header__icon--login')}
+            onClick={() => {
+              dispatch(setAccountSidebarState(true));
+            }}
+          >
+            <SignInIcon className={cx('icon', 'fade-in-up')} />
+          </div>
+        )}
         <div
           onClick={() => {
             dispatch(setCartSidebarState(true));

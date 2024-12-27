@@ -3,15 +3,15 @@ import styles from './sidebar.module.scss';
 import { bindClassNames } from '@/utils/helpers/cx';
 import CollapsibleBlock from '@/components/commons/collapse';
 import { CheckedIcon, CloseIcon } from '@/utils/icons';
-import { Product } from '@/types/product';
+import { ProductType } from '@/types/product';
 import './sidebar.scss';
-import { setFilterSidebarState } from '@/redux/app/app.slice';
+import { setFilterSidebarState } from '@/redux/slice/app/app.slice';
 import { useDispatch } from 'react-redux';
 
 const cx = bindClassNames(styles);
 
 interface SidebarProps {
-  products: Product[];
+  products: ProductType[];
 }
 
 const PRICE_GAP = 1000;

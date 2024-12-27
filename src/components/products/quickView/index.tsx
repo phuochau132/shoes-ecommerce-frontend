@@ -13,6 +13,7 @@ import { DeliveryIcon, EyeIcon, WishListIcon } from '@/utils/icons';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Controller } from 'swiper/modules';
 import { Currency } from '@/utils/helpers/CurrenciesFormat';
+import AddToCartComponent from '../addToCart';
 interface QuickViewComponentProps {
   style?: CSSProperties;
   product: ProductType;
@@ -102,7 +103,7 @@ const QuickViewComponent: React.FC<QuickViewComponentProps> = memo(({}) => {
           </span>
         </div>
         <div className={cx('productView__right-item', 'product-action', 'mt-[20px] flex items-center gap-[10px]')}>
-          <ButtonComponent className={cx('mt-[unset] w-[100%]')}>Add to cart</ButtonComponent>
+          <AddToCartComponent product={product} className={cx('mt-[unset] w-[100%]')} />
           <div
             className={cx('wish-list', 'cursor-pointer rounded-[50%] border border-solid border-[#c7c7c7] p-[10px]')}
           >
