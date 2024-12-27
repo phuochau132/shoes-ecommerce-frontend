@@ -4,7 +4,7 @@ import { ButtonComponent, InputComponent } from '@/components/commons';
 import { useEffect, useState } from 'react';
 import TermAndConditionComponent from '@/components/cart/termAndConditionButton';
 import { useDispatch } from 'react-redux';
-import { setPageInfo } from '@/redux/app/app.slice';
+import { setPageInfo } from '@/redux/slice/app/app.slice';
 
 const cx = bindClassNames(styles);
 
@@ -24,7 +24,7 @@ const ContactUsPage = () => {
     );
   }, []);
   return (
-    <div className={cx('container-1570 mx-[auto]', 'contact-page')}>
+    <div className={cx('mx-[auto]', 'contact-page')}>
       <div className={cx('page-content')}>
         <div className={cx('map', 'overflow-hidden rounded-[10px]')}>
           <iframe

@@ -1,17 +1,14 @@
 import BreadcrumbComponent from '@/components/commons/breadcrumb';
 import styles from './collectionList.module.scss';
 import { bindClassNames } from '@/utils/helpers/cx';
-import { Collection } from '@/types/collection';
+import { CollectionType } from '@/types/collection';
 import { ButtonComponent } from '@/components/commons';
-<<<<<<< HEAD
 import { useEffect } from 'react';
-import { setPageInfo } from '@/redux/app/app.slice';
+import { setPageInfo } from '@/redux/slice/app/app.slice';
 import { useDispatch } from 'react-redux';
-=======
->>>>>>> bfcdc125da075e20b95b86ddbaa96f506f3cced4
 
 const cx = bindClassNames(styles);
-const collections: Collection[] = [
+const collections: CollectionType[] = [
   {
     title: 'Sweaters',
     image: 'https://glozin-demo.myshopify.com/cdn/shop/collections/img_3.jpg',
@@ -45,25 +42,21 @@ const collections: Collection[] = [
 ];
 
 const CollectionListPage: React.FC = () => {
-<<<<<<< HEAD
   const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(
+      setPageInfo({
+        breadcrumb: [
+          { path: '/', title: 'Home' },
+          { path: '#', title: 'Collections List' }
+        ],
+        title: 'Collections List',
+        description:
+          'Explore our thoughtfully curated collections: Sweaters, Handbags, Denim, and more—each perfect for enhancing every style on every special occasion and daily wear.'
+      })
+    );
+  }, []);
   const renderCollectionItem = () => {
-    useEffect(() => {
-      dispatch(
-        setPageInfo({
-          breadcrumb: [
-            { path: '/', title: 'Home' },
-            { path: '#', title: 'Collections List' }
-          ],
-          title: 'Collections List',
-          description:
-            'Explore our thoughtfully curated collections: Sweaters, Handbags, Denim, and more—each perfect for enhancing every style on every special occasion and daily wear.'
-        })
-      );
-    }, []);
-=======
-  const renderCollectionItem = () => {
->>>>>>> bfcdc125da075e20b95b86ddbaa96f506f3cced4
     return collections.map((collection, index) => {
       return (
         <div
@@ -93,25 +86,8 @@ const CollectionListPage: React.FC = () => {
   };
 
   return (
-<<<<<<< HEAD
     <div className={cx('collectionList-page')}>
       <div className={cx('page-content', 'flex flex-wrap')}>{renderCollectionItem()}</div>
-=======
-    <div className={cx('container', 'collectionList-page')}>
-      <div className={cx('breadcrumb', 'flex phone:pl-3')}>
-        <BreadcrumbComponent
-          path={[
-            { link: '/', title: 'Home' },
-            { link: '/collection', title: 'Collection' },
-            { link: '/collections', title: 'Collections' }
-          ]}
-        />
-      </div>
-      <div className={cx('collectionList-heading', 'mb-8')}>
-        <h1 className={cx('title', 'mb:text-[30px] text-[35px] font-[700]')}>Collection List</h1>
-      </div>
-      <div className={cx('collection-list-grid', 'flex flex-wrap')}>{renderCollectionItem()}</div>
->>>>>>> bfcdc125da075e20b95b86ddbaa96f506f3cced4
       <div className={cx('showMore-btn', 'flex justify-center')}>
         <ButtonComponent className={cx('max-w-[200px] rounded-[10px]')}>Show more</ButtonComponent>
       </div>

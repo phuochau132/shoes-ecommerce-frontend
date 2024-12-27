@@ -1,5 +1,5 @@
-import { setTheme, THEME } from '@/redux/app/app.slice';
-import { useAppDispatch, useAppSelector } from '@/redux/app/hook';
+import { setTheme, THEME } from '@/redux/slice/app/app.slice';
+import { useAppDispatch, useAppSelector } from '@/redux/slice/app/hook';
 import './DarkMode.css';
 import Moon from './Moon';
 import Sun from './Sun';

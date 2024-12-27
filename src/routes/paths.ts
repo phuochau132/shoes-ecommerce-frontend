@@ -7,5 +7,6 @@ export const paths = {
   contact: '/pages/contact-us',
   faq: '/pages/faq',
   wishlist: '/pages/wishlist',
-  blogs: '/blogs/:handle'
+  blogs: '/blogs/:handle',
+  account: '/account'
 };

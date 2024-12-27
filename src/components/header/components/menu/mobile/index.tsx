@@ -1,9 +1,9 @@
 import React, { memo, useRef, useState } from 'react';
 import styles from './mobileNavigation.module.scss';
-import { currencies, Navigation } from '../index';
+import { Navigation } from '../index';
 import { CloseIcon, CurrenciesIcon, MinusIcon, PlusIcon } from '@/utils/icons';
 import { useDispatch } from 'react-redux';
-import { setMenuSidebarState } from '@/redux/app/app.slice';
+import { setMenuSidebarState } from '@/redux/slice/app/app.slice';
 import { bindClassNames } from '@/utils/helpers/cx';
 
 const cx = bindClassNames(styles);
@@ -30,7 +30,7 @@ const MobileNavigation: React.FC<{ menu: Navigation[] }> = memo(({ menu }) => {
         <div className={cx('sidebar__menu-logo', 'flex items-center')}>
           <a href="#" className={cx('logo-link')}>
             <img
-              src="https://www.khy.com/cdn/shop/files/KHY-Logo-Dark.png?v=1720636390&width=500"
+              src="https://res.cloudinary.com/dvgjegefi/image/upload/v1734491076/logo_usfwfm.png"
               alt="new-ella-demo"
               width="70"
               height="28"

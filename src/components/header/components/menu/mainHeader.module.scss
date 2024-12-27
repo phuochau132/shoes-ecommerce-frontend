@@ -29,8 +29,10 @@
 .header__icon-item {
   cursor: pointer;
 
-  svg {
-    pointer-events: all !important;
+  @include screen(phoneUp) {
+    svg {
+      pointer-events: all !important;
+    }
   }
 }
 

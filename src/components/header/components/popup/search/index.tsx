@@ -3,7 +3,7 @@ import React, { memo, useState } from 'react';
 import styles from './search.module.scss';
 import { CloseIcon, SearchIcon } from '@/utils/icons';
 import { useDispatch } from 'react-redux';
-import { setSearchPopupState } from '@/redux/app/app.slice';
+import { setSearchPopupState } from '@/redux/slice/app/app.slice';
 import { bindClassNames } from '@/utils/helpers/cx';
 import ProductBlockComponent from '@/components/products/productBlock';
 import { sampleProducts } from '../../sidebar/cart';
@@ -39,7 +39,7 @@ const SearchPopup: React.FC = memo(() => {
           <CloseIcon style={{ float: 'right' }} />
         </div>
       </div>
-      <div className={cx('search__popup-inputSearch', 'flex', 'gap-[20px]', 'py-[20px]', 'w-full', 'items-center')}>
+      <div className={cx('search__popup-inputSearch', 'flex w-full items-center gap-[20px] py-[20px] phone:py-[10px]')}>
         <input
           onFocus={() => {
             if (!isChecked) {

@@ -31,8 +31,8 @@ const DefaultLayout: React.FC<PropsWithChildren<DefaultLayoutProps>> = ({
       {useHeader && <HeaderComponent />}
 
       <main className={`justify-center', ${useFooter && 'pb-[80px]'} : 'pb-[20px]' flex w-full`}>
-        <Content style={{ minHeight: 'calc(100vh - 120px)' }} className={`flex w-full duration-200`}>
-          <div className="h-full w-full">
+        <Content style={{ minHeight: 'calc(100vh - 120px)' }} className={`flex w-full justify-center duration-200`}>
+          <div className={`h-full w-full ${container}`}>
             {/* Page Header (Breadcrumb, Title, Description) */}
             {pageHeader && (pageHeader.breadcrumb || pageHeader.title || pageHeader.description) && (
               <div className="page-header mb-[30px]">
@@ -51,8 +51,6 @@ const DefaultLayout: React.FC<PropsWithChildren<DefaultLayoutProps>> = ({
                 </div>
               </div>
             )}
-
-            {/* Page Content */}
             {children}
           </div>
         </Content>

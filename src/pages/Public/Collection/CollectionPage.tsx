@@ -6,7 +6,7 @@ import SidebarComponent from './component/sidebar';
 import ProductCardComponent from '@/components/products/card';
 import { FilterIcon, GridModeIcon1, GridModeIcon2, GridModeIcon3, GridModeIcon4 } from '@/utils/icons';
 import { useDispatch } from 'react-redux';
-import { setFilterSidebarState, setPageInfo } from '@/redux/app/app.slice';
+import { setFilterSidebarState, setPageInfo } from '@/redux/slice/app/app.slice';
 import { useSelector } from 'react-redux';
 
 const cx = bindClassNames(styles);

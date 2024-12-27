@@ -10,7 +10,7 @@ import { ButtonComponent, InputComponent } from '@/components/commons';
 import ProductBlockComponent from '@/components/products/productBlock';
 import FreeShippingComponent from '@/components/cart/freeshipping';
 import { useDispatch } from 'react-redux';
-import { setPageInfo } from '@/redux/app/app.slice';
+import { setPageInfo } from '@/redux/slice/app/app.slice';
 import path from 'path';
 
 const cx = bindClassNames(styles);
