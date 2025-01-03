@@ -14,7 +14,7 @@ import LoadingPage from '@/pages/commons/LoadingPage';
 import { bindClassNames } from '@/utils/helpers/cx';
 import { Currency } from '@/utils/helpers/CurrenciesFormat';
 import { paths } from '@/routes/paths';
-import { useGetInfoMutation } from '@/apis/auth/auth.api';
+import { useGetInfoMutation } from '@/apis/user/user.api';
 
 export type Navigation = {
   name: string;

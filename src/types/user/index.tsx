@@ -1,6 +1,7 @@
 import { CollectionType } from '../collection';
 
 export type UserType = {
+  id: string;
   full_name: string;
   email: string;
   address: Number;

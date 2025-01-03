@@ -86,7 +86,8 @@ img {
         margin-top: 20px;
 
         label {
-            display: block;
+            display: flex;
+            justify-content: space-between;
             margin-bottom: 10px;
         }
     }

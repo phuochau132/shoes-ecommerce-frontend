@@ -8,6 +8,7 @@ import AddToCartComponent from '../addToCart';
 import { useDispatch } from 'react-redux';
 import { setQuickViewPopup } from '@/redux/slice/app/app.slice';
 import ProductReviewComponent from '../productReview';
+import { useSelector } from 'react-redux';
 
 interface ProductCardComponentProps {
   style?: CSSProperties;
@@ -19,13 +20,18 @@ const cx = bindClassNames(styles);
 const ProductCardComponent: React.FC<ProductCardComponentProps> = memo(
   ({ product, className, removeWishListIcon = false }) => {
     const dispatch = useDispatch();
-    const handleQuicView = useCallback(() => {
+    const { user } = useSelector((state: any) => state.user);
+    const handleQuickView = useCallback(() => {
       dispatch(
         setQuickViewPopup({
           product: product,
           isShowed: true
         })
       );
+    }, []);
+    const handleAddWishList = useCallback(() => {
+      if (!user) {
+      }
     }, []);
     return (
       <div className={cx('card', className)}>
@@ -39,19 +45,23 @@ const ProductCardComponent: React.FC<ProductCardComponentProps> = memo(
             <AddToCartComponent
               className="mt-[10px] p-[5px]"
               isCard={true}
-              handleSelectionOption={handleQuicView}
+              handleSelectionOption={handleQuickView}
               product={product}
             ></AddToCartComponent>
           </div>
           <div className={cx('card-group')}>
             <div className={cx('card__group-wishlist', 'cart__group-action', 'p-[10px]')}>
-              {removeWishListIcon ? <CloseIcon className={cx('icon')} /> : <WishListIcon className={cx('icon')} />}
+              {removeWishListIcon ? (
+                <CloseIcon className={cx('icon')} />
+              ) : (
+                <WishListIcon className={`${cx('icon')} fade-in-up`} />
+              )}
             </div>
             <div
-              onClick={handleQuicView}
+              onClick={handleQuickView}
               className={cx('card__group-quickView', 'cart__group-action', 'mt-[10px] p-[10px]')}
             >
-              <QuickViewIcon className={cx('icon')} />
+              <QuickViewIcon className={`${cx('icon')} fade-in-up`} />
             </div>
           </div>
           <div className={cx('card-badge')}>

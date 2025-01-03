@@ -9,16 +9,13 @@ import { useDispatch } from 'react-redux';
 import { AccountSidebarEnum } from '@/types/enum/accountSidebar';
 import { CheckedIcon, HideIcon, ViewIcon } from '@/utils/icons';
 import { InputEnum } from '@/types/enum/input';
-import {
-  useForgotPasswordMutation,
-  useGetInfoMutation,
-  useLoginMutation,
-  useRegisterMutation
-} from '@/apis/auth/auth.api';
+import { useForgotPasswordMutation, useLoginMutation, useRegisterMutation } from '@/apis/auth/auth.api';
+
 import { authSchema } from '@/validations/auth.validation';
 import { useValidation, useForm } from '@/utils/hooks/form';
 import { setUser } from '@/redux/slice/user/user.slice';
 import Cookies from 'js-cookie';
+import { useGetInfoMutation } from '@/apis/user/user.api';
 
 const cx = bindClassNames(styles);
 
@@ -66,6 +63,10 @@ const AccountSidebar: React.FC = memo(() => {
   const handleRegister = useCallback(
     async (values: Record<string, string>) => {
       const errors: any = await validateRegisterForm(values);
+      console.log('test1', values);
+
+      console.log('test', errors);
+
       if (Object.keys(errors).length === 0) {
         const res = await register(registerFormData).unwrap();
         if (!res.error) {
@@ -86,6 +87,8 @@ const AccountSidebar: React.FC = memo(() => {
           dispatch(setAccountSidebarState(false));
           Cookies.set('access_token', loginResponse.data.token);
           const userInfoResponse = await getInfo().unwrap();
+          console.log(123);
+
           dispatch(setUser(userInfoResponse.data));
         }
       }
@@ -119,7 +122,7 @@ const AccountSidebar: React.FC = memo(() => {
               <label className="flex-1" htmlFor="customer-email">
                 Your Email <small>*</small>
               </label>
-              {loginErrors.email && <span className="font-[500] text-[red]">{loginErrors.email}</span>}
+              {loginErrors.email && <span className="error">{loginErrors.email}</span>}
             </div>
             <InputComponent
               onChange={handleLoginChange}
@@ -135,7 +138,7 @@ const AccountSidebar: React.FC = memo(() => {
               <label className="flex-1" htmlFor="customer-password">
                 Your Password <small>*</small>
               </label>
-              {loginErrors.password && <span className="font-[500] text-[red]">{loginErrors.password}</span>}
+              {loginErrors.password && <span className="error">{loginErrors.password}</span>}
             </div>
             <div className="relative">
               <InputComponent
@@ -206,7 +209,7 @@ const AccountSidebar: React.FC = memo(() => {
                 <label className="flex-1" htmlFor="customer-email">
                   Your Email <small>*</small>
                 </label>
-                {registerErrors.email && <span className="font-[500] text-[red]">{registerErrors.email}</span>}
+                {registerErrors.email && <span className="error">{registerErrors.email}</span>}
               </div>
               <InputComponent
                 value={registerFormData.email}
@@ -222,7 +225,7 @@ const AccountSidebar: React.FC = memo(() => {
                 <label className="flex-1" htmlFor="customer-password">
                   Password <small>*</small>
                 </label>
-                {registerErrors.password && <span className="font-[500] text-[red]">{registerErrors.password}</span>}
+                {registerErrors.password && <span className="error">{registerErrors.password}</span>}
               </div>
               <div className="relative">
                 <InputComponent
@@ -262,7 +265,7 @@ const AccountSidebar: React.FC = memo(() => {
                 <label className="flex-1" htmlFor="customer-telephone">
                   Your phone <small>*</small>
                 </label>
-                {registerErrors.telephone && <span className="font-[500] text-[red]">{registerErrors.telephone}</span>}
+                {registerErrors.telephone && <span className="error">{registerErrors.telephone}</span>}
               </div>
               <InputComponent
                 value={registerFormData.telephone}
@@ -278,7 +281,7 @@ const AccountSidebar: React.FC = memo(() => {
                 <label className="flex-1" htmlFor="customer-address">
                   Your address <small>*</small>
                 </label>
-                {registerErrors.address && <span className="font-[500] text-[red]">{registerErrors.address}</span>}
+                {registerErrors.address && <span className="error">{registerErrors.address}</span>}
               </div>
               <InputComponent
                 value={registerFormData.address}
@@ -324,9 +327,7 @@ const AccountSidebar: React.FC = memo(() => {
               <label className="flex-1" htmlFor="customer-email">
                 Your Email <small>*</small>
               </label>
-              {forgotPasswordErrors.email && (
-                <span className="font-[500] text-[red]">{forgotPasswordErrors.email}</span>
-              )}
+              {forgotPasswordErrors.email && <span className="error">{forgotPasswordErrors.email}</span>}
             </div>
             <InputComponent
               onChange={handleForgotPasswordChange}

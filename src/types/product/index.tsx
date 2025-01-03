@@ -4,24 +4,34 @@ export type ProductType = {
   id: number;
   title: string;
   price: number;
-  images: string[];
+  images: ProductImageType[];
   quantity?: number;
   description: string;
-  link: string;
+  handle: string;
   vendor: string;
   variants?: VariantType[];
   reviews: ReviewType[];
 };
 
+export type ProductImageType = {
+  id: number;
+  url: string;
+  is_main: boolean;
+};
+
 export type VariantType = {
   id: number;
-  name: string;
-  values: OptionType[];
-  type?: string;
+  options: OptionValueType[];
+};
+
+export type OptionValueType = {
+  id: number;
+  option: OptionType;
+  value: string;
 };
 
 export type OptionType = {
   id: number;
-  price: number;
   name: string;
+  type: string;
 };

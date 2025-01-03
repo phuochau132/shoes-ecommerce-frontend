@@ -14,7 +14,7 @@ import {
   setSearchPopupState,
   THEME
 } from '@/redux/slice/app/app.slice';
-import { PUBLIC_ROUTES, RouteType } from './routes/routes';
+import { PRIVATE_ROUTES, PUBLIC_ROUTES, RouteType } from './routes/routes';
 import { useSelector } from 'react-redux';
 import 'swiper/swiper-bundle.css';
 import { useDispatch } from 'react-redux';
@@ -30,6 +30,7 @@ function App() {
   const dispatch = useDispatch();
   const [pathname, setPathname] = useState(location?.pathname?.split('/')[1]);
   const theme = useSelector((state: any) => state.app.theme);
+  const { user } = useSelector((state: any) => state.user);
   const searchPopupState = useSelector((state: any) => state.app.searchPopupState);
   const accountSidebarState = useSelector((state: any) => state.app.accountSidebarState);
   const filterSidebarState = useSelector((state: any) => state.app.filterSidebarState);
@@ -154,7 +155,44 @@ function App() {
               if (route.path == '/pages/wishlist' || route.path == '/pages/contact-us' || route.path == '/pages/faq') {
                 container = 'container-1470';
               }
-              if (route.private === 'public')
+              return (
+                <Route
+                  key={index}
+                  path={route.path}
+                  element={
+                    <Layout
+                      {...(container && { container })}
+                      {...(pageHeader && { pageHeader })}
+                      pageHeader={pageHeader}
+                      useHeader={route.useHeader}
+                      useSidebar={route.useSidebar}
+                      useFooter={route.useFooter}
+                    >
+                      {route.element}
+                    </Layout>
+                  }
+                ></Route>
+              );
+            })}
+            {user &&
+              PRIVATE_ROUTES.map((route: RouteType, index: number) => {
+                let Layout: any = DefaultLayout;
+                if (route?.layout) Layout = route.layout;
+                else if (route.layout === null) Layout = Fragment;
+                let pageHeader: pageHeaderType = {};
+                let container = 'container';
+                pageHeader = {
+                  breadcrumb: pageInfo.breadcrumb,
+                  title: pageInfo.title,
+                  description: pageInfo.description
+                };
+                if (
+                  route.path == '/pages/wishlist' ||
+                  route.path == '/pages/contact-us' ||
+                  route.path == '/pages/faq'
+                ) {
+                  container = 'container-1470';
+                }
                 return (
                   <Route
                     key={index}
@@ -173,10 +211,7 @@ function App() {
                     }
                   ></Route>
                 );
-              else {
-                <span>test</span>;
-              }
-            })}
+              })}
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Router>

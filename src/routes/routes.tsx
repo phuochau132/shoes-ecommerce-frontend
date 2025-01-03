@@ -30,7 +30,6 @@ export const PUBLIC_ROUTES: RouteType[] = [
     path: paths.home,
     element: <LazyHomePage />,
     layout: DefaultLayout,
-    private: 'public',
     useHeader: true,
     useSidebar: true,
     useFooter: true
@@ -39,7 +38,6 @@ export const PUBLIC_ROUTES: RouteType[] = [
     path: paths.product,
     element: <LazyProductPage />,
     layout: DefaultLayout,
-    private: 'public',
     useHeader: true,
     useSidebar: true,
     useFooter: true
@@ -48,16 +46,6 @@ export const PUBLIC_ROUTES: RouteType[] = [
     path: paths.collection,
     element: <LazyCollectionPage />,
     layout: DefaultLayout,
-    private: 'public',
-    useHeader: true,
-    useSidebar: true,
-    useFooter: true
-  },
-  {
-    path: paths.cart,
-    element: <LazyCartPage />,
-    layout: DefaultLayout,
-    private: 'public',
     useHeader: true,
     useSidebar: true,
     useFooter: true
@@ -66,7 +54,6 @@ export const PUBLIC_ROUTES: RouteType[] = [
     path: paths.collectionsList,
     element: <LazyCollectionListPage />,
     layout: DefaultLayout,
-    private: 'public',
     useHeader: true,
     useSidebar: true,
     useFooter: true
@@ -75,16 +62,6 @@ export const PUBLIC_ROUTES: RouteType[] = [
     path: paths.contact,
     element: <LazyContactUsPage />,
     layout: DefaultLayout,
-    private: 'public',
-    useHeader: true,
-    useSidebar: true,
-    useFooter: true
-  },
-  {
-    path: paths.wishlist,
-    element: <LazyWishlistPage />,
-    layout: DefaultLayout,
-    private: 'public',
     useHeader: true,
     useSidebar: true,
     useFooter: true
@@ -93,7 +70,33 @@ export const PUBLIC_ROUTES: RouteType[] = [
     path: paths.faq,
     element: <LazyFaqPage />,
     layout: DefaultLayout,
-    private: 'public',
+    useHeader: true,
+    useSidebar: true,
+    useFooter: true
+  }
+];
+
+export const PRIVATE_ROUTES: RouteType[] = [
+  {
+    path: paths.cart,
+    element: <LazyCartPage />,
+    layout: DefaultLayout,
+    useHeader: true,
+    useSidebar: true,
+    useFooter: true
+  },
+  {
+    path: paths.wishlist,
+    element: <LazyWishlistPage />,
+    layout: DefaultLayout,
+    useHeader: true,
+    useSidebar: true,
+    useFooter: true
+  },
+  {
+    path: paths.faq,
+    element: <LazyFaqPage />,
+    layout: DefaultLayout,
     useHeader: true,
     useSidebar: true,
     useFooter: true
@@ -102,7 +105,6 @@ export const PUBLIC_ROUTES: RouteType[] = [
     path: paths.account,
     element: <LazyAccountPage />,
     layout: DefaultLayout,
-    private: 'public',
     useHeader: true,
     useSidebar: true,
     useFooter: true

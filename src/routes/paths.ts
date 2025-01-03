@@ -1,6 +1,6 @@
 export const paths = {
   home: '/',
-  product: '/product/:handle',
+  product: '/products/:handle',
   collection: '/collections/:handle',
   cart: '/cart',
   collectionsList: '/collections',
@@ -8,5 +8,6 @@ export const paths = {
   faq: '/pages/faq',
   wishlist: '/pages/wishlist',
   blogs: '/blogs/:handle',
-  account: '/account'
+  account: '/account',
+  error: '/pages/404'
 };

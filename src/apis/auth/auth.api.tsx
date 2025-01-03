@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { axiosBaseQuery } from '@/base/BaseQuery';
-import { UserLoginDto, UserRegisterDto, UserType } from '@/types/user';
+import { UserLoginDto, UserRegisterDto } from '@/types/user';
 export type ErrorType = {
   error: {
     status: number;
@@ -29,22 +29,6 @@ const AuthApi = createApi({
         }
       })
     }),
-    getInfo: builder.mutation<{ data: UserType }, void>({
-      query: () => ({
-        url: `/auth/info`,
-        showToast: false,
-        method: 'GET'
-      })
-    }),
-    updateProfile: builder.mutation<any, any>({
-      query: (Payload) => ({
-        url: `/auth/update-profile`,
-        method: 'PUT',
-        data: {
-          ...Payload
-        }
-      })
-    }),
     forgotPassword: builder.mutation<any, { email: string }>({
       query: (Payload) => ({
         url: `/auth/forgot-password`,
@@ -58,11 +42,5 @@ const AuthApi = createApi({
   })
 });
 
-export const {
-  useRegisterMutation,
-  useLoginMutation,
-  useForgotPasswordMutation,
-  useGetInfoMutation,
-  useUpdateProfileMutation
-} = AuthApi;
+export const { useRegisterMutation, useLoginMutation, useForgotPasswordMutation } = AuthApi;
 export default AuthApi;
