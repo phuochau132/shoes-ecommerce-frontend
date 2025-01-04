@@ -12,7 +12,7 @@ import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { clearUser, setUser } from '@/redux/slice/user/user.slice';
 import useValidation, { useForm } from '@/utils/hooks/form';
 import { uploadFile } from '@/utils/helpers/cloudinary';
-import { useUpdateProfileMutation } from '@/apis/auth/auth.api';
+import { useUpdateProfileMutation } from '@/apis/user/user.api';
 import { authSchema } from '@/validations/auth.validation';
 
 const cx = bindClassNames(styles);
@@ -213,9 +213,7 @@ const AccountDetailPage = () => {
                             <EditOutlined className="ml-2 text-[12px] text-blue-500" />
                           )}
                         </label>
-                        {updateErrors.full_name && (
-                          <span className="font-[500] text-[red]">{updateErrors.full_name}</span>
-                        )}
+                        {updateErrors.full_name && <span className="error">{updateErrors.full_name}</span>}
                       </div>
                       <InputComponent
                         name="full_name"
@@ -250,9 +248,7 @@ const AccountDetailPage = () => {
                             <EditOutlined className="ml-2 text-[12px] text-blue-500" />
                           )}
                         </label>
-                        {updateErrors.telephone && (
-                          <span className="font-[500] text-[red]">{updateErrors.telephone}</span>
-                        )}
+                        {updateErrors.telephone && <span className="error">{updateErrors.telephone}</span>}
                       </div>
                       <InputComponent
                         type="text"
@@ -270,7 +266,7 @@ const AccountDetailPage = () => {
                             <EditOutlined className="ml-2 text-[12px] text-blue-500" />
                           )}
                         </label>
-                        {updateErrors.address && <span className="font-[500] text-[red]">{updateErrors.address}</span>}
+                        {updateErrors.address && <span className="error">{updateErrors.address}</span>}
                       </div>
 
                       <InputComponent

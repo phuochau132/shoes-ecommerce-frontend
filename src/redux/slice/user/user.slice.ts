@@ -4,8 +4,12 @@ import Cookies from 'js-cookie';
 export const initialState: { user: UserType | null } = {
   user: (() => {
     try {
+      const accessToken = Cookies.get('access_token');
       const storedUser = localStorage.getItem('user');
-      return storedUser ? (JSON.parse(storedUser) as UserType) : null;
+      if (storedUser && accessToken) {
+        return storedUser ? (JSON.parse(storedUser) as UserType) : null;
+      }
+      return null;
     } catch (error) {
       console.error('Error parsing user from localStorage:', error);
       return null;

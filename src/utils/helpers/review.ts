@@ -6,10 +6,12 @@ type TotalReviewProps = {
 
 export function calTotalReview({ product }: TotalReviewProps): number {
   let totalReview = 0;
+  if (product?.reviews) {
+    if (product.reviews && product.reviews.length > 0) {
+      totalReview = product.reviews.reduce((total, review) => total + review.rating, 0) / product.reviews.length;
+    }
 
-  if (product.reviews && product.reviews.length > 0) {
-    totalReview = product.reviews.reduce((total, review) => total + review.rating, 0) / product.reviews.length;
+    return totalReview;
   }
-
-  return totalReview;
+  return 0;
 }

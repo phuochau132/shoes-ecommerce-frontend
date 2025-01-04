@@ -75,6 +75,16 @@
             border-radius: 50%;
             cursor: pointer;
 
+            &.card__group-wishlist {
+                &.is-activated {
+                    background-color: black;
+
+                    svg {
+                        fill: white;
+                    }
+                }
+            }
+
             .icon {
                 width: 15px !important;
                 height: 15px !important;

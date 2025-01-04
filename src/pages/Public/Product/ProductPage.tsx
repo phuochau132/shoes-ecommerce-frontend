@@ -15,13 +15,23 @@ import QuantityBoxComponent from '@/components/products/quantity';
 import { useDispatch } from 'react-redux';
 import { setPageInfo } from '@/redux/slice/app/app.slice';
 import CollapsibleBlock from '@/components/commons/collapse';
-import ReviewItemComponent from '@/components/products/reviewItem';
 import { calTotalReview } from '@/utils/helpers/review';
 import { Currency } from '@/utils/helpers/CurrenciesFormat';
 import { Image, Rate, Upload, UploadFile, UploadProps } from 'antd';
 import { FileType, getBase64 } from '@/utils/helpers/base64';
 import { PlusOutlined } from '@ant-design/icons';
 import AddToCartComponent from '@/components/products/addToCart';
+import { useAddReviewMutation, useGetProductMutation, useRemoveReviewMutation } from '@/apis/product/product.api';
+import { useNavigate, useParams } from 'react-router-dom';
+import { paths } from '@/routes/paths';
+import ReviewItemComponent from '@/components/products/reviewItem';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import useValidation, { useForm } from '@/utils/hooks/form';
+import { productSchema } from '@/validations/product.validation';
+import { useAddWishlistMutation, useGetInfoMutation, useRemoveWishlistMutation } from '@/apis/user/user.api';
+import { setUser } from '@/redux/slice/user/user.slice';
+import { UserType } from '@/types/user';
 const cx = bindClassNames(styles);
 const sampleProducts: CollectionType = {
   title: 'Skincare',
@@ -179,83 +189,46 @@ const sampleProducts: CollectionType = {
     }
   ]
 };
-const product: ProductType = {
+const patternProduct: ProductType = {
   title: 'Classic Running Shoes',
   price: 99.99,
-  reviews: [
-    {
-      author: { name: 'hautest', age: 34 },
-      createAt: new Date(Date.now()),
-      rating: 3,
-      title: 'test',
-      text: 'testasdasdas'
-    },
-    {
-      author: { name: 'Riven', age: 34 },
-      createAt: new Date(Date.now()),
-      rating: 5,
-      title: 'test',
-      text: 'testasdasdas'
-    }
-  ],
-  images: [
-    'https://new-ella-demo.myshopify.com/cdn/shop/products/shoes-product-image-3_940x.jpg',
-    'https://new-ella-demo.myshopify.com/cdn/shop/products/shoes-product-image-5_940x.jpg',
-    'https://new-ella-demo.myshopify.com/cdn/shop/products/shoes-product-image-3_940x.jpg',
-    'https://new-ella-demo.myshopify.com/cdn/shop/products/shoes-product-image-5_940x.jpg',
-    'https://new-ella-demo.myshopify.com/cdn/shop/products/shoes-product-image-3_940x.jpg',
-    'https://new-ella-demo.myshopify.com/cdn/shop/products/shoes-product-image-5_940x.jpg'
-  ],
+  reviews: [],
+  images: [],
   description: 'Comfortable and lightweight running shoes.',
   link: '/product/classic-running-shoes',
   vendor: 'Nike',
-  variants: [
-    {
-      id: 1,
-      name: 'Color',
-      values: [
-        {
-          id: 54545454,
-          price: 20,
-          name: 'White'
-        },
-        {
-          id: 123123123,
-          price: 30,
-          name: 'Red'
-        }
-      ],
-      type: 'swatch'
-    },
-    {
-      id: 2,
-      name: 'Size',
-      values: [
-        {
-          id: 1,
-          price: 20,
-          name: 'X'
-        },
-        {
-          id: 2,
-          price: 30,
-          name: 'XL'
-        }
-      ],
-      type: 'Rectangle'
-    }
-  ]
+  variants: []
 };
+const initialReview = {
+  title: '',
+  content: '',
+  rating: 1,
+  product_id: 1
+};
+
 const liveViewCount = [10, 25, 30];
 const ProductPage = () => {
+  const { handle } = useParams();
   const dispatch = useDispatch();
-  const [value, setValue] = useState(3);
+  const navigate = useNavigate();
+  const { user }: { user: UserType } = useSelector((state: any) => state.user);
+  const [product, setProduct] = useState(patternProduct);
   const [mainSwiper, setMainSwiper] = useState<SwiperInstance | null>(null);
   const [thumbSwiper, setThumbSwiper] = useState<SwiperInstance | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [showWritingReviewSection, setShowWritingReviewSection] = useState(false);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [getProduct, { isLoading: getProductIsLoading }] = useGetProductMutation();
+  const [addReview, { isLoading: isAddReviewLoading }] = useAddReviewMutation();
+  const [removeReview, { isloading }] = useRemoveReviewMutation();
+  const {
+    formData: reviewFormData,
+    handleChange: handleReviewChange,
+    setFormData: setReviewFormData
+  } = useForm(initialReview);
+
+  const { errors: reviewErrors, validate: reviewValidate } = useValidation(productSchema.review);
   const refLiveViewCount = useRef<HTMLSpanElement>(null);
   let totalReview = calTotalReview({ product: product });
 
@@ -293,6 +266,7 @@ const ProductPage = () => {
 
     return <div className="stars">{stars}</div>;
   }, []);
+
   const renderHistogram = useCallback(() => {
     const ratings = [1, 2, 3, 4, 5];
     const totalReviews = product.reviews?.length;
@@ -325,7 +299,7 @@ const ProductPage = () => {
         </div>
       );
     });
-  }, []);
+  }, [product]);
   const handleThumbnailClick = useCallback((index: number) => {
     if (mainSwiper) {
       mainSwiper.slideTo(index);
@@ -349,7 +323,26 @@ const ProductPage = () => {
       <div style={{ marginTop: 8 }}>Upload</div>
     </button>
   );
+  const getProductInfo = useCallback(async () => {
+    if (handle) {
+      try {
+        const res = await getProduct({ handle }).unwrap();
+        setProduct(res.data.product);
+        setReviewFormData({
+          ...reviewFormData,
+          product_id: res.data.product.id
+        });
+      } catch (error) {
+        navigate(paths.error);
+      }
+    }
+  }, []);
   useEffect(() => {
+    Currency.initializeCurrency();
+  }, [product]);
+  useEffect(() => {
+    getProductInfo();
+
     dispatch(
       setPageInfo({
         breadcrumb: [
@@ -359,12 +352,84 @@ const ProductPage = () => {
       })
     );
     const cleanupInterval = randomShowLiveView();
-
-    Currency.initializeCurrency();
     return () => {
       cleanupInterval();
     };
   }, []);
+  const [addWishlist, { isLoading: addWishlistIsLoading }] = useAddWishlistMutation();
+  const [removeWishlist, { isLoading: removeWishlistIsLoading }] = useRemoveWishlistMutation();
+  const [getUserInfo] = useGetInfoMutation();
+
+  const handleAddWishList = useCallback(async () => {
+    if (user) {
+      try {
+        await addWishlist({
+          product_id: product.id
+        }).unwrap();
+        const updateUser = await getUserInfo().unwrap();
+        dispatch(setUser(updateUser.data));
+      } catch (error) {}
+    }
+  }, [user, product]);
+  const wishlist =
+    user &&
+    user.wishlists?.filter((item: any) => {
+      return item.product_id == product.id;
+    });
+
+  const handleRemoveWishList = useCallback(
+    async (id: number) => {
+      if (user && id) {
+        try {
+          await removeWishlist({
+            id: id
+          }).unwrap();
+          const updateUser = await getUserInfo().unwrap();
+          dispatch(setUser(updateUser.data));
+        } catch (error) {}
+      }
+    },
+    [user, product]
+  );
+  const handleSubmitReview = useCallback(async () => {
+    const errors: any = await reviewValidate(reviewFormData);
+    if (Object.keys(errors).length === 0) {
+      try {
+        const res = await addReview({ handle: product.handle, data: reviewFormData }).unwrap();
+        setReviewFormData(initialReview);
+        const newReviews = [res.data.review, ...product.reviews];
+
+        setProduct((prev: any) => {
+          return {
+            ...prev,
+            reviews: newReviews
+          };
+        });
+      } catch (error) {}
+    }
+  }, [reviewFormData]);
+
+  const handleRemoveReview = useCallback(
+    async (id: number) => {
+      try {
+        await removeReview({
+          handle: product.handle,
+          data: {
+            id: id
+          }
+        }).unwrap();
+        const updatedReviews = product.reviews.filter((review) => review.id !== id);
+        setProduct((prev) => {
+          return {
+            ...prev,
+            reviews: updatedReviews
+          };
+        });
+      } catch (error) {}
+    },
+    [product]
+  );
+
   return (
     <div className={cx('product-page')}>
       <div className={cx('page-content')}>
@@ -392,7 +457,12 @@ const ProductPage = () => {
                       {product.images.map((item, index) => (
                         <SwiperSlide key={index}>
                           <div className={cx('media')}>
-                            <img data-fancybox="gallery" className={cx('h-[100%] w-[100%]')} src={item} alt="error" />
+                            <img
+                              data-fancybox="gallery"
+                              className={cx('h-[100%] w-[100%]')}
+                              src={item.url}
+                              alt="error"
+                            />
                           </div>
                         </SwiperSlide>
                       ))}
@@ -416,7 +486,7 @@ const ProductPage = () => {
                         <div className={cx('media')}>
                           <img
                             className={cx('h-[100%] w-[100%]', 'cursor-pointer')}
-                            src={item}
+                            src={item.url}
                             alt={`Thumbnail ${index}`}
                           />
                         </div>
@@ -477,8 +547,18 @@ const ProductPage = () => {
                 <div
                   className={cx(
                     'wish-list',
-                    'cursor-pointer rounded-[50%] border border-solid border-[#c7c7c7] p-[10px]'
+                    'cursor-pointer rounded-[50%] border border-solid border-[#c7c7c7] p-[10px]',
+                    user && wishlist.length > 0 && 'is-activated'
                   )}
+                  onClick={() => {
+                    if (!user) {
+                      toast.warning('Please log in to continue');
+                      return;
+                    }
+                    user && !(wishlist.length > 0)
+                      ? handleAddWishList()
+                      : handleRemoveWishList(wishlist && wishlist[0]?.id);
+                  }}
                 >
                   <WishListIcon />
                 </div>
@@ -538,7 +618,11 @@ const ProductPage = () => {
                 ) : (
                   <ButtonComponent
                     onClick={() => {
-                      setShowWritingReviewSection(true);
+                      if (user) {
+                        setShowWritingReviewSection(true);
+                      } else {
+                        toast.warning('Please log in before writing a review');
+                      }
                     }}
                   >
                     Write a review
@@ -551,18 +635,41 @@ const ProductPage = () => {
             <div className={cx('review-form')}>
               <div className="line"></div>
               <div className={cx('field')}>
-                <label htmlFor="">Rating</label>
-                <Rate onChange={setValue} value={value} />
+                <label htmlFor="rating-review">
+                  <span>Rating</span>
+                  {reviewErrors.rating && <span className="error">{reviewErrors.rating}</span>}
+                </label>
+                <Rate
+                  id="rating-review"
+                  onChange={(value) => {
+                    setReviewFormData({ ...reviewFormData, rating: value });
+                  }}
+                  value={reviewFormData.rating}
+                />
               </div>
               <div className={cx('field')}>
-                <label htmlFor="">Review Title</label>
-                <InputComponent className={cx('mt-[0]')} placeholder="Give your review a title" />
+                <label htmlFor="">
+                  <span>Review Title</span>
+                  {reviewErrors.title && <span className="error">{reviewErrors.title}</span>}
+                </label>
+                <InputComponent
+                  onChange={handleReviewChange}
+                  name="title"
+                  className={cx('mt-[0]')}
+                  placeholder="Give your review a title"
+                  value={reviewFormData.title}
+                />
               </div>
               <div className={cx('field')}>
-                <label htmlFor="">Review</label>
+                <label htmlFor="">
+                  <span>Review</span>
+                  {reviewErrors.content && <span className="error">{reviewErrors.content}</span>}
+                </label>
                 <textarea
+                  onChange={handleReviewChange}
+                  value={reviewFormData.content}
+                  name="content"
                   className="min-h-[12rem] w-full rounded-[10px] border p-[10px] outline-none"
-                  name="note"
                   form="cart"
                   id="Cart-note"
                   placeholder="Write your comment here"
@@ -572,14 +679,8 @@ const ProductPage = () => {
               <div className={cx('field')}>
                 <label htmlFor="">Picture(optional)</label>
                 <div>
-                  <Upload
-                    action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-                    listType="picture-card"
-                    fileList={fileList}
-                    onPreview={handlePreview}
-                    onChange={handleChange}
-                  >
-                    {fileList.length >= 8 ? null : uploadButton}
+                  <Upload listType="picture-card" fileList={fileList} onPreview={handlePreview} onChange={handleChange}>
+                    {fileList.length >= 2 ? null : uploadButton}
                   </Upload>
                   {previewImage && (
                     <Image
@@ -594,14 +695,6 @@ const ProductPage = () => {
                   )}
                 </div>
               </div>
-              <div className={cx('field')}>
-                <label htmlFor="">Name (displayed publicly like John Smith )</label>
-                <InputComponent className={cx('mt-[0]')} placeholder="Enter your name(public)" />
-              </div>
-              <div className={cx('field')}>
-                <label htmlFor="">Email</label>
-                <InputComponent className={cx('mt-[0]')} placeholder="Email(private)" />
-              </div>
               <div className={cx('form-action', 'flex gap-[10px]')}>
                 <ButtonComponent
                   onClick={() => {
@@ -611,18 +704,24 @@ const ProductPage = () => {
                 >
                   Cancel Review
                 </ButtonComponent>
-                <ButtonComponent>Submit review</ButtonComponent>
+                <ButtonComponent isLoading={isAddReviewLoading} onClick={handleSubmitReview}>
+                  Submit review
+                </ButtonComponent>
               </div>
               <div className="line"></div>
             </div>
           )}
 
-          {product.reviews.length && (
+          {product.reviews.length > 0 && (
             <div className={cx('review-list mt-[50px]')}>
               {product.reviews.map((review, index) => {
                 return (
                   <div key={index}>
-                    <ReviewItemComponent callback={renderStar} review={review}></ReviewItemComponent>
+                    <ReviewItemComponent
+                      callback={renderStar}
+                      review={review}
+                      handleRemoveReview={handleRemoveReview}
+                    ></ReviewItemComponent>
                     {index != product.reviews?.length - 1 && <div className="line my-[30px]"></div>}
                   </div>
                 );

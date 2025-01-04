@@ -311,6 +311,9 @@ body.dark-mode {
 
 @include screen(phoneUp) {
   .fade-in-up {
+    pointer-events: all !important;
+    transition: all 0.5s ease;
+
     &:hover {
       transform: scale(1.2);
     }
@@ -586,6 +589,12 @@ svg {
       width: 100%;
     }
   }
+}
+
+// error
+.error {
+  color: red;
+  font-weight: 500;
 }
 
 // Modal

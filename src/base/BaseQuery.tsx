@@ -37,7 +37,6 @@ const axiosBaseQuery: BaseQueryFn<CustomizeAxiosRequestConfig, unknown, AxiosBas
     if (showToast) {
       toast.success(result.data.message || 'Request successful');
     }
-
     return { data: result.data, status: result.statusText };
   } catch (error) {
     const err = error as any;

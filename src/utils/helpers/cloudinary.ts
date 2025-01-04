@@ -2,8 +2,6 @@ import { RcFile } from 'antd/es/upload';
 
 export const uploadFile = async ({ file }: { file: RcFile }) => {
   const formData = new FormData();
-
-  // Cloudinary upload preset and cloud name
   const cloudName = import.meta.env.VITE_CLOUD_NAME;
   const uploadPreset = import.meta.env.VITE_UPLOAD_PRESET;
 
