@@ -1,4 +1,4 @@
-import { CollectionType } from '../collection';
+import { ProductType } from '../product';
 
 export type UserType = {
   id: string;
@@ -9,7 +9,15 @@ export type UserType = {
   image: string;
   role: string;
   orders?: [];
-  wishlist?: CollectionType;
+  wishlists: WishlistType[];
+};
+export type WishlistType = {
+  id: number;
+  product_id: number;
+};
+export type WishlistDetailType = {
+  id: number;
+  product: ProductType;
 };
 
 export enum UserRole {

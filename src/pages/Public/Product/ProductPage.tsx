@@ -29,6 +29,9 @@ import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import useValidation, { useForm } from '@/utils/hooks/form';
 import { productSchema } from '@/validations/product.validation';
+import { useAddWishlistMutation, useGetInfoMutation, useRemoveWishlistMutation } from '@/apis/user/user.api';
+import { setUser } from '@/redux/slice/user/user.slice';
+import { UserType } from '@/types/user';
 const cx = bindClassNames(styles);
 const sampleProducts: CollectionType = {
   title: 'Skincare',
@@ -208,7 +211,7 @@ const ProductPage = () => {
   const { handle } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user } = useSelector((state: any) => state.user);
+  const { user }: { user: UserType } = useSelector((state: any) => state.user);
   const [product, setProduct] = useState(patternProduct);
   const [mainSwiper, setMainSwiper] = useState<SwiperInstance | null>(null);
   const [thumbSwiper, setThumbSwiper] = useState<SwiperInstance | null>(null);
@@ -353,12 +356,46 @@ const ProductPage = () => {
       cleanupInterval();
     };
   }, []);
+  const [addWishlist, { isLoading: addWishlistIsLoading }] = useAddWishlistMutation();
+  const [removeWishlist, { isLoading: removeWishlistIsLoading }] = useRemoveWishlistMutation();
+  const [getUserInfo] = useGetInfoMutation();
+
+  const handleAddWishList = useCallback(async () => {
+    if (user) {
+      try {
+        await addWishlist({
+          product_id: product.id
+        }).unwrap();
+        const updateUser = await getUserInfo().unwrap();
+        dispatch(setUser(updateUser.data));
+      } catch (error) {}
+    }
+  }, [user, product]);
+  const wishlist =
+    user &&
+    user.wishlists?.filter((item: any) => {
+      return item.product_id == product.id;
+    });
+
+  const handleRemoveWishList = useCallback(
+    async (id: number) => {
+      if (user && id) {
+        try {
+          await removeWishlist({
+            id: id
+          }).unwrap();
+          const updateUser = await getUserInfo().unwrap();
+          dispatch(setUser(updateUser.data));
+        } catch (error) {}
+      }
+    },
+    [user, product]
+  );
   const handleSubmitReview = useCallback(async () => {
     const errors: any = await reviewValidate(reviewFormData);
     if (Object.keys(errors).length === 0) {
       try {
         const res = await addReview({ handle: product.handle, data: reviewFormData }).unwrap();
-        console.log('111');
         setReviewFormData(initialReview);
         const newReviews = [res.data.review, ...product.reviews];
 
@@ -388,12 +425,11 @@ const ProductPage = () => {
             reviews: updatedReviews
           };
         });
-      } catch (error) {
-        console.log(123);
-      }
+      } catch (error) {}
     },
     [product]
   );
+
   return (
     <div className={cx('product-page')}>
       <div className={cx('page-content')}>
@@ -511,8 +547,18 @@ const ProductPage = () => {
                 <div
                   className={cx(
                     'wish-list',
-                    'cursor-pointer rounded-[50%] border border-solid border-[#c7c7c7] p-[10px]'
+                    'cursor-pointer rounded-[50%] border border-solid border-[#c7c7c7] p-[10px]',
+                    user && wishlist.length > 0 && 'is-activated'
                   )}
+                  onClick={() => {
+                    if (!user) {
+                      toast.warning('Please log in to continue');
+                      return;
+                    }
+                    user && !(wishlist.length > 0)
+                      ? handleAddWishList()
+                      : handleRemoveWishList(wishlist && wishlist[0]?.id);
+                  }}
                 >
                   <WishListIcon />
                 </div>
@@ -666,7 +712,7 @@ const ProductPage = () => {
             </div>
           )}
 
-          {product.reviews.length && (
+          {product.reviews.length > 0 && (
             <div className={cx('review-list mt-[50px]')}>
               {product.reviews.map((review, index) => {
                 return (

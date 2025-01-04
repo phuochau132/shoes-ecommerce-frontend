@@ -36,6 +36,7 @@
             .wish-list {
                 transition: all 0.2s ease;
 
+                .is-activated,
                 &:hover {
                     background-color: black;
 
@@ -48,6 +49,18 @@
         }
     }
 }
+
+.wish-list {
+    &.is-activated {
+        background-color: black;
+
+        svg {
+            transition: all 0.2s ease;
+            fill: white
+        }
+    }
+}
+
 
 .review-form {
     animation: slideIn 0.5s ease-in-out;

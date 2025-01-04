@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { axiosBaseQuery } from '@/base/BaseQuery';
-import { UserType } from '@/types/user';
+import { UserType, WishlistDetailType } from '@/types/user';
 export type ErrorType = {
   error: {
     status: number;
@@ -26,9 +26,37 @@ const UserApi = createApi({
           ...Payload
         }
       })
+    }),
+    addWishlist: builder.mutation<any, any>({
+      query: (Payload) => ({
+        url: `/user/wishlist/add`,
+        method: 'Post',
+        data: {
+          ...Payload
+        }
+      })
+    }),
+    removeWishlist: builder.mutation<any, { id: number }>({
+      query: (Payload) => ({
+        url: `/user/wishlist/remove/${Payload.id}`,
+        method: 'Delete'
+      })
+    }),
+    getWishlists: builder.mutation<{ data: WishlistDetailType[] }, void>({
+      query: () => ({
+        url: `/user/wishlist`,
+        showToast: false,
+        method: 'GET'
+      })
     })
   })
 });
 
-export const { useGetInfoMutation, useUpdateProfileMutation } = UserApi;
+export const {
+  useGetInfoMutation,
+  useUpdateProfileMutation,
+  useAddWishlistMutation,
+  useRemoveWishlistMutation,
+  useGetWishlistsMutation
+} = UserApi;
 export default UserApi;
