@@ -10,6 +10,7 @@ input:-webkit-autofill:active {
   -webkit-transition-delay: 9999s;
 }
 
+
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -21,9 +22,7 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
-input {
-  border: 2px solid #ccc;
-}
+
 
 input:focus {
   animation: focusGlow 0.3s ease-in-out;
@@ -31,6 +30,15 @@ input:focus {
 }
 
 input:not(:focus) {
+  animation: blurGlow 0.3s ease-in-out;
+}
+
+textarea:focus {
+  animation: focusGlow 0.3s ease-in-out;
+  border-color: #333;
+}
+
+textarea:not(:focus) {
   animation: blurGlow 0.3s ease-in-out;
 }
 
@@ -403,28 +411,28 @@ svg {
 }
 
 .col-4 {
-  &>div {
+  &>.product {
     max-width: 25%;
     width: 100%;
   }
 }
 
 .col-3 {
-  &>div {
+  &>.product {
     max-width: 33%;
     width: 100%;
   }
 }
 
 .col-1 {
-  &>div {
+  &>.product {
     max-width: 100%;
     width: 100%;
   }
 }
 
 .col-2 {
-  &>div {
+  &>.product {
     max-width: 50%;
     width: 100%;
   }
@@ -584,7 +592,7 @@ svg {
 
   .col-4,
   .col-3 {
-    &>div {
+    &>.product {
       max-width: 33%;
       width: 100%;
     }
@@ -639,7 +647,10 @@ svg {
   bottom: 0;
   right: 0;
   position: absolute;
-  background: white
+  background: white;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
 }
 
 .loader {
@@ -744,17 +755,6 @@ svg {
   }
 }
 
-@keyframes slideToTop {
-  0% {
-    opacity: 0;
-    top: 20%;
-  }
-
-  100% {
-    opacity: 1;
-    top: 50%;
-  }
-}
 
 .opacity-100 {
   opacity: 1;
@@ -786,12 +786,11 @@ svg {
   }
 }
 
-
 @include screen(phone) {
 
   .col-4,
   .col-3 {
-    &>div {
+    &>.product {
       max-width: 50%;
       width: 100%;
     }
@@ -811,4 +810,18 @@ svg {
 
 .page-heading {
   text-align: center;
+}
+
+// variant is checked
+.field {
+  label {
+    border: 1px solid #cbcbcb;
+    transition: border-color 0.2s ease;
+  }
+
+  input:checked {
+    ~label {
+      border: 1px solid #333;
+    }
+  }
 }

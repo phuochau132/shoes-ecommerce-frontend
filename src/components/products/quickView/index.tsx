@@ -5,11 +5,9 @@ import { ProductType } from '@/types/product';
 import Fancybox from '@/utils/helpers/fancybox';
 import { useSelector } from 'react-redux';
 import ProductReviewComponent from '../productReview';
-import { calTotalReview } from '@/utils/helpers/review';
 import ProductVariantComponent from '../productVariant';
 import QuantityBoxComponent from '../quantity';
-import { ButtonComponent } from '@/components/commons';
-import { DeliveryIcon, EyeIcon, WishListIcon } from '@/utils/icons';
+import { DeliveryIcon, WishListIcon } from '@/utils/icons';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Controller } from 'swiper/modules';
 import { Currency } from '@/utils/helpers/CurrenciesFormat';
@@ -44,10 +42,10 @@ const QuickViewComponent: React.FC<QuickViewComponentProps> = memo(({}) => {
                   pagination={{ clickable: true }}
                   className={cx('swiper-container')}
                 >
-                  {product.images.map((item: string, index: number) => (
+                  {product.images.map((item: any, index: number) => (
                     <SwiperSlide key={index}>
                       <div className={cx('media')}>
-                        <img data-fancybox="gallery" className={cx('h-[100%] w-[100%]')} src={item} alt="error" />
+                        <img data-fancybox="gallery" className={cx('h-[100%] w-[100%]')} src={item.url} alt="error" />
                       </div>
                     </SwiperSlide>
                   ))}

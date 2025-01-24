@@ -1,3 +1,4 @@
 export enum ProductVariantEnum {
-  swatch = 'swatch'
+  swatch = 'swatch',
+  rectangle = 'rectangle'
 }

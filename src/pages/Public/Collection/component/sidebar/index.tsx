@@ -1,52 +1,83 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { FC, memo, useCallback, useEffect, useRef, useState } from 'react';
 import styles from './sidebar.module.scss';
 import { bindClassNames } from '@/utils/helpers/cx';
 import CollapsibleBlock from '@/components/commons/collapse';
 import { CheckedIcon, CloseIcon } from '@/utils/icons';
-import { ProductType } from '@/types/product';
+import { FormatVariantsType, ProductType } from '@/types/product';
 import './sidebar.scss';
 import { setFilterSidebarState } from '@/redux/slice/app/app.slice';
 import { useDispatch } from 'react-redux';
+import { groupedOptionsFc } from '@/utils/helpers/groupOptions';
+import { ProductVariantEnum } from '@/types/enum/products';
 
 const cx = bindClassNames(styles);
 
 interface SidebarProps {
   products: ProductType[];
+  callback: (searchParams: string) => Promise<void>;
 }
-
-const PRICE_GAP = 1000;
+const PRICE_GAP = 5;
 const MAX_PRICE = 10000;
 
-const SidebarComponent: React.FC<SidebarProps> = memo(({ products }) => {
+const SidebarComponent: React.FC<SidebarProps> = memo(({ products, callback }) => {
   const [minVal, setMinVal] = useState(0);
   const [maxVal, setMaxVal] = useState(MAX_PRICE);
-  const [sizes, setSizes] = useState<string[]>([]);
-  const [colors, setColors] = useState<string[]>([]);
+  const [maxPrice, setMaxPrice] = useState(0);
+  const [variants, setVariants] = useState<FormatVariantsType>();
   const dispatch = useDispatch();
+  const getMinMaxPrice = useCallback((products: ProductType[]) => {
+    let minPrice = Number.MAX_SAFE_INTEGER;
+    let maxPrice = 0;
+    products.forEach((product) => {
+      if (product.variants && product.variants.length > 0) {
+        product.variants.forEach((variant) => {
+          if (parseFloat(variant.price) > maxPrice) {
+            maxPrice = parseFloat(variant.price);
+          }
+          if (parseFloat(variant.price) < minPrice) {
+            minPrice = parseFloat(variant.price);
+          }
+        });
+      } else {
+        if (parseFloat(product.price) > maxPrice) {
+          maxPrice = parseFloat(product.price);
+        }
+        if (parseFloat(product.price) < minPrice) {
+          minPrice = parseFloat(product.price);
+        }
+      }
+    });
+    return {
+      minPrice,
+      maxPrice
+    };
+  }, []);
 
   useEffect(() => {
-    const colorSet = new Set<string>();
-    const sizeSet = new Set<string>();
-
-    products.forEach((product) => {
-      product.variants?.forEach((variant) => {
-        variant.values.forEach((option) => {
-          variant.type === 'swatch' ? colorSet.add(option.name) : sizeSet.add(option.name);
-        });
-      });
-    });
-
-    setSizes([...sizeSet]);
-    setColors([...colorSet]);
-  }, [products]);
+    if (products) {
+      const groupedOptions = groupedOptionsFc(products);
+      setVariants(groupedOptions);
+      const { minPrice, maxPrice } = getMinMaxPrice(products);
+      setMaxPrice(maxPrice);
+      setMinVal(minPrice);
+      setMaxVal(maxPrice);
+    }
+  }, []);
 
   useEffect(() => {
     const progress = document.querySelector<HTMLDivElement>('.progress');
     if (!progress) return;
 
-    progress.style.left = `${(minVal / MAX_PRICE) * 100}%`;
-    progress.style.right = `${100 - (maxVal / MAX_PRICE) * 100}%`;
-  }, [minVal, maxVal]);
+    const normalizedMin = minVal - 20;
+    const normalizedMax = maxVal - 20;
+    const normalizedMaxPrice = maxPrice - 20;
+
+    const left = (normalizedMin / normalizedMaxPrice) * 100;
+    const right = 100 - (normalizedMax / normalizedMaxPrice) * 100;
+
+    progress.style.left = `${left}%`;
+    progress.style.right = `${right}%`;
+  }, [minVal, maxVal, maxPrice]);
 
   const handleRangeChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,38 +88,74 @@ const SidebarComponent: React.FC<SidebarProps> = memo(({ products }) => {
         setMaxVal(Math.max(value, minVal + PRICE_GAP));
       }
     },
-    [minVal, maxVal]
+    [minVal, maxVal, maxPrice]
   );
 
   // render option
-  const renderColorOptions = () =>
-    colors.map((color, index) => (
-      <li key={index} className={cx('field')}>
-        <input hidden type="checkbox" id={`filter__color-${color}-${index}`} />
-        <label
-          htmlFor={`filter__color-${color}-${index}`}
-          className={cx('inline-block h-[30px] w-[30px] cursor-pointer rounded-full border p-[2px]')}
-          title={color}
-        >
-          <span style={{ background: color }} className="block h-full w-full rounded-full"></span>
-        </label>
-      </li>
-    ));
-  const renderSizeOptions = () =>
-    sizes.map((size, index) => (
-      <li key={index} className={cx('field')}>
-        <input hidden type="checkbox" id={`filter__size-${size}-${index}`} />
-        <label
-          htmlFor={`filter__size-${size}-${index}`}
-          className={cx('inline-block h-[30px] w-[30px] cursor-pointer border p-[2px]')}
-          title={size}
-        >
-          <span className="flex h-full w-full items-center justify-center text-[12px]">{size}</span>
-        </label>
-      </li>
-    ));
+  const renderVariantFilter = () => {
+    if (variants) {
+      return (
+        <>
+          {Object.values(variants).map((variant) => (
+            <CollapsibleBlock key={variant.name} title={variant.name}>
+              <ul className={cx(`filter-${variant.name}`, 'mb-[30px] flex gap-[10px]')}>
+                {variant.values.map((value, indexValue) => {
+                  if (variant.type == ProductVariantEnum.swatch) {
+                    return (
+                      <li key={indexValue} className={cx('field')}>
+                        <input
+                          value={value.value}
+                          name={`filter.option.${variant.name}`}
+                          hidden
+                          type="checkbox"
+                          id={`filter__${variant.name}-${value.value}-${indexValue}`}
+                        />
+                        <label
+                          htmlFor={`filter__${variant.name}-${value.value}-${indexValue}`}
+                          className={cx('inline-block h-[30px] w-[30px] cursor-pointer rounded-full border p-[2px]')}
+                          title={value.value}
+                        >
+                          <span style={{ background: value.value }} className="block h-full w-full rounded-full"></span>
+                        </label>
+                      </li>
+                    );
+                  }
+                  return (
+                    <li key={indexValue} className={cx('field')}>
+                      <input
+                        name={`filter.option.${variant.name}`}
+                        hidden
+                        value={value.value}
+                        type="checkbox"
+                        id={`filter__${variant.name}-${value.value}-${indexValue}`}
+                      />
+                      <label
+                        htmlFor={`filter__${variant.name}-${value.value}-${indexValue}`}
+                        className={cx('inline-block h-[30px] w-[30px] cursor-pointer border p-[2px]')}
+                        title={value.value}
+                      >
+                        <span className="flex h-full w-full items-center justify-center text-[12px]">
+                          {value.value}
+                        </span>
+                      </label>
+                    </li>
+                  );
+                })}
+              </ul>
+            </CollapsibleBlock>
+          ))}
+        </>
+      );
+    }
+  };
+  const handleFilter = useCallback(async (e: React.ChangeEvent<HTMLFormElement>) => {
+    const form = e.target.form;
+    const formData = new FormData(form);
+    let searchParams = new URLSearchParams(formData as any).toString();
+    await callback(searchParams);
+  }, []);
   return (
-    <div className={cx('sidebar-wrapper')}>
+    <form onChange={handleFilter} className={cx('sidebar-wrapper')}>
       <div className={cx('sidebar-header', 'mb-[20px] hidden items-center justify-between phone:flex')}>
         <h3 className={cx('text-[18px] font-[900]')}>Filter</h3>
         <div
@@ -105,7 +172,12 @@ const SidebarComponent: React.FC<SidebarProps> = memo(({ products }) => {
           <ul className={cx('filter-availability', 'mb-[30px]')}>
             {['In Stock', 'Out Of Stock'].map((label, index) => (
               <li key={index} className={cx('facets__item', index === 0 ? 'mb-[10px]' : '')}>
-                <input id={`filter-availability-${index}`} type="radio" name="filter.availability" value={index} />
+                <input
+                  id={`filter-availability-${index}`}
+                  type="radio"
+                  name="filter.availability"
+                  value={index == 0 ? '1' : 0}
+                />
                 <label htmlFor={`filter-availability-${index}`}>
                   <span className={cx('content-center', 'h-[20px] w-[20px] border')}>
                     <CheckedIcon />
@@ -125,13 +197,14 @@ const SidebarComponent: React.FC<SidebarProps> = memo(({ products }) => {
                   <div key={index} className="field flex w-[45%] gap-[5px] rounded-[5px] border p-[5px]">
                     <span className="opacity-[0.8]">$</span>
                     <input
+                      name={`filter.price.${type}`}
                       type="number"
                       className="w-[90%] opacity-[0.8]"
                       value={type === 'minVal' ? minVal : maxVal}
                       onChange={(e) =>
                         type === 'minVal'
-                          ? setMinVal(Math.min(parseInt(e.target.value, 10), maxVal - PRICE_GAP))
-                          : setMaxVal(Math.max(parseInt(e.target.value, 10), minVal + PRICE_GAP))
+                          ? setMinVal(Math.min(parseInt(e.target.value, 10)))
+                          : setMaxVal(Math.max(parseInt(e.target.value, 10)))
                       }
                     />
                   </div>
@@ -141,20 +214,29 @@ const SidebarComponent: React.FC<SidebarProps> = memo(({ products }) => {
             <div className="filter_price-slide group">
               <div className="progress"></div>
               <div className="range-input">
-                <input className="range-min" type="range" max={MAX_PRICE} value={minVal} onChange={handleRangeChange} />
-                <input className="range-max" type="range" max={MAX_PRICE} value={maxVal} onChange={handleRangeChange} />
+                <input
+                  className="range-min"
+                  type="range"
+                  min="20"
+                  max={maxPrice}
+                  value={minVal}
+                  onChange={handleRangeChange}
+                />
+                <input
+                  className="range-max"
+                  type="range"
+                  min="20"
+                  max={maxPrice}
+                  value={maxVal}
+                  onChange={handleRangeChange}
+                />
               </div>
             </div>
           </div>
         </CollapsibleBlock>
-        <CollapsibleBlock title="Color">
-          <ul className={cx('filter-color', 'mb-[30px] flex gap-[10px]')}>{renderColorOptions()}</ul>
-        </CollapsibleBlock>
-        <CollapsibleBlock title="Size">
-          <ul className={cx('filter-size', 'mb-[30px] flex gap-[10px]')}>{renderSizeOptions()}</ul>
-        </CollapsibleBlock>
+        {renderVariantFilter()}
       </div>
-    </div>
+    </form>
   );
 });
 

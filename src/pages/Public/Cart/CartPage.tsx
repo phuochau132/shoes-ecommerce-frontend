@@ -331,7 +331,7 @@ const CartPage = () => {
         </div>
       </div>
       <div className={cx('productView__right-item', 'related-product')}>
-        <ProductBlockComponent viewAllButton={false} title="Relate Product" collection={sampleProducts} />
+        <ProductBlockComponent viewAllButton={false} title="Relate Product" collectionHandle="new-in" />
       </div>
     </div>
   );
