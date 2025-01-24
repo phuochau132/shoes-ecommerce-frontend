@@ -1,17 +1,15 @@
 import React, { memo, CSSProperties, useEffect, useState, useRef } from 'react';
-import styles from './product-block.module.scss';
+import styles from '../productBlock/product-block.module.scss';
 import ProductCardComponent from '../card';
 import { Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { bindClassNames } from '@/utils/helpers/cx';
 import { ProductType } from '@/types/product';
-import { useGetCollectionMutation } from '@/apis/collection/collection.api';
-import ProductCardLoadingComponent from '../cardLoading';
 import { Currency } from '@/utils/helpers/CurrenciesFormat';
 
 interface ProductBlockProps {
   style?: CSSProperties;
-  collectionHandle: string;
+  products: ProductType[];
   title?: string;
   viewAllButton?: boolean;
   limit?: number;
@@ -22,55 +20,13 @@ interface ProductBlockProps {
 
 const cx = bindClassNames(styles);
 
-const ProductBlockComponent: React.FC<ProductBlockProps> = memo(
-  ({
-    collectionHandle,
-    title,
-    viewAllButton = false,
-    useHeader = true,
-    sectionClass,
-    style,
-    limit = 20,
-    titleClass
-  }) => {
-    const [products, setProduct] = useState([]);
-    const [getCollection] = useGetCollectionMutation();
-    const sectionRef = useRef<HTMLDivElement>(null);
-
-    const handleGetProducts = async () => {
-      const response = await getCollection({
-        handle: collectionHandle
-      }).unwrap();
-      setProduct(response.data.products);
-    };
-
-    useEffect(() => {
-      const handleIntersection = (entries: IntersectionObserverEntry[]) => {
-        const [entry] = entries;
-        if (entry.isIntersecting) {
-          if (!entry.target.classList.contains('is-loaded')) {
-            handleGetProducts();
-            entry.target.classList.add('is-loaded');
-          }
-        }
-      };
-      const observer = new IntersectionObserver(handleIntersection, {
-        threshold: 0.5
-      });
-      if (sectionRef.current) {
-        observer.observe(sectionRef.current);
-      }
-      return () => {
-        if (sectionRef.current) {
-          observer.unobserve(sectionRef.current);
-        }
-      };
-    }, []);
+const NormalProductBlockComponent: React.FC<ProductBlockProps> = memo(
+  ({ products, title, viewAllButton = false, useHeader = true, sectionClass, style, limit = 20, titleClass }) => {
     useEffect(() => {
       Currency.initializeCurrency();
     }, [products]);
     return (
-      <section ref={sectionRef} style={style} className={cx('section-product-block', sectionClass && sectionClass)}>
+      <section style={style} className={cx('section-product-block', sectionClass && sectionClass)}>
         {useHeader && (
           <div className={cx('section-header', 'mb-[30px]')}>
             <h3 className={cx('title')}>
@@ -86,7 +42,7 @@ const ProductBlockComponent: React.FC<ProductBlockProps> = memo(
           </div>
         )}
         <div className={cx('section-content')}>
-          {products && products.length > 0 ? (
+          {products && products.length > 0 && (
             <Swiper
               modules={[Navigation]}
               spaceBetween={20}
@@ -111,14 +67,6 @@ const ProductBlockComponent: React.FC<ProductBlockProps> = memo(
                 }
               })}
             </Swiper>
-          ) : (
-            <div className="products flex">
-              {Array.from({ length: 4 }).map(() => {
-                return (
-                  <ProductCardLoadingComponent className="phone::min-w-[50%] w-full mobileTablet:min-w-[33%] mobileTabletUp:min-w-[25%]" />
-                );
-              })}
-            </div>
           )}
         </div>
       </section>
@@ -126,4 +74,4 @@ const ProductBlockComponent: React.FC<ProductBlockProps> = memo(
   }
 );
 
-export default ProductBlockComponent;
+export default NormalProductBlockComponent;

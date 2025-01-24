@@ -5,7 +5,6 @@
         padding: 2px;
         display: inline-block;
         cursor: pointer;
-        border: 1px solid #cbcbcb;
 
         span {
             margin: auto;
@@ -20,11 +19,6 @@
         .swatch {
             background: var(--variant-background)
         }
-
-    }
-
-    input:checked+label {
-        border: 1px solid #333;
     }
 }
 

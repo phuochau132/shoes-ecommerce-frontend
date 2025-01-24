@@ -4,6 +4,7 @@ import { ProductType, VariantType } from '@/types/product';
 import { bindClassNames } from '@/utils/helpers/cx';
 import { ProductVariantEnum } from '@/types/enum/products';
 import { getParentsByClass } from '@/utils/helpers/$.parents';
+import { groupedOptions, groupedOptionsFc } from '@/utils/helpers/groupOptions';
 
 interface ProductBlockProps {
   style?: CSSProperties;
@@ -22,22 +23,8 @@ const ProductVariantComponent: React.FC<ProductBlockProps> = memo(({ product, cl
       const btn_addToCart = parent.querySelector('button[data-btn-addToCart]');
     }
   }, []);
-  const groupedOptions: Record<string, { name: string; values: Record<string, any>[]; type: string }> = {};
-  product.variants?.forEach((variant) => {
-    variant.options?.forEach((optionsValue) => {
-      const optionName = optionsValue.option.name;
-      const optionValue = optionsValue.value;
-      const valueId = optionsValue.id;
-      if (!groupedOptions[optionName]) {
-        groupedOptions[optionName] = { name: optionName, values: [], type: optionsValue.option.type };
-      }
-      groupedOptions[optionName].values.push({
-        id: valueId,
-        value: optionValue
-      });
-    });
-  });
 
+  const groupedOptions = groupedOptionsFc([product]);
   return (
     <>
       {groupedOptions &&
@@ -58,7 +45,7 @@ const ProductVariantComponent: React.FC<ProductBlockProps> = memo(({ product, cl
               <div className={cx('values', 'row flex gap-[10px]', { 'justify-center': isCard, 'mt-[10px]': !isCard })}>
                 {option.values.map((optionValue, optionIndex) => {
                   return (
-                    <div key={optionIndex}>
+                    <div className="field" key={optionIndex}>
                       <input
                         onChange={(e) => handleChangingVariant(e)}
                         id={`option-${product.id}-${optionValue.id}`}

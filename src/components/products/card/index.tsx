@@ -1,6 +1,6 @@
 import React, { memo, CSSProperties, useCallback } from 'react';
 import styles from './product-card.module.scss';
-import { CloseIcon, QuickViewIcon, WishListIcon } from '@/utils/icons';
+import { QuickViewIcon, WishListIcon } from '@/utils/icons';
 import { bindClassNames } from '@/utils/helpers/cx';
 import { ProductType } from '@/types/product';
 import ProductVariantComponent from '../productVariant';
@@ -29,6 +29,7 @@ const ProductCardComponent: React.FC<ProductCardComponentProps> = memo(({ produc
   const [getUserInfo] = useGetInfoMutation();
 
   const handleQuickView = useCallback(() => {
+    console.log('product', product);
     dispatch(
       setQuickViewPopup({
         product: product,
@@ -83,7 +84,7 @@ const ProductCardComponent: React.FC<ProductCardComponentProps> = memo(({ produc
               <img className={cx('second-image')} src={product.images[1].url} alt="" />
             </>
           )}
-          <a href={product.handle} className={cx('card-link', 'cursor-pointer')}></a>
+          <a href={`/products/${product.handle}`} className={cx('card-link', 'cursor-pointer')}></a>
         </div>
         <div className={cx('card-action')}>
           <AddToCartComponent
@@ -129,12 +130,12 @@ const ProductCardComponent: React.FC<ProductCardComponentProps> = memo(({ produc
       </div>
       <div className={cx('card-information', 'mt-[10px]')}>
         <div className={cx('card-vendor', 'text-center')}>
-          <a href={product.handle} title={product.vendor}>
+          <a href={`/products/${product.handle}`} title={product.vendor}>
             {product.vendor}
           </a>
         </div>
         <div className={cx('card-title', 'text-center')}>
-          <a href={product.handle}>{product.title}</a>
+          <a href={`/products/${product.handle}`}>{product.title}</a>
         </div>
         <div className={cx('card-review', 'text-center')}>
           <ProductReviewComponent product={product} />

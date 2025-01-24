@@ -66,6 +66,7 @@ module.exports = {
       tablet: { min: '768px', max: '1024px' },
       desktop: { min: '1025' },
       mobileTablet: { max: '1023px' },
+      mobileTabletUp: { min: '1024px' },
       tabletUp: { min: '768px' }
     },
     boxShadow: {

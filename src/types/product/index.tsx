@@ -1,9 +1,10 @@
 import { ReviewType } from '../review';
 
 export type ProductType = {
+  flatMap(arg0: (product: any) => any[]): unknown;
   id: number;
   title: string;
-  price: number;
+  price: string;
   images: ProductImageType[];
   quantity?: number;
   description: string;
@@ -20,6 +21,7 @@ export type ProductImageType = {
 };
 
 export type VariantType = {
+  price: string;
   id: number;
   options: OptionValueType[];
 };
@@ -35,3 +37,13 @@ export type OptionType = {
   name: string;
   type: string;
 };
+type VariantValue = {
+  id: string | number;
+  value: string;
+};
+type FormatVariantType = {
+  name: string;
+  values: VariantValue[];
+  type: 'swatch' | 'rectangle' | string;
+};
+export type FormatVariantsType = Record<string, FormatVariantType>;
