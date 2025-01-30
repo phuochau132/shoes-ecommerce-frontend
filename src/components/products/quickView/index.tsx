@@ -1,4 +1,4 @@
-import React, { memo, CSSProperties, useEffect } from 'react';
+import React, { memo, CSSProperties, useEffect, useState } from 'react';
 import styles from './quickView.module.scss';
 import { bindClassNames } from '@/utils/helpers/cx';
 import { ProductType } from '@/types/product';
@@ -12,6 +12,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Controller } from 'swiper/modules';
 import { Currency } from '@/utils/helpers/CurrenciesFormat';
 import AddToCartComponent from '../addToCart';
+import { AddToCartForm } from '@/pages/Public/Product/ProductPage';
 interface QuickViewComponentProps {
   style?: CSSProperties;
   product: ProductType;
@@ -19,6 +20,19 @@ interface QuickViewComponentProps {
 const cx = bindClassNames(styles);
 const QuickViewComponent: React.FC<QuickViewComponentProps> = memo(({}) => {
   const product = useSelector((state: any) => state.app.quickViewInfo.product);
+  const [canPurchase, setCanPurchase] = useState<boolean>(false);
+  const [addToCartForm, setAddToCartForm] = useState<AddToCartForm>({
+    productId: parseInt(product.id as any),
+    quantity: 1,
+    variantId: null
+  });
+  console.log('product.quantity', product.quantity);
+  useEffect(() => {
+    setCanPurchase(product.quantity > 0);
+  }, [product]);
+
+  const [quantityInStock, setQuantityInStock] = useState<number>(0);
+  const [isAllVariantsSelected, setIsAllVariantsSelected] = useState(false);
   useEffect(() => {
     Currency.initializeCurrency();
   }, []);
@@ -81,7 +95,24 @@ const QuickViewComponent: React.FC<QuickViewComponentProps> = memo(({}) => {
 
         {product.variants && (
           <div className={cx('productView__right-item', 'product-variant')}>
-            <ProductVariantComponent product={product} />
+            <ProductVariantComponent
+              isQuickView={true}
+              callback={(variantId, isAllVariantSelected, quantityInStock, canPurchase) => {
+                console.log('variantId', variantId);
+                if (variantId) {
+                  setAddToCartForm({
+                    ...addToCartForm,
+                    variantId
+                  });
+                }
+                setIsAllVariantsSelected(isAllVariantSelected);
+                if (quantityInStock) {
+                  setQuantityInStock(quantityInStock);
+                }
+                setCanPurchase(canPurchase);
+              }}
+              product={product}
+            />
           </div>
         )}
         <div className={cx('productView__right-item', 'product-quantity', 'mt-[20px]')}>
@@ -89,7 +120,22 @@ const QuickViewComponent: React.FC<QuickViewComponentProps> = memo(({}) => {
             Quantity:
           </label>
           <div className={cx('mt-[10px]')}>
-            <QuantityBoxComponent />
+            <QuantityBoxComponent
+              onChange={(event) => {
+                setAddToCartForm({
+                  ...addToCartForm,
+                  quantity: parseInt(event.target.value)
+                });
+                setCanPurchase(parseInt(event.target.value) <= quantityInStock);
+              }}
+              callback={(quantity) => {
+                setAddToCartForm({
+                  ...addToCartForm,
+                  quantity: quantity
+                });
+                setCanPurchase(quantity <= quantityInStock);
+              }}
+            />
           </div>
         </div>
         <div className={cx('productView__right-item', 'sub-total', 'mt-[20px] font-normal')}>
@@ -101,7 +147,13 @@ const QuickViewComponent: React.FC<QuickViewComponentProps> = memo(({}) => {
           </span>
         </div>
         <div className={cx('productView__right-item', 'product-action', 'mt-[20px] flex items-center gap-[10px]')}>
-          <AddToCartComponent product={product} className={cx('mt-[unset] w-[100%]')} />
+          <AddToCartComponent
+            isAllVariantsSelected={isAllVariantsSelected}
+            dataAddToCart={addToCartForm}
+            product={product}
+            className={cx('mt-[unset] w-[100%]')}
+            canPurchase={canPurchase}
+          />
           <div
             className={cx('wish-list', 'cursor-pointer rounded-[50%] border border-solid border-[#c7c7c7] p-[10px]')}
           >

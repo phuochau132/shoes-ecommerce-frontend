@@ -15,19 +15,17 @@ interface ReviewItemComponentProps {
 const ReviewItemComponent: React.FC<ReviewItemComponentProps> = memo(
   ({ review, callback, className, handleRemoveReview }) => {
     const { user } = useSelector((state: any) => state.user);
-    if (user) {
-      console.log(user);
-    }
+    console.log('review', review);
     return (
       <div className={`review-item ${className && className}`}>
         <div className="review-header flex justify-between">
-          <div className="user-info flex items-center gap-[10px]">
-            <div className="icon h-[50px] w-[50px] rounded-full bg-color-border p-[10px]">
-              <img src="https://cdn-icons-png.flaticon.com/128/8722/8722274.png" className="h-full w-full" alt="" />
+          <div className="user-info flex gap-[10px]">
+            <div className="icon h-[50px] w-[50px] rounded-full bg-color-border">
+              <img src={review.user.image} className="h-full w-full object-cover" alt="Error" />
             </div>
             <div className="name">
               <p className="text-[16px] font-[600]">{review.user.full_name}</p>
-              <div className="date text-color-grey mt-[5px] font-normal opacity-[0.7]">
+              <div className="date text-color-grey mt-[5px] flex items-center font-normal opacity-[0.7]">
                 {new Date(review.created_at).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
@@ -38,7 +36,7 @@ const ReviewItemComponent: React.FC<ReviewItemComponentProps> = memo(
                     onClick={() => {
                       handleRemoveReview(review.id);
                     }}
-                    className="deleteReview-action cursor-pointer pt-[10px]"
+                    className="deleteReview-action ml-[10px] cursor-pointer"
                   >
                     <RemoveIcon />
                   </div>

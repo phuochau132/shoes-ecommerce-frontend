@@ -4,75 +4,143 @@ import { ProductType, VariantType } from '@/types/product';
 import { bindClassNames } from '@/utils/helpers/cx';
 import { ProductVariantEnum } from '@/types/enum/products';
 import { getParentsByClass } from '@/utils/helpers/$.parents';
-import { groupedOptions, groupedOptionsFc } from '@/utils/helpers/groupOptions';
+import { groupedOptionsFc } from '@/utils/helpers/groupOptions';
+import { Currency } from '@/utils/helpers/CurrenciesFormat';
 
 interface ProductBlockProps {
   style?: CSSProperties;
   product: ProductType;
   className?: string;
   isCard?: boolean;
+  isQuickView?: boolean;
+  callback: (variantId: number, isAllVariantSelected: boolean, quantityInStock: number, canPurchase: boolean) => void;
 }
 
 const cx = bindClassNames(styles);
 
-const ProductVariantComponent: React.FC<ProductBlockProps> = memo(({ product, className, isCard = false }) => {
-  const handleChangingVariant = useCallback((e: ChangeEvent) => {
-    const target = e.target as HTMLElement;
-    const parent = getParentsByClass(target, 'form-AddToCart');
-    if (parent) {
-      const btn_addToCart = parent.querySelector('button[data-btn-addToCart]');
-    }
-  }, []);
-
-  const groupedOptions = groupedOptionsFc([product]);
-  return (
-    <>
-      {groupedOptions &&
-        Object.values(groupedOptions)?.map((option, index) => {
-          return (
-            <fieldset
-              key={index}
-              data-variant-type={option.type}
-              className={cx('product__form-input', 'mt-[10px]', className, {
-                hidden: option.type != ProductVariantEnum.swatch && isCard
-              })}
-            >
-              {!isCard && (
-                <legend className={cx('form__label', 'font-[500]')}>
-                  {option.name}: <span className={cx('current-value', 'font-[300]')}>{option.values[0].value}</span>
-                </legend>
-              )}
-              <div className={cx('values', 'row flex gap-[10px]', { 'justify-center': isCard, 'mt-[10px]': !isCard })}>
-                {option.values.map((optionValue, optionIndex) => {
-                  return (
-                    <div className="field" key={optionIndex}>
-                      <input
-                        onChange={(e) => handleChangingVariant(e)}
-                        id={`option-${product.id}-${optionValue.id}`}
-                        data-variant-id={optionValue}
-                        type="radio"
-                        name={option.name}
-                      />
-                      <label
-                        className={cx('product__form-label', { 'w-[30px]': isCard, 'h-[30px]': isCard })}
-                        htmlFor={`option-${product.id}-${optionValue.id}`}
-                      >
-                        <span
-                          className={cx(option.type)}
-                          style={{ '--variant-background': optionValue.value } as React.CSSProperties}
-                        >
-                          {option.type != ProductVariantEnum.swatch && optionValue.value}
-                        </span>
-                      </label>
-                    </div>
-                  );
-                })}
-              </div>
-            </fieldset>
+const ProductVariantComponent: React.FC<ProductBlockProps> = memo(
+  ({ callback, product, className, isCard = false, isQuickView = false }) => {
+    const handleChangingVariant = useCallback(
+      (e: ChangeEvent) => {
+        const target = e.target as HTMLInputElement;
+        const currentValue = getParentsByClass(target, 'product__form-input')?.querySelector('.current-value');
+        if (currentValue) {
+          currentValue.textContent = target.value;
+        }
+        const currentVariant = getCurrentVariant();
+        if (currentVariant) {
+          callback(
+            parseInt(currentVariant.id as any),
+            true,
+            parseInt(currentVariant.stock as any),
+            parseInt((document.querySelector('.product-quantity input') as HTMLInputElement)?.value) <=
+              parseInt(currentVariant.stock as any)
           );
-        })}
-    </>
-  );
-});
+          if (!isQuickView) {
+            document
+              .querySelector('.productView_right-custom')
+              ?.querySelectorAll('.money')
+              .forEach((item) => {
+                item.setAttribute('data-currency-value', currentVariant.price);
+              });
+          } else {
+            document
+              .querySelector('.quickView-modal')
+              ?.querySelectorAll('.money')
+              .forEach((item) => {
+                item.setAttribute('data-currency-value', currentVariant.price);
+              });
+          }
+        } else {
+          // @ts-ignore
+          callback(null, false, null, false);
+        }
+        Currency.initializeCurrency();
+      },
+      [product]
+    );
+
+    const groupedOptions = groupedOptionsFc([product]);
+    const getCurrentVariant = (): VariantType | undefined => {
+      const numberOfOption = !isQuickView
+        ? document.querySelectorAll('.form-AddToCart fieldset').length
+        : document.querySelectorAll('.quickView-modal .product-variant fieldset').length;
+      console.log('numberOfOption', numberOfOption);
+      const inputsIsChecked = Array.from(
+        !isQuickView
+          ? document.querySelector('.product-page .product-variant')?.querySelectorAll('input:checked') || []
+          : document.querySelector('.quickView-modal .product-variant')?.querySelectorAll('input:checked') || []
+      ) as HTMLInputElement[];
+
+      if (inputsIsChecked && inputsIsChecked.length) {
+        const values = inputsIsChecked.map((input) => {
+          return input.value;
+        });
+        if (product.variants && values.length == numberOfOption) {
+          const variant = product.variants.filter((variant) => {
+            return values.every((value) =>
+              variant.options.some((option) => {
+                return option.value === value;
+              })
+            );
+          });
+          return variant[0];
+        }
+      }
+    };
+
+    return (
+      <>
+        {groupedOptions &&
+          Object.values(groupedOptions)?.map((option, index) => {
+            return (
+              <fieldset
+                key={index}
+                data-variant-type={option.type}
+                className={cx('product__form-input', 'mt-[10px]', className, {
+                  hidden: option.type != ProductVariantEnum.swatch && isCard
+                })}
+              >
+                {!isCard && (
+                  <legend className={cx('form__label', 'font-[500]')}>
+                    {option.name}: <span className={cx('current-value', 'font-[300]')}>{option.values[0].value}</span>
+                  </legend>
+                )}
+                <div
+                  className={cx('values', 'row flex gap-[10px]', { 'justify-center': isCard, 'mt-[10px]': !isCard })}
+                >
+                  {option.values.map((optionValue, optionIndex) => {
+                    return (
+                      <div className="field" key={optionIndex}>
+                        <input
+                          value={optionValue.value}
+                          onChange={(e) => handleChangingVariant(e)}
+                          id={`option-${product.id}-${optionValue.id}`}
+                          data-variant-id={optionValue.id}
+                          type="radio"
+                          name={option.name}
+                        />
+                        <label
+                          className={cx('product__form-label', { 'w-[30px]': isCard, 'h-[30px]': isCard })}
+                          htmlFor={`option-${product.id}-${optionValue.id}`}
+                        >
+                          <span
+                            className={cx(option.type)}
+                            style={{ '--variant-background': optionValue.value } as React.CSSProperties}
+                          >
+                            {option.type != ProductVariantEnum.swatch && optionValue.value}
+                          </span>
+                        </label>
+                      </div>
+                    );
+                  })}
+                </div>
+              </fieldset>
+            );
+          })}
+      </>
+    );
+  }
+);
 
 export default ProductVariantComponent;

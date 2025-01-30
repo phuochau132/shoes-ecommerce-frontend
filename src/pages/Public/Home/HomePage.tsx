@@ -53,7 +53,7 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-      <ProductBlockComponent collectionHandle="new-in"></ProductBlockComponent>
+      <ProductBlockComponent layout="grid" collectionHandle="new-in"></ProductBlockComponent>
     </div>
   );
 };

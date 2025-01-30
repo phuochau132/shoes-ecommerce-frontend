@@ -15,6 +15,8 @@ import { bindClassNames } from '@/utils/helpers/cx';
 import { Currency } from '@/utils/helpers/CurrenciesFormat';
 import { paths } from '@/routes/paths';
 import { useGetInfoMutation } from '@/apis/user/user.api';
+import { useGetCartMutation } from '@/apis/cart/cart.api';
+import { setCart } from '@/redux/slice/cart/cart.slice';
 
 export type Navigation = {
   name: string;
@@ -98,7 +100,6 @@ const MainHeader: React.FC = memo(() => {
   const currenciesToggleEl = useRef<HTMLDivElement>(null);
   const currentlyCurrencyEl = useRef<HTMLDivElement>(null);
   const menuSidebarState = useSelector((state: any) => state.app.menuSidebarState);
-  const [getInfo] = useGetInfoMutation();
 
   const handleResize = useCallback(() => {
     if (window.innerWidth < 768) {
@@ -172,7 +173,13 @@ const MainHeader: React.FC = memo(() => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-
+  const [getCart, { isLoading }] = useGetCartMutation();
+  const handleSidebarOpening = async () => {
+    try {
+      const response = await getCart({}).unwrap();
+      dispatch(setCart(response.data));
+    } catch (error) {}
+  };
   return (
     <div className={cx('navigation', 'align-center container flex justify-between py-[10px] phone:pr-[15px]')}>
       {isMobile && (
@@ -252,14 +259,17 @@ const MainHeader: React.FC = memo(() => {
             <SignInIcon className={cx('icon', 'fade-in-up')} />
           </div>
         )}
-        <div
-          onClick={() => {
-            dispatch(setCartSidebarState(true));
-          }}
-          className={cx('header__icon-item', 'header__icon--cart')}
-        >
-          <CartIcon className={cx('icon', 'fade-in-up')} />
-        </div>
+        {user && (
+          <div
+            onClick={() => {
+              dispatch(setCartSidebarState(true));
+              handleSidebarOpening();
+            }}
+            className={cx('header__icon-item', 'header__icon--cart')}
+          >
+            <CartIcon className={cx('icon', 'fade-in-up')} />
+          </div>
+        )}
         <div className={cx('header__icon-item', 'header__icon--currency', 'relative')}>
           <div
             onClick={() => {
