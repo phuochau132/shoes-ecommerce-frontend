@@ -23,6 +23,7 @@ export type ProductImageType = {
 export type VariantType = {
   price: string;
   id: number;
+  stock: number;
   options: OptionValueType[];
 };
 
@@ -36,6 +37,7 @@ export type OptionType = {
   id: number;
   name: string;
   type: string;
+  value: string;
 };
 type VariantValue = {
   id: string | number;

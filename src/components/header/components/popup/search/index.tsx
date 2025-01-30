@@ -43,8 +43,6 @@ const SearchPopup: React.FC = memo(() => {
       setIsSearchBlockVisible(true);
     }
   };
-  console.log('searchResults', searchResults);
-
   return (
     <div
       className={cx(

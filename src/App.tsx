@@ -121,7 +121,7 @@ function App() {
       {cartSidebarState && <CartSidebar />}
       {quickViewInfo.isShowed && quickViewInfo.product && (
         <div className="modal overflow-hidden">
-          <div className="modal-content flex phone:flex-col">
+          <div className="modal-content quickView-modal flex phone:flex-col">
             {quickViewInfo.isShowed && <QuickViewComponent product={quickViewInfo.product} />}
           </div>
           <div
@@ -132,7 +132,7 @@ function App() {
                 }
               }
             }}
-            className="popup-close-wrapper rotate absolute right-[20px] top-[10px] z-[3] cursor-pointer p-[10px]"
+            className="popup-close-wrapper rotate absolute right-[20px] top-[10px] z-[4] cursor-pointer p-[10px]"
           >
             <CloseIcon style={{ float: 'right' }} />
           </div>

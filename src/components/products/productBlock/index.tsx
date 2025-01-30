@@ -8,6 +8,7 @@ import { ProductType } from '@/types/product';
 import { useGetCollectionMutation } from '@/apis/collection/collection.api';
 import ProductCardLoadingComponent from '../cardLoading';
 import { Currency } from '@/utils/helpers/CurrenciesFormat';
+import PaginatorComponent from '@/components/commons/paginator';
 
 interface ProductBlockProps {
   style?: CSSProperties;
@@ -18,10 +19,10 @@ interface ProductBlockProps {
   titleClass?: string;
   sectionClass?: string;
   useHeader?: boolean;
+  layout?: string;
 }
 
 const cx = bindClassNames(styles);
-
 const ProductBlockComponent: React.FC<ProductBlockProps> = memo(
   ({
     collectionHandle,
@@ -30,20 +31,27 @@ const ProductBlockComponent: React.FC<ProductBlockProps> = memo(
     useHeader = true,
     sectionClass,
     style,
-    limit = 20,
-    titleClass
+    limit = 8,
+    titleClass,
+    layout = 'slider'
   }) => {
-    const [products, setProduct] = useState([]);
-    const [getCollection] = useGetCollectionMutation();
+    const [products, setProducts] = useState<ProductType[]>([]);
+    const [getCollection, { isLoading }] = useGetCollectionMutation();
+    const [page, setPage] = useState(1);
     const sectionRef = useRef<HTMLDivElement>(null);
-
+    const [numberOfPage, setNumberOfPage] = useState(1);
     const handleGetProducts = async () => {
+      let query = `limit=${Number.MAX_SAFE_INTEGER}`;
+      if (layout == 'grid') {
+        query = `page=${page}&limit=${limit}`;
+      }
       const response = await getCollection({
-        handle: collectionHandle
+        handle: collectionHandle,
+        query: query
       }).unwrap();
-      setProduct(response.data.products);
+      setNumberOfPage(Math.ceil(parseInt(response.data.total) / limit));
+      setProducts(response.data.products);
     };
-
     useEffect(() => {
       const handleIntersection = (entries: IntersectionObserverEntry[]) => {
         const [entry] = entries;
@@ -69,6 +77,16 @@ const ProductBlockComponent: React.FC<ProductBlockProps> = memo(
     useEffect(() => {
       Currency.initializeCurrency();
     }, [products]);
+    const handleShowMore = async () => {
+      try {
+        const response = await getCollection({
+          handle: collectionHandle,
+          query: `page=${page + 1}&limit=${limit}`
+        }).unwrap();
+        setPage(page + 1);
+        setProducts((prev) => [...prev, ...response.data.products]);
+      } catch (error) {}
+    };
     return (
       <section ref={sectionRef} style={style} className={cx('section-product-block', sectionClass && sectionClass)}>
         {useHeader && (
@@ -86,38 +104,57 @@ const ProductBlockComponent: React.FC<ProductBlockProps> = memo(
           </div>
         )}
         <div className={cx('section-content')}>
-          {products && products.length > 0 ? (
-            <Swiper
-              modules={[Navigation]}
-              spaceBetween={20}
-              slidesPerView={4}
-              slidesPerGroup={2}
-              navigation
-              pagination={{ clickable: true }}
-              breakpoints={{
-                1200: { slidesPerView: 5 },
-                1024: { slidesPerView: 4 },
-                768: { slidesPerView: 3 },
-                0: { slidesPerView: 2 }
-              }}
-            >
-              {products?.map((item: ProductType, index: number) => {
-                if (index < limit) {
+          {layout == 'slider' ? (
+            products && products.length > 0 ? (
+              <Swiper
+                modules={[Navigation]}
+                spaceBetween={20}
+                slidesPerView={4}
+                slidesPerGroup={2}
+                navigation
+                pagination={{ clickable: true }}
+                breakpoints={{
+                  1200: { slidesPerView: 5 },
+                  1024: { slidesPerView: 4 },
+                  768: { slidesPerView: 3 },
+                  0: { slidesPerView: 2 }
+                }}
+              >
+                {products?.map((item: ProductType, index: number) => {
+                  if (index < limit) {
+                    return (
+                      <SwiperSlide key={index}>
+                        <ProductCardComponent product={item} />
+                      </SwiperSlide>
+                    );
+                  }
+                })}
+              </Swiper>
+            ) : (
+              <div className="products flex">
+                {Array.from({ length: 4 }).map(() => {
                   return (
-                    <SwiperSlide key={index}>
-                      <ProductCardComponent product={item} />
-                    </SwiperSlide>
+                    <ProductCardLoadingComponent className="phone::min-w-[50%] w-full mobileTablet:min-w-[33%] mobileTabletUp:min-w-[25%]" />
                   );
-                }
-              })}
-            </Swiper>
+                })}
+              </div>
+            )
           ) : (
-            <div className="products flex">
-              {Array.from({ length: 4 }).map(() => {
-                return (
-                  <ProductCardLoadingComponent className="phone::min-w-[50%] w-full mobileTablet:min-w-[33%] mobileTabletUp:min-w-[25%]" />
-                );
-              })}
+            <div className="product-grid">
+              <div className="products flex-column flex flex-wrap">
+                {products?.map((item: ProductType, index: number) => {
+                  return (
+                    <ProductCardComponent
+                      key={index}
+                      className="w-full p-[10px] phone:max-w-[50%] tablet:max-w-[33%] mobileTabletUp:max-w-[25%] mobileTabletUp:max-w-[33%]"
+                      product={item}
+                    />
+                  );
+                })}
+              </div>
+              {numberOfPage != page && (
+                <PaginatorComponent isLoading={isLoading} handleShowMore={handleShowMore} className="mt-[30px]" />
+              )}
             </div>
           )}
         </div>

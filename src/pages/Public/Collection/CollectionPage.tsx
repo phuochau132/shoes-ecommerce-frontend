@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useGetCollectionMutation } from '@/apis/collection/collection.api';
 import LoaderComponent from '@/components/commons/loader';
+import { Currency } from '@/utils/helpers/CurrenciesFormat';
 
 const cx = bindClassNames(styles);
 
@@ -72,6 +73,11 @@ const CollectionPage: React.FC = () => {
   useEffect(() => {
     handleGetProducts();
   }, []);
+  useEffect(() => {
+    if (collection) {
+      Currency.initializeCurrency();
+    }
+  }, [collection]);
   const handleFilter = async (searchParams: string) => {
     window.history.pushState({}, '', `${handle}?${searchParams}`);
     if (handle) {
@@ -102,13 +108,14 @@ const CollectionPage: React.FC = () => {
           <div className={cx('collection__content-grid', 'pl-[50px] phone:pl-[0]')}>
             <div className={cx('collection-heading', 'mb-[20px] pl-[10px] pr-[10px]')}>
               <h1 className={cx('title', 'heading font-[700]')}>{collection.name}</h1>
-              <p className={cx('description', 'mt-[10px] text-[15px] font-[500] text-[bold]')}>
-                <span className={cx('text', 'font-normal')}>{collection.description}</span>
+              <p className={cx('description', 'text-bold mt-[10px] text-[15px]')}>
+                <span className={cx('text', 'font-bold')}>{collection.description}</span>
               </p>
             </div>
             <div className={cx('toolbar', 'flex justify-between pl-[10px] pr-[10px]')}>
               <div className={cx('result', 'phone:hidden')}>
-                <p className={cx('text font-normal text-[#444444]')}>There are 18 results in total</p>
+                {/* @ts-ignore */}
+                <p className={cx('text font-normal text-[#444444]')}>There are {collection.total} results in total</p>
               </div>
               <button
                 onClick={() => {

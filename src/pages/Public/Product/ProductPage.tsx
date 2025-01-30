@@ -35,11 +35,10 @@ const cx = bindClassNames(styles);
 
 const patternProduct: ProductType = {
   title: 'Classic Running Shoes',
-  price: 99.99,
   reviews: [],
   images: [],
   description: 'Comfortable and lightweight running shoes.',
-  link: '/product/classic-running-shoes',
+  handle: '/product/classic-running-shoes',
   vendor: 'Nike',
   variants: []
 };
@@ -51,6 +50,11 @@ const initialReview = {
 };
 
 const liveViewCount = [10, 25, 30];
+export interface AddToCartForm {
+  productId: number;
+  quantity: number;
+  variantId: number | null;
+}
 const ProductPage = () => {
   const { handle } = useParams();
   const dispatch = useDispatch();
@@ -63,6 +67,14 @@ const ProductPage = () => {
   const [previewImage, setPreviewImage] = useState('');
   const [showWritingReviewSection, setShowWritingReviewSection] = useState(false);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [canPurchase, setCanPurchase] = useState<boolean>(false);
+  const [addToCartForm, setAddToCartForm] = useState<AddToCartForm>({
+    productId: 0,
+    quantity: 1,
+    variantId: 0
+  });
+  const [quantityInStock, setQuantityInStock] = useState<number>(0);
+  const [isAllVariantsSelected, setIsAllVariantsSelected] = useState(false);
   const [getProduct, { isLoading: getProductIsLoading }] = useGetProductMutation();
   const [addReview, { isLoading: isAddReviewLoading }] = useAddReviewMutation();
   const [removeReview, { isloading }] = useRemoveReviewMutation();
@@ -172,9 +184,20 @@ const ProductPage = () => {
       try {
         const res = await getProduct({ handle }).unwrap();
         setProduct(res.data.product);
+        if (!product.variants) {
+          setQuantityInStock(res.data.product.quantity);
+          if (res.data.product > 0) {
+            setCanPurchase(true);
+          }
+        }
         setReviewFormData({
           ...reviewFormData,
           product_id: res.data.product.id
+        });
+
+        setAddToCartForm({
+          ...addToCartForm,
+          productId: parseFloat(res.data.product.id as any)
         });
       } catch (error) {
         navigate(paths.error);
@@ -341,7 +364,7 @@ const ProductPage = () => {
               </div>
             </div>
           </div>
-          <div className={cx('productView-right', 'phone:mt-[30px]')}>
+          <div className={cx('productView-right', 'productView_right-custom phone:mt-[30px]')}>
             <h1 className={cx('productView__right-item', 'title')}>
               <span className={cx('text', 'text-[30px] font-[600] italic phone:text-[25px]')}>{product.title}</span>
             </h1>
@@ -363,9 +386,24 @@ const ProductPage = () => {
               {product.description}
             </div>
             <div className="form-AddToCart">
-              {product.variants && (
+              {product.variants && product.variants.length > 0 && (
                 <div className={cx('productView__right-item', 'product-variant')}>
-                  <ProductVariantComponent product={product} />
+                  <ProductVariantComponent
+                    callback={(variantId, isAllVariantSelected, quantityInStock, canPurchase) => {
+                      if (variantId) {
+                        setAddToCartForm({
+                          ...addToCartForm,
+                          variantId
+                        });
+                      }
+                      setIsAllVariantsSelected(isAllVariantSelected);
+                      if (quantityInStock) {
+                        setQuantityInStock(quantityInStock);
+                      }
+                      setCanPurchase(canPurchase);
+                    }}
+                    product={product}
+                  />
                 </div>
               )}
               <div className={cx('productView__right-item', 'product-quantity', 'mt-[20px]')}>
@@ -373,21 +411,42 @@ const ProductPage = () => {
                   Quantity:
                 </label>
                 <div className={cx('mt-[10px]')}>
-                  <QuantityBoxComponent />
+                  <QuantityBoxComponent
+                    onChange={(event) => {
+                      setAddToCartForm({
+                        ...addToCartForm,
+                        quantity: parseInt(event.target.value)
+                      });
+                      setCanPurchase(parseInt(event.target.value) <= quantityInStock);
+                    }}
+                    callback={(quantity) => {
+                      setAddToCartForm({
+                        ...addToCartForm,
+                        quantity: quantity
+                      });
+                      setCanPurchase(quantity <= quantityInStock);
+                    }}
+                  />
                 </div>
               </div>
               <div className={cx('productView__right-item', 'sub-total', 'mt-[20px] font-normal')}>
                 Subtotal:
                 <span className="sub-total-value ml-[5px] font-[900]">
-                  <span data-currency-value="10000" className="money">
-                    10000
+                  <span data-currency-value={product.price} className="money">
+                    {product.price}
                   </span>
                 </span>
               </div>
               <div
                 className={cx('productView__right-item', 'product-action', 'mt-[20px] flex items-center gap-[10px]')}
               >
-                <AddToCartComponent product={product} className={cx('mt-[unset] w-[100%]')} />
+                <AddToCartComponent
+                  isAllVariantsSelected={isAllVariantsSelected}
+                  dataAddToCart={addToCartForm}
+                  product={product}
+                  className={cx('mt-[unset] w-[100%]')}
+                  canPurchase={canPurchase}
+                />
                 <div
                   className={cx(
                     'wish-list',

@@ -25,7 +25,7 @@ const MobileNavigation: React.FC<{ menu: Navigation[] }> = memo(({ menu }) => {
   };
 
   return (
-    <div className={cx('mobile-menu', 'sidebar', 'z-[3] flex flex-col items-center p-[30px]')}>
+    <div className={cx('mobile-menu', 'sidebar', 'z-[4] flex flex-col items-center p-[30px]')}>
       <div className={cx('sidebar__menu-header flex w-full justify-between')}>
         <div className={cx('sidebar__menu-logo', 'flex items-center')}>
           <a href="#" className={cx('logo-link')}>

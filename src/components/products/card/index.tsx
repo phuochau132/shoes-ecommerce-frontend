@@ -29,7 +29,6 @@ const ProductCardComponent: React.FC<ProductCardComponentProps> = memo(({ produc
   const [getUserInfo] = useGetInfoMutation();
 
   const handleQuickView = useCallback(() => {
-    console.log('product', product);
     dispatch(
       setQuickViewPopup({
         product: product,
@@ -78,7 +77,7 @@ const ProductCardComponent: React.FC<ProductCardComponentProps> = memo(({ produc
     <div className={cx('card', className)}>
       <div className={cx('card-product', 'rounded-[10px]')}>
         <div className={cx('card-media')}>
-          {product.images.length > 0 && (
+          {product.images && product.images.length > 0 && (
             <>
               <img className={cx('first-image')} src={product.images[0].url} alt="" />
               <img className={cx('second-image')} src={product.images[1].url} alt="" />
@@ -88,10 +87,15 @@ const ProductCardComponent: React.FC<ProductCardComponentProps> = memo(({ produc
         </div>
         <div className={cx('card-action')}>
           <AddToCartComponent
+            dataAddToCart={{
+              productId: product.id,
+              quantity: 1
+            }}
             className="mt-[10px] p-[5px]"
             isCard={true}
             handleSelectionOption={handleQuickView}
             product={product}
+            canPurchase={product && product.quantity ? product.quantity > 0 : false}
           ></AddToCartComponent>
         </div>
         <div className={cx('card-group')}>
@@ -124,7 +128,7 @@ const ProductCardComponent: React.FC<ProductCardComponentProps> = memo(({ produc
         </div>
         <div className={cx('card-badge')}>
           <div className={cx('sale-badge')}>
-            <span className={cx('text')}>Sale</span>
+            <span className={cx('text')}>New</span>
           </div>
         </div>
       </div>
@@ -147,7 +151,7 @@ const ProductCardComponent: React.FC<ProductCardComponentProps> = memo(({ produc
         </div>
         {product.variants && (
           <div className={cx('card-variants', 'text-center')}>
-            <ProductVariantComponent isCard={true} product={product} />
+            <ProductVariantComponent callback={() => {}} isCard={true} product={product} />
           </div>
         )}
       </div>

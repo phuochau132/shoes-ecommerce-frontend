@@ -34,6 +34,8 @@ module.exports = {
         'grey-color': 'rgba(17, 17, 17, 0.55)',
         'grey-bg': '#f5f5f5',
 
+        'red-color': '#d0473e',
+
         'free-shipping-bg': '#ffc206'
       },
       flex: {
