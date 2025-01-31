@@ -146,7 +146,7 @@ const ProductBlockComponent: React.FC<ProductBlockProps> = memo(
                   return (
                     <ProductCardComponent
                       key={index}
-                      className="w-full p-[10px] phone:max-w-[50%] tablet:max-w-[33%] mobileTabletUp:max-w-[25%] mobileTabletUp:max-w-[33%]"
+                      className="w-full p-[10px] phone:max-w-[50%] tablet:max-w-[33%] mobileTabletUp:max-w-[25%]"
                       product={item}
                     />
                   );

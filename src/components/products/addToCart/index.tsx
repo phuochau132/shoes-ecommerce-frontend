@@ -60,7 +60,12 @@ const AddToCartComponent: React.FC<AddToCartComponentProps> = memo(
                   Select Options
                 </ButtonComponent>
               ) : isAllVariantsSelected ? (
-                <ButtonComponent onClick={handleAddToCart} animation={false} className={className && className}>
+                <ButtonComponent
+                  isLoading={isLoading}
+                  onClick={handleAddToCart}
+                  animation={false}
+                  className={className && className}
+                >
                   Add To Cart
                 </ButtonComponent>
               ) : (

@@ -153,7 +153,7 @@ function App() {
                 description: pageInfo.description
               };
               if (route.path == '/pages/wishlist' || route.path == '/pages/contact-us' || route.path == '/pages/faq') {
-                container = 'container-1470';
+                container = 'container-1200';
               }
               return (
                 <Route
@@ -189,9 +189,10 @@ function App() {
                 if (
                   route.path == '/pages/wishlist' ||
                   route.path == '/pages/contact-us' ||
-                  route.path == '/pages/faq'
+                  route.path == '/pages/faq' ||
+                  route.path == '/checkout'
                 ) {
-                  container = 'container-1470';
+                  container = 'container-1200';
                 }
                 return (
                   <Route

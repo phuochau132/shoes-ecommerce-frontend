@@ -28,7 +28,7 @@ const HomePage = () => {
         </div>
         <div className={cx('image__banner-item', 'small-banner', 'flex w-[50%] flex-col justify-between')}>
           <div className={cx('row')}>
-            <div className={cx('image-box')}>
+            <div className={cx('image-box', 'w-full')}>
               <ImageComponent src="https://new-ella-demo.myshopify.com/cdn/shop/files/banner-image-2_870x.jpg" />
             </div>
           </div>
