@@ -15,15 +15,16 @@ export type RouteType = {
 const LazyHomePage = LazyLoadComponent(() => import('../pages/Public/Home/HomePage'))(true);
 const LazyProductPage = LazyLoadComponent(() => import('../pages/Public/Product/ProductPage'))(true);
 const LazyCollectionPage = LazyLoadComponent(() => import('../pages/Public/Collection/CollectionPage'))(true);
-const LazyCartPage = LazyLoadComponent(() => import('../pages/Public/Cart/CartPage'))(true);
+const LazyCartPage = LazyLoadComponent(() => import('../pages/Private/Cart/CartPage'))(true);
 const LazyCollectionListPage = LazyLoadComponent(() => import('../pages/Public/CollectionList/CollectionListPage'))(
   true
 );
 const LazyContactUsPage = LazyLoadComponent(() => import('../pages/Public/ContactUs/ContactUsPage'))(true);
 const LazyFaqPage = LazyLoadComponent(() => import('../pages/Public/FAQ/FaqPage'))(true);
-const LazyWishlistPage = LazyLoadComponent(() => import('../pages/Public/Wishlist/WishlistPage'))(true);
+const LazyWishlistPage = LazyLoadComponent(() => import('../pages/Private/Wishlist/WishlistPage'))(true);
 // Account
-const LazyAccountPage = LazyLoadComponent(() => import('../pages/Public/Account/AccountPage'))(true);
+const LazyAccountPage = LazyLoadComponent(() => import('../pages/Private/Account/AccountPage'))(true);
+const LazyCheckoutPage = LazyLoadComponent(() => import('../pages/Private/Checkout/CheckoutPage'))(true);
 
 export const PUBLIC_ROUTES: RouteType[] = [
   {
@@ -94,19 +95,19 @@ export const PRIVATE_ROUTES: RouteType[] = [
     useFooter: true
   },
   {
-    path: paths.faq,
-    element: <LazyFaqPage />,
-    layout: DefaultLayout,
-    useHeader: true,
-    useSidebar: true,
-    useFooter: true
-  },
-  {
     path: paths.account,
     element: <LazyAccountPage />,
     layout: DefaultLayout,
     useHeader: true,
     useSidebar: true,
     useFooter: true
+  },
+  {
+    path: paths.checkout,
+    element: <LazyCheckoutPage />,
+    layout: DefaultLayout,
+    useHeader: true,
+    useSidebar: true,
+    useFooter: false
   }
 ];

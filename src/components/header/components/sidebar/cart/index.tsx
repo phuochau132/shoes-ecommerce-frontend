@@ -74,9 +74,9 @@ const CartSidebar: React.FC = memo(() => {
           <div className={cx('previewCart-items', 'mt-[10px] max-h-[39%] overflow-y-auto')}>
             {cart.items.map((cartItem) => {
               return (
-                <div className={cx('item', 'relative mb-[40px] mt-[40px] flex gap-[10px]')}>
-                  <div className={cx('product-image', 'w-[100%] max-w-[80px]')}>
-                    <a className={cx('relative block max-w-[80px] pb-[100%]')} href={cartItem.product.handle}>
+                <div className={cx('item', 'relative my-[20px] flex gap-[10px]')}>
+                  <div className={cx('product-image', 'w-[100%] max-w-[64px]')}>
+                    <a className={cx('relative block pb-[100%]')} href={`/products/${cartItem.product.handle}`}>
                       <div className={cx('linked-icon', 'z-[1] h-[20px] w-[20px]')}>
                         <LinkIcon />
                       </div>
@@ -85,7 +85,7 @@ const CartSidebar: React.FC = memo(() => {
                   </div>
                   <div className={cx('product-info')}>
                     <h4 className={cx('product-title', 'italic')}>
-                      <a href={cartItem.product.handle}>
+                      <a href={`/products/${cartItem.product.handle}`}>
                         <span className={cx('main-color')}>{cartItem.product.title}</span>
                       </a>
                     </h4>

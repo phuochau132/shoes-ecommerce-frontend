@@ -26,7 +26,6 @@ const QuickViewComponent: React.FC<QuickViewComponentProps> = memo(({}) => {
     quantity: 1,
     variantId: null
   });
-  console.log('product.quantity', product.quantity);
   useEffect(() => {
     setCanPurchase(product.quantity > 0);
   }, [product]);
@@ -98,7 +97,6 @@ const QuickViewComponent: React.FC<QuickViewComponentProps> = memo(({}) => {
             <ProductVariantComponent
               isQuickView={true}
               callback={(variantId, isAllVariantSelected, quantityInStock, canPurchase) => {
-                console.log('variantId', variantId);
                 if (variantId) {
                   setAddToCartForm({
                     ...addToCartForm,
@@ -149,6 +147,7 @@ const QuickViewComponent: React.FC<QuickViewComponentProps> = memo(({}) => {
         <div className={cx('productView__right-item', 'product-action', 'mt-[20px] flex items-center gap-[10px]')}>
           <AddToCartComponent
             isAllVariantsSelected={isAllVariantsSelected}
+            // @ts-ignore
             dataAddToCart={addToCartForm}
             product={product}
             className={cx('mt-[unset] w-[100%]')}

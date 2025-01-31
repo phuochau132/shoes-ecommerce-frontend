@@ -80,7 +80,7 @@ const CartPage = () => {
             <div className={cx('cart_content-left', 'pr-[50px] mobileTablet:max-w-[100%] mobileTablet:pr-[0]')}>
               <table className={cx('cart__content-items', 'w-[100%] table-auto')}>
                 <thead className={cx('cart-header')}>
-                  <tr className={cx('bg-[#fafafa]')}>
+                  <tr className={cx('bg-grey-bg')}>
                     <th className={cx('text-left', 'px-4', 'w-2/5')}>Product</th>
                     <th className={cx('text-left', 'px-4', 'w-1/5')}>Price</th>
                     <th className={cx('text-left', 'px-4', 'w-1/5')}>Quantity</th>
@@ -96,7 +96,10 @@ const CartPage = () => {
                         <tr className={cx('item')}>
                           <td className={cx('px-4', 'flex gap-[10px]')}>
                             <div className={cx('cart-item-image', 'w-[100%] max-w-[80px]')}>
-                              <a className={cx('relative block max-w-[80px] pb-[100%]')} href={cartItem.product.handle}>
+                              <a
+                                className={cx('relative block max-w-[80px] pb-[100%]')}
+                                href={`/products/${cartItem.product.handle}`}
+                              >
                                 <div className={cx('linked-icon', 'z-[1] h-[20px] w-[20px]')}>
                                   <LinkIcon />
                                 </div>
@@ -110,7 +113,7 @@ const CartPage = () => {
                             </div>
                             <div className={cx('cart-item-info')}>
                               <h4 className={cx('cart-item-title', 'italic')}>
-                                <a href={cartItem.product.handle}>
+                                <a href={`/products/${cartItem.product.handle}`}>
                                   <span className={cx('main-color')}>{cartItem.product.title}</span>
                                 </a>
                               </h4>
@@ -162,7 +165,7 @@ const CartPage = () => {
             <div
               className={cx(
                 'cart_content-right',
-                'h-[max-content] flex-1 rounded-[10px] bg-[#fafafa] p-[10px] mobileTablet:mt-[20px]'
+                'h-[max-content] flex-1 rounded-[10px] bg-grey-bg p-[10px] mobileTablet:mt-[20px]'
               )}
             >
               <div className={cx('cart-total')}>

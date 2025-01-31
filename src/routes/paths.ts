@@ -9,5 +9,6 @@ export const paths = {
   wishlist: '/pages/wishlist',
   blogs: '/blogs/:handle',
   account: '/account',
-  error: '/pages/404'
+  error: '/pages/404',
+  checkout: '/checkout'
 };
