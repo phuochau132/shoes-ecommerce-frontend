@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { LinkIcon, RemoveIcon } from '@/utils/icons';
 import { bindClassNames } from '@/utils/helpers/cx';
 import QuantityBoxComponent from '@/components/products/quantity';
-import { ButtonComponent, InputComponent } from '@/components/commons';
+import { ButtonComponent } from '@/components/commons';
 import ProductBlockComponent from '@/components/products/productBlock';
 import FreeShippingComponent from '@/components/cart/freeshipping';
 import { useDispatch } from 'react-redux';

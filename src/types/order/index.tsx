@@ -1,5 +1,4 @@
 import { ProductFormatType } from '../cart';
-import { ProductType } from '../product';
 import { UserType } from '../user';
 
 export type OrderType = {

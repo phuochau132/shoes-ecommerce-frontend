@@ -28,7 +28,7 @@ import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import useValidation, { useForm } from '@/utils/hooks/form';
 import { productSchema } from '@/validations/product.validation';
-import { useAddWishlistMutation, useGetInfoMutation, useRemoveWishlistMutation } from '@/apis/user/user.api';
+import { useAddWishlistMutation, useRemoveWishlistMutation } from '@/apis/user/user.api';
 import { setUser } from '@/redux/slice/user/user.slice';
 import { UserType } from '@/types/user';
 import LoaderComponent from '@/components/commons/loader';
@@ -76,7 +76,7 @@ const ProductPage = () => {
   });
   const [quantityInStock, setQuantityInStock] = useState<number>(0);
   const [isAllVariantsSelected, setIsAllVariantsSelected] = useState(false);
-  const { data, isLoading: getProductIsLoading, isSuccess } = useGetProductQuery({ handle: handle || '' });
+  const { data } = useGetProductQuery({ handle: handle || '' });
   const [addReview, { isLoading: isAddReviewLoading }] = useAddReviewMutation();
   const [removeReview] = useRemoveReviewMutation();
   const {
@@ -225,9 +225,8 @@ const ProductPage = () => {
       cleanupInterval();
     };
   }, []);
-  const [addWishlist, { isLoading: addWishlistIsLoading }] = useAddWishlistMutation();
-  const [removeWishlist, { isLoading: removeWishlistIsLoading }] = useRemoveWishlistMutation();
-  const [getUserInfo] = useGetInfoMutation();
+  const [addWishlist] = useAddWishlistMutation();
+  const [removeWishlist] = useRemoveWishlistMutation();
 
   const handleAddWishList = useCallback(async () => {
     if (user) {

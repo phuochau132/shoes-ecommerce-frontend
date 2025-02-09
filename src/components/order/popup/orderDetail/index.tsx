@@ -15,7 +15,7 @@ interface OrderDetailProps {
 
 const cx = bindClassNames(styles);
 
-const OrderDetailComponent: React.FC<OrderDetailProps> = memo(({ style, className }) => {
+const OrderDetailComponent: React.FC<OrderDetailProps> = memo(({ style }) => {
   const orderDetailsPopupInfo = useSelector((state: any) => state.app.orderDetailsPopupInfo);
 
   useEffect(() => {
@@ -33,7 +33,7 @@ const OrderDetailComponent: React.FC<OrderDetailProps> = memo(({ style, classNam
       title: 'Image',
       dataIndex: 'images',
       key: 'images',
-      render: (value, record: OrderItemType) => {
+      render: (record: OrderItemType) => {
         if (!record.product.images || record.product.images.length === 0) return null;
         return (
           <div className="relative">

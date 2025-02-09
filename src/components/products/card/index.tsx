@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux';
 import { setQuickViewPopup } from '@/redux/slice/app/app.slice';
 import ProductReviewComponent from '../productReview';
 import { useSelector } from 'react-redux';
-import { useAddWishlistMutation, useGetInfoMutation, useRemoveWishlistMutation } from '@/apis/user/user.api';
+import { useAddWishlistMutation, useRemoveWishlistMutation } from '@/apis/user/user.api';
 import { setUser } from '@/redux/slice/user/user.slice';
 import { UserType } from '@/types/user';
 import { toast } from 'react-toastify';
@@ -27,8 +27,6 @@ const ProductCardComponent: React.FC<ProductCardComponentProps> = memo(({ produc
   const { user }: { user: UserType } = useSelector((state: any) => state.user);
   const [addWishlist, { isLoading: addWishlistIsLoading }] = useAddWishlistMutation();
   const [removeWishlist, { isLoading: removeWishlistIsLoading }] = useRemoveWishlistMutation();
-  const [getUserInfo] = useGetInfoMutation();
-
   const handleRedirectPage = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
 

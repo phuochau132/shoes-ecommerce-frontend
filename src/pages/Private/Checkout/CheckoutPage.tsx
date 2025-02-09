@@ -84,7 +84,7 @@ const CheckoutPage = () => {
       const errors: any = await validateCheckoutForm(values);
       if (Object.keys(errors).length === 0) {
         try {
-          const response = await createNewOrder(values).unwrap();
+          await createNewOrder(values).unwrap();
           localStorage.setItem('order-item', '');
           dispatch(setCart(null));
         } catch (error) {
@@ -107,9 +107,9 @@ const CheckoutPage = () => {
   const onApprove = useCallback(
     (data: PayPalOrderData) => {
       if (!data?.orderID) return Promise.resolve();
-      return axios.get(`${baseURL}/paypal/capture-payment/${data.orderID}`).then(async (response) => {
+      return axios.get(`${baseURL}/paypal/capture-payment/${data.orderID}`).then(async () => {
         try {
-          const response = await createNewOrder(checkoutFormData);
+          await createNewOrder(checkoutFormData);
           localStorage.setItem('order-item', '');
           dispatch(setCart(null));
         } catch (error) {

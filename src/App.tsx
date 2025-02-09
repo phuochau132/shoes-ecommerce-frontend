@@ -47,7 +47,7 @@ function App() {
   const quickViewInfo = useSelector((state: any) => state.app.quickViewInfo);
   const policiesPopupState = useSelector((state: any) => state.app.policiesPopupState);
   const orderDetailsPopupInfo = useSelector((state: any) => state.app.orderDetailsPopupInfo);
-  const [getCart, { isLoading }] = useGetCartMutation();
+  const [getCart] = useGetCartMutation();
   const [fetchUserInfo] = useGetInfoMutation();
   const pageInfo = useSelector((state: any) => state.app.pageInfo);
   useEffect(() => {

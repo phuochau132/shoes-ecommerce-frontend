@@ -1,7 +1,7 @@
-import React, { memo, useRef, useState } from 'react';
+import React, { memo, useState } from 'react';
 import styles from './mobileNavigation.module.scss';
 import { Navigation } from '../index';
-import { CloseIcon, CurrenciesIcon, MinusIcon, PlusIcon } from '@/utils/icons';
+import { CloseIcon, MinusIcon, PlusIcon } from '@/utils/icons';
 import { useDispatch } from 'react-redux';
 import { setMenuSidebarState } from '@/redux/slice/app/app.slice';
 import { bindClassNames } from '@/utils/helpers/cx';
@@ -11,7 +11,7 @@ const cx = bindClassNames(styles);
 const MobileNavigation: React.FC<{ menu: Navigation[] }> = memo(({ menu }) => {
   const [openMenus, setOpenMenus] = useState<{ [key: string]: boolean }>({});
   const dispatch = useDispatch();
-  const toggleMenu = (menuName: string, event: any, type: string) => {
+  const toggleMenu = (menuName: string, type: string) => {
     if (type == 'lv1') {
       setOpenMenus((prev) => ({
         [menuName]: !prev[menuName]
@@ -49,10 +49,7 @@ const MobileNavigation: React.FC<{ menu: Navigation[] }> = memo(({ menu }) => {
               <a className={cx('link', 'flex-1')} href={item.link}>
                 <span className={cx('text', 'text-[16px] font-bold')}>{item.name}</span>
               </a>
-              <div
-                className={cx('cursor-pointer', 'p-[10px]')}
-                onClick={(event) => toggleMenu(item.name, event, 'lv1')}
-              >
+              <div className={cx('cursor-pointer', 'p-[10px]')} onClick={() => toggleMenu(item.name, 'lv1')}>
                 {openMenus[item.name] ? <MinusIcon /> : <PlusIcon />}
               </div>
             </div>
@@ -70,7 +67,7 @@ const MobileNavigation: React.FC<{ menu: Navigation[] }> = memo(({ menu }) => {
                       </a>
                       <div
                         className={cx('cursor-pointer', 'p-[10px]')}
-                        onClick={(event) => toggleMenu(menu_lv2.name, event, 'submenu')}
+                        onClick={() => toggleMenu(menu_lv2.name, 'submenu')}
                       >
                         {openMenus[menu_lv2.name] ? <MinusIcon /> : <PlusIcon />}
                       </div>
