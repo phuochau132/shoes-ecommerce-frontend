@@ -6,107 +6,128 @@
     margin-top: 20px;
 }
 
-.delivery-section {
-    .field {
-        margin-top: 20px;
+.page-left {
+    .field-header {
+        label {
+            margin-right: 7px;
+        }
+
+        span {
+            animation: all 0.5s ease;
+        }
     }
-}
 
-
-.payment-section {
-    .option {
-        padding: 10px;
-        border: 1px solid #ebebeb;
-        border-radius: 10px;
-        margin-top: 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        transition: border 0.3s ease;
-
-        &:has(input:checked) {
-            border: 1px solid #333 !important;
+    .delivery-section {
+        .field {
+            margin-top: 20px;
         }
+    }
 
-        &:hover {
-            cursor: pointer;
-        }
-
-        .icon {
-            max-width: 80px;
-            width: 100%;
-            max-height: 50px;
-        }
-
-        &>div {
+    .payment-section {
+        .option {
+            padding: 10px;
+            border: 1px solid #ebebeb;
+            border-radius: 10px;
+            margin-top: 20px;
             display: flex;
-            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
+            transition: border 0.3s ease;
 
-            input {
-                display: block
+            &:has(input:checked) {
+                border: 1px solid #333 !important;
             }
-        }
-    }
-}
 
+            &:hover {
+                cursor: pointer;
+            }
 
-.item {
-    .totals-title {
-        position: relative;
+            .icon {
+                max-width: 80px;
+                width: 100%;
+                max-height: 50px;
+            }
 
-        &:after {
-            position: absolute;
-            content: "";
-            bottom: -12px;
-            left: 0;
-            height: 2px;
-            width: 100%;
-            background-color: red;
-        }
-    }
+            &>div {
+                display: flex;
+                gap: 10px;
 
-    .product-image {
-        a {
-            .linked-icon {
-                position: absolute;
-                opacity: 0;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -40%);
-
-                svg {
-                    fill: white;
+                input {
+                    display: block
                 }
             }
+
+        }
+    }
+
+}
+
+.page-right {
+    .item {
+        .totals-title {
+            position: relative;
 
             &:after {
-                content: "";
-                opacity: 0;
                 position: absolute;
-                top: 0;
+                content: "";
+                bottom: -12px;
                 left: 0;
-                right: 0;
-                bottom: -10%;
-                background-color: rgba(118, 118, 118, 0.4);
-                transition: opacity 0.5s ease;
+                height: 2px;
+                width: 100%;
+                background-color: red;
             }
         }
 
-        @include screen(phoneUp) {
-            &:hover {
-                a {
-                    .linked-icon {
-                        opacity: 1;
-                        transition: opacity 0.5s ease;
-                    }
+        .product-image {
+            a {
+                .linked-icon {
+                    position: absolute;
+                    opacity: 0;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -40%);
 
-                    &:after {
-                        opacity: 1;
+                    svg {
+                        fill: white;
+                    }
+                }
+
+                &:after {
+                    content: "";
+                    opacity: 0;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: -10%;
+                    background-color: rgba(118, 118, 118, 0.4);
+                    transition: opacity 0.5s ease;
+                }
+            }
+
+            @include screen(phoneUp) {
+                &:hover {
+                    a {
+                        .linked-icon {
+                            opacity: 1;
+                            transition: opacity 0.5s ease;
+                        }
+
+                        &:after {
+                            opacity: 1;
+                        }
                     }
                 }
             }
         }
     }
+}
+
+
+
+.row {
+    display: flex;
+    justify-content: space-between;
 }
 
 @include screen(phone) {

@@ -1,9 +1,6 @@
-import BreadcrumbComponent from '@/components/commons/breadcrumb';
 import styles from './cart.module.scss';
-import { useCallback, useEffect } from 'react';
-import { ProductType } from '@/types/product';
-import { LinkIcon, MinusIcon, PlusIcon, RemoveIcon } from '@/utils/icons';
-import { CollectionType } from '@/types/collection';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { LinkIcon, RemoveIcon } from '@/utils/icons';
 import { bindClassNames } from '@/utils/helpers/cx';
 import QuantityBoxComponent from '@/components/products/quantity';
 import { ButtonComponent, InputComponent } from '@/components/commons';
@@ -11,12 +8,13 @@ import ProductBlockComponent from '@/components/products/productBlock';
 import FreeShippingComponent from '@/components/cart/freeshipping';
 import { useDispatch } from 'react-redux';
 import { setPageInfo } from '@/redux/slice/app/app.slice';
-import path from 'path';
 import { useGetCartMutation, useRemoveItemMutation, useUpdateItemMutation } from '@/apis/cart/cart.api';
 import { setCart } from '@/redux/slice/cart/cart.slice';
 import { useSelector } from 'react-redux';
 import { cartState } from '@/types/cart';
-import { Currency } from '@/utils/helpers/CurrenciesFormat';
+import { Currency } from '@/utils/helpers/currenciesFormat';
+import TermAndConditionComponent from '@/components/cart/termAndConditionButton';
+import LoaderComponent from '@/components/commons/loader';
 
 const cx = bindClassNames(styles);
 
@@ -25,13 +23,17 @@ const CartPage = () => {
   const [removeItem] = useRemoveItemMutation();
   const [updateItem] = useUpdateItemMutation();
   const { cart } = useSelector((state: cartState) => state.cart);
-  const [getCart, { isLoading }] = useGetCartMutation();
+  const [isTermsChecked, setIsTermsChecked] = useState<boolean>(false);
+  const [getCart, { isLoading, isSuccess }] = useGetCartMutation();
+  const noteElement = useRef(null);
 
   const getCartFc = async () => {
     try {
       const response = await getCart({}).unwrap();
       dispatch(setCart(response.data));
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   };
   useEffect(() => {
     dispatch(
@@ -56,7 +58,9 @@ const CartPage = () => {
       try {
         const response = await removeItem({ id: id }).unwrap();
         dispatch(setCart(response.data));
-      } catch (error) {}
+      } catch (error) {
+        console.error(error);
+      }
     },
     [cart]
   );
@@ -65,13 +69,29 @@ const CartPage = () => {
       try {
         const response = await updateItem({ id: id, quantity: newQuantity, itemId: itemId as any }).unwrap();
         dispatch(setCart(response.data));
-      } catch (error) {}
+      } catch (error) {
+        console.error(error);
+      }
     },
     [cart]
   );
+  const handleAddOrderNote = useCallback(() => {
+    const target = noteElement.current;
+    if (!target) {
+      return;
+    }
+    // @ts-ignore
+    const value = target.value;
+    if (value) {
+      localStorage.setItem('order-note', value);
+    }
+    window.location.href = '/checkout';
+  }, [noteElement]);
   return (
     <div className={cx('cart-page')}>
-      {cart && (
+      {isLoading ? (
+        <LoaderComponent />
+      ) : cart && cart.items.length > 0 ? (
         <>
           <div className={cx('previewCart-free-shipping mb-[20px]')}>
             <FreeShippingComponent />
@@ -187,6 +207,7 @@ const CartPage = () => {
                   </label>
                   <div className={cx('comment-value', 'mt-[10px]')}>
                     <textarea
+                      ref={noteElement}
                       className="min-h-[12rem] w-full rounded-[10px] border p-[10px] outline-none"
                       name="note"
                       form="cart"
@@ -205,8 +226,15 @@ const CartPage = () => {
                     </span>
                   </div>
                 </div>
-                <div className={cx('action', 'mt-[20px] flex justify-between')}>
-                  <ButtonComponent>Checkout</ButtonComponent>
+                <div className={cx('action', 'mt-[20px]')}>
+                  <TermAndConditionComponent
+                    callback={(state) => {
+                      setIsTermsChecked(state);
+                    }}
+                  />
+                  <ButtonComponent className="mt-[10px]" disabled={!isTermsChecked} onClick={handleAddOrderNote}>
+                    Checkout
+                  </ButtonComponent>
                 </div>
               </div>
             </div>
@@ -214,6 +242,14 @@ const CartPage = () => {
           <div className={cx('productView__right-item', 'related-product')}>
             <ProductBlockComponent viewAllButton={false} title="Relate Product" collectionHandle="new-in" />
           </div>
+        </>
+      ) : (
+        <>
+          {isSuccess && (
+            <div>
+              <p className="text-center text-[30px] font-bold text-red-color">Your Cart is empty!</p>
+            </div>
+          )}
         </>
       )}
     </div>

@@ -1,7 +1,7 @@
 import styles from './checkout.module.scss';
 import { bindClassNames } from '@/utils/helpers/cx';
 import { useDispatch } from 'react-redux';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { setPageInfo } from '@/redux/slice/app/app.slice';
 import { ButtonComponent, InputComponent } from '@/components/commons';
 import { LinkIcon, PaypalIcon, ShippingIcon } from '@/utils/icons';
@@ -9,19 +9,51 @@ import { cartState } from '@/types/cart';
 import { useSelector } from 'react-redux';
 import { setCart } from '@/redux/slice/cart/cart.slice';
 import { useGetCartMutation } from '@/apis/cart/cart.api';
-import { Currency } from '@/utils/helpers/CurrenciesFormat';
+import { Currency } from '@/utils/helpers/currenciesFormat';
+import useValidation, { useForm } from '@/utils/hooks/form';
+import { orderSchema } from '@/validations/order.validation';
+import { PayPalButtons } from '@paypal/react-paypal-js';
+import axios from 'axios';
+import { baseURL } from '@/base/BaseQuery';
+import { useCreateOrderMutation } from '@/apis/order/order.api';
+import LoaderComponent from '@/components/commons/loader';
 
 const cx = bindClassNames(styles);
+export enum EPaymentMethod {
+  cash_on_delivery = 'cash_on_delivery',
+  paypal = 'paypal'
+}
+
+const initialCheckoutData = {
+  country: '',
+  city: '',
+  detailAddress: '',
+  paymentMethod: EPaymentMethod.cash_on_delivery,
+  note: ''
+};
+interface PayPalOrderData {
+  orderID: string;
+}
 
 const CheckoutPage = () => {
   const dispatch = useDispatch();
   const { cart } = useSelector((state: cartState) => state.cart);
-  const [getCart, { isLoading }] = useGetCartMutation();
+  const [paypalBtnIsDisabled, setPaypalBtnIsDisabled] = useState(true);
+  const [getCart, { isLoading, isSuccess }] = useGetCartMutation();
+  const [createNewOrder, { isLoading: createOrderIsLoading }] = useCreateOrderMutation();
+  const { errors: checkoutErrors, validate: validateCheckoutForm } = useValidation(orderSchema);
+  const {
+    formData: checkoutFormData,
+    handleChange: handleCheckoutChange,
+    setFormData: setCheckoutFormData
+  } = useForm(initialCheckoutData);
   const getCartFc = async () => {
     try {
       const response = await getCart({}).unwrap();
       dispatch(setCart(response.data));
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   };
   useEffect(() => {
     dispatch(
@@ -34,16 +66,83 @@ const CheckoutPage = () => {
       })
     );
     getCartFc();
+    setCheckoutFormData((prev) => {
+      return {
+        ...prev,
+        note: localStorage.getItem('order-note') ?? ''
+      };
+    });
   }, []);
   useEffect(() => {
     if (cart) {
       Currency.initializeCurrency();
     }
   }, [cart]);
+
+  const handleCheckout = useCallback(
+    async (values: Record<string, string>) => {
+      const errors: any = await validateCheckoutForm(values);
+      if (Object.keys(errors).length === 0) {
+        try {
+          const response = await createNewOrder(values).unwrap();
+          localStorage.setItem('order-item', '');
+          dispatch(setCart(null));
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    },
+    [checkoutFormData]
+  );
+  const createOrder = useCallback(() => {
+    return axios
+      .post(`${baseURL}/paypal/create-order`, {
+        total_price: cart.total_price
+      })
+      .then((response) => {
+        return response.data.data.id;
+      });
+  }, [cart]);
+
+  const onApprove = useCallback(
+    (data: PayPalOrderData) => {
+      if (!data?.orderID) return Promise.resolve();
+      return axios.get(`${baseURL}/paypal/capture-payment/${data.orderID}`).then(async (response) => {
+        try {
+          const response = await createNewOrder(checkoutFormData);
+          localStorage.setItem('order-item', '');
+          dispatch(setCart(null));
+        } catch (error) {
+          console.error(error);
+        }
+      });
+    },
+    [checkoutFormData]
+  );
+  const checkCondition = useCallback(
+    async (values: any) => {
+      const errors: any = await validateCheckoutForm(values, false);
+      if (Object.keys(errors).length === 0) {
+        return false;
+      }
+      return true;
+    },
+    [checkoutFormData]
+  );
+
+  useEffect(() => {
+    const checkErrors = async () => {
+      const isDisabled = await checkCondition(checkoutFormData);
+      setPaypalBtnIsDisabled(isDisabled);
+    };
+    checkErrors();
+  }, [checkoutFormData]);
   return (
-    <div className={cx('container mx-[auto]', 'checkout-page')}>
-      {cart && cart.items.length > 0 && (
-        <div className={cx('page-content', 'flex gap-[50px]')}>
+    <div className={cx('container mx-[auto]', 'checkout-page relative')}>
+      {isLoading ? (
+        <LoaderComponent />
+      ) : cart && cart.items.length > 0 ? (
+        <div className={cx('page-content', 'flex items-start gap-[50px]')}>
           <div className={cx('page-left', 'w-full phoneUp:max-w-[50%]')}>
             <div className={cx('delivery-section')}>
               <div className={cx('heading')}>
@@ -51,18 +150,65 @@ const CheckoutPage = () => {
               </div>
               <div className={cx('fields')}>
                 <div className={cx('field', 'country')}>
-                  <InputComponent className={cx('rounded-[10px] p-[10px]')} placeholder="Country/Region" />
+                  <div className={cx('field-header', 'mb-[10px]')}>
+                    <label htmlFor="country-payment">
+                      Your Country <small>*</small>
+                    </label>
+                    {checkoutErrors.country && <span className="error">{checkoutErrors.country}</span>}
+                  </div>
+                  <InputComponent
+                    id="country-payment"
+                    name="country"
+                    value={checkoutFormData.country}
+                    onChange={handleCheckoutChange}
+                    className={cx('rounded-[10px] p-[10px]')}
+                    placeholder="Country/Region"
+                  />
                 </div>
                 <div className={cx('flex')}>
                   <div className={cx('field', 'city', 'w-full max-w-[50%]')}>
-                    <InputComponent className={cx('rounded-[10px] p-[10px]')} placeholder="Postal code" />
+                    <div className={cx('field-header', 'mb-[10px]')}>
+                      <label htmlFor="postalCode-payment">Postal Code</label>
+                    </div>
+                    <InputComponent
+                      id="postalCode-payment"
+                      name="postalCode"
+                      onChange={handleCheckoutChange}
+                      className={cx('rounded-[10px] p-[10px]')}
+                      placeholder="Postal code"
+                    />
                   </div>
                   <div className={cx('field', 'postal-code', 'w-full max-w-[50%] pl-[10px]')}>
-                    <InputComponent className={cx('rounded-[10px] p-[10px]')} placeholder="City" />
+                    <div className={cx('field-header', 'mb-[10px] block')}>
+                      <label htmlFor="city-payment">
+                        Your City <small>*</small>
+                      </label>
+                      {checkoutErrors.city && <span className="error">{checkoutErrors.city}</span>}
+                    </div>
+                    <InputComponent
+                      name="city"
+                      id="city-payment"
+                      value={checkoutFormData.city}
+                      onChange={handleCheckoutChange}
+                      className={cx('rounded-[10px] p-[10px]')}
+                      placeholder="City"
+                    />
                   </div>
                 </div>
                 <div className={cx('field', 'detail-address')}>
-                  <InputComponent className={cx('rounded-[10px] p-[10px]')} placeholder="Detail Address" />
+                  <div className={cx('field-header', 'mb-[10px] block')}>
+                    <label htmlFor="detailAddress-payment">
+                      Your Detail Address <small>*</small>
+                    </label>
+                    {checkoutErrors.detailAddress && <span className="error">{checkoutErrors.detailAddress}</span>}
+                  </div>
+                  <InputComponent
+                    name="detailAddress"
+                    value={checkoutFormData.detailAddress}
+                    onChange={handleCheckoutChange}
+                    className={cx('rounded-[10px] p-[10px]')}
+                    placeholder="Detail Address"
+                  />
                 </div>
               </div>
             </div>
@@ -72,8 +218,15 @@ const CheckoutPage = () => {
               </div>
               <label htmlFor="ship-option" className={cx('option')}>
                 <div>
-                  <input checked id="ship-option" name="payment-method" type="radio" />
-                  <span>Ship</span>
+                  <input
+                    value={EPaymentMethod.cash_on_delivery}
+                    onChange={handleCheckoutChange}
+                    checked={checkoutFormData.paymentMethod === EPaymentMethod.cash_on_delivery}
+                    id="ship-option"
+                    name="paymentMethod"
+                    type="radio"
+                  />
+                  <span>Cash On Delivery</span>
                 </div>
                 <div className={cx('icon')}>
                   <ShippingIcon className="w-[full]" />
@@ -81,7 +234,14 @@ const CheckoutPage = () => {
               </label>
               <label htmlFor="paypal-option" className={cx('option')}>
                 <div>
-                  <input id="paypal-option" name="payment-method" type="radio" />
+                  <input
+                    value={EPaymentMethod.paypal}
+                    onChange={handleCheckoutChange}
+                    checked={checkoutFormData.paymentMethod === EPaymentMethod.paypal}
+                    id="paypal-option"
+                    name="paymentMethod"
+                    type="radio"
+                  />
                   <span>Paypal</span>
                 </div>
                 <div className={cx('icon')}>
@@ -89,15 +249,36 @@ const CheckoutPage = () => {
                 </div>
               </label>
               <div className={cx('payment-button')}>
-                <ButtonComponent>Pay now</ButtonComponent>
+                {checkoutFormData.paymentMethod == EPaymentMethod.cash_on_delivery ? (
+                  <ButtonComponent
+                    isLoading={createOrderIsLoading}
+                    onClick={() => {
+                      handleCheckout(checkoutFormData);
+                    }}
+                  >
+                    Pay now
+                  </ButtonComponent>
+                ) : (
+                  <PayPalButtons
+                    style={{ layout: 'horizontal' }}
+                    fundingSource="paypal"
+                    onError={(error) => {
+                      console.error(error);
+                    }}
+                    onApprove={onApprove}
+                    createOrder={createOrder}
+                    className="mt-[20px]"
+                    disabled={paypalBtnIsDisabled}
+                  />
+                )}
               </div>
             </div>
           </div>
           <div className={cx('page-right', 'w-full rounded-[5px] bg-grey-bg px-[20px] pb-[20px] phoneUp:max-w-[50%]')}>
             <div className={cx('items')}>
-              {cart.items.map((cartItem) => {
+              {cart.items.map((cartItem, index) => {
                 return (
-                  <div className={cx('item', 'relative my-[20px] flex gap-[10px]')}>
+                  <div key={index} className={cx('item', 'relative my-[20px] flex gap-[10px]')}>
                     <div className={cx('product-image', 'w-[100%] max-w-[55px] rounded-[5px] border')}>
                       <a className={cx('relative block pb-[100%]')} href={`/products/${cartItem.product.handle}`}>
                         <div className={cx('linked-icon', 'z-[1] h-[20px] w-[20px]')}>
@@ -137,7 +318,7 @@ const CheckoutPage = () => {
               })}
             </div>
             <div className="line"></div>
-            <div className="row">
+            <div className={cx('row')}>
               <div className="row-heading">
                 <span className="text-[18px] font-bold">Total</span>
               </div>
@@ -152,6 +333,16 @@ const CheckoutPage = () => {
             </div>
           </div>
         </div>
+      ) : (
+        <>
+          {isSuccess && (
+            <div>
+              <p className="text-center text-[30px] font-bold text-red-color">
+                There are no products in the cart to check out!
+              </p>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

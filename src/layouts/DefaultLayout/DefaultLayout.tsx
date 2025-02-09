@@ -1,13 +1,12 @@
 import { Layout } from 'antd';
 import React, { PropsWithChildren } from 'react';
 import HeaderComponent from '../../components/header/header.component';
-import { cn } from '../../utils/helpers/cn';
 import FooterComponent from '@/components/footer';
 import BreadcrumbComponent from '@/components/commons/breadcrumb';
 
 const { Content } = Layout;
 export type pageHeaderType = {
-  breadcrumb?: { link: string; title: string }[];
+  breadcrumb?: { path: string; title: string }[];
   title?: string;
   description?: string;
 };

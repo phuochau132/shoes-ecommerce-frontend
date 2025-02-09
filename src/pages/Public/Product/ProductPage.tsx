@@ -15,12 +15,12 @@ import { useDispatch } from 'react-redux';
 import { setPageInfo } from '@/redux/slice/app/app.slice';
 import CollapsibleBlock from '@/components/commons/collapse';
 import { calTotalReview } from '@/utils/helpers/review';
-import { Currency } from '@/utils/helpers/CurrenciesFormat';
+import { Currency } from '@/utils/helpers/currenciesFormat';
 import { Image, Rate, Upload, UploadFile, UploadProps } from 'antd';
 import { FileType, getBase64 } from '@/utils/helpers/base64';
 import { PlusOutlined } from '@ant-design/icons';
 import AddToCartComponent from '@/components/products/addToCart';
-import { useAddReviewMutation, useGetProductMutation, useRemoveReviewMutation } from '@/apis/product/product.api';
+import { useAddReviewMutation, useGetProductQuery, useRemoveReviewMutation } from '@/apis/product/product.api';
 import { useNavigate, useParams } from 'react-router-dom';
 import { paths } from '@/routes/paths';
 import ReviewItemComponent from '@/components/products/reviewItem';
@@ -31,8 +31,10 @@ import { productSchema } from '@/validations/product.validation';
 import { useAddWishlistMutation, useGetInfoMutation, useRemoveWishlistMutation } from '@/apis/user/user.api';
 import { setUser } from '@/redux/slice/user/user.slice';
 import { UserType } from '@/types/user';
+import LoaderComponent from '@/components/commons/loader';
 const cx = bindClassNames(styles);
 
+// @ts-ignore
 const patternProduct: ProductType = {
   title: 'Classic Running Shoes',
   reviews: [],
@@ -53,7 +55,7 @@ const liveViewCount = [10, 25, 30];
 export interface AddToCartForm {
   productId: number;
   quantity: number;
-  variantId: number | null;
+  variantId?: number;
 }
 const ProductPage = () => {
   const { handle } = useParams();
@@ -70,14 +72,13 @@ const ProductPage = () => {
   const [canPurchase, setCanPurchase] = useState<boolean>(false);
   const [addToCartForm, setAddToCartForm] = useState<AddToCartForm>({
     productId: 0,
-    quantity: 1,
-    variantId: 0
+    quantity: 1
   });
   const [quantityInStock, setQuantityInStock] = useState<number>(0);
   const [isAllVariantsSelected, setIsAllVariantsSelected] = useState(false);
-  const [getProduct, { isLoading: getProductIsLoading }] = useGetProductMutation();
+  const { data, isLoading: getProductIsLoading, isSuccess } = useGetProductQuery({ handle: handle || '' });
   const [addReview, { isLoading: isAddReviewLoading }] = useAddReviewMutation();
-  const [removeReview, { isloading }] = useRemoveReviewMutation();
+  const [removeReview] = useRemoveReviewMutation();
   const {
     formData: reviewFormData,
     handleChange: handleReviewChange,
@@ -179,45 +180,46 @@ const ProductPage = () => {
       <div style={{ marginTop: 8 }}>Upload</div>
     </button>
   );
-  const getProductInfo = useCallback(async () => {
-    if (handle) {
+  useEffect(() => {
+    if (data) {
       try {
-        const res = await getProduct({ handle }).unwrap();
-        setProduct(res.data.product);
-        if (!product.variants) {
-          setQuantityInStock(res.data.product.quantity);
-          if (res.data.product > 0) {
-            setCanPurchase(true);
+        setProduct(data.data.product);
+        if (data.data.product.variants) {
+          if (!data.data.product.variants.length) {
+            setQuantityInStock(data.data.product.quantity);
+            if (data.data.product.quantity > 0) {
+              setCanPurchase(true);
+            }
           }
         }
         setReviewFormData({
           ...reviewFormData,
-          product_id: res.data.product.id
+          product_id: data.data.product.id
         });
 
         setAddToCartForm({
           ...addToCartForm,
-          productId: parseFloat(res.data.product.id as any)
+          productId: parseFloat(data.data.product.id as any)
         });
       } catch (error) {
         navigate(paths.error);
       }
     }
-  }, []);
+  }, [data]);
   useEffect(() => {
     Currency.initializeCurrency();
+    if (data) {
+      dispatch(
+        setPageInfo({
+          breadcrumb: [
+            { path: '/', title: 'Home' },
+            { path: '#', title: product.title }
+          ]
+        })
+      );
+    }
   }, [product]);
   useEffect(() => {
-    getProductInfo();
-
-    dispatch(
-      setPageInfo({
-        breadcrumb: [
-          { path: '/', title: 'Home' },
-          { path: '#', title: product.title }
-        ]
-      })
-    );
     const cleanupInterval = randomShowLiveView();
     return () => {
       cleanupInterval();
@@ -230,12 +232,18 @@ const ProductPage = () => {
   const handleAddWishList = useCallback(async () => {
     if (user) {
       try {
-        await addWishlist({
+        const response = await addWishlist({
           product_id: product.id
         }).unwrap();
-        const updateUser = await getUserInfo().unwrap();
-        dispatch(setUser(updateUser.data));
-      } catch (error) {}
+        dispatch(
+          setUser({
+            ...user,
+            wishlists: response.data.wishlists
+          })
+        );
+      } catch (error) {
+        console.error(error);
+      }
     }
   }, [user, product]);
   const wishlist =
@@ -248,12 +256,18 @@ const ProductPage = () => {
     async (id: number) => {
       if (user && id) {
         try {
-          await removeWishlist({
+          const response = await removeWishlist({
             id: id
           }).unwrap();
-          const updateUser = await getUserInfo().unwrap();
-          dispatch(setUser(updateUser.data));
-        } catch (error) {}
+          dispatch(
+            setUser({
+              ...user,
+              wishlists: response.data.wishlists
+            })
+          );
+        } catch (error) {
+          console.error(error);
+        }
       }
     },
     [user, product]
@@ -265,14 +279,16 @@ const ProductPage = () => {
         const res = await addReview({ handle: product.handle, data: reviewFormData }).unwrap();
         setReviewFormData(initialReview);
         const newReviews = [res.data.review, ...product.reviews];
-
+        setFileList([]);
         setProduct((prev: any) => {
           return {
             ...prev,
             reviews: newReviews
           };
         });
-      } catch (error) {}
+      } catch (error) {
+        console.error(error);
+      }
     }
   }, [reviewFormData]);
 
@@ -292,43 +308,74 @@ const ProductPage = () => {
             reviews: updatedReviews
           };
         });
-      } catch (error) {}
+      } catch (error) {
+        console.error(error);
+      }
     },
     [product]
   );
 
   return (
-    <div className={cx('product-page')}>
-      <div className={cx('page-content')}>
-        <div className={cx('productView-top', 'mb-[50px]')}>
-          <div className={cx('productView-left', 'phoneUp:pr-[20px]')}>
-            <div className={cx('productImage-wrapper')}>
-              <Fancybox
-                options={{
-                  Carousel: {
-                    infinite: false
-                  }
-                }}
-              >
-                <div className={cx('productView-nav')}>
+    <div className={cx('product-page', 'relative min-h-[80vh]')}>
+      {!data ? (
+        <LoaderComponent />
+      ) : (
+        <div className={cx('page-content')}>
+          <div className={cx('productView-top', 'mb-[50px]')}>
+            <div className={cx('productView-left', 'phoneUp:pr-[20px]')}>
+              <div className={cx('productImage-wrapper')}>
+                <Fancybox
+                  options={{
+                    Carousel: {
+                      infinite: false
+                    }
+                  }}
+                >
+                  <div className={cx('productView-nav')}>
+                    {product && (
+                      <Swiper
+                        modules={[Controller, Pagination]}
+                        spaceBetween={10}
+                        slidesPerView={1}
+                        pagination={{ clickable: true }}
+                        onSwiper={setMainSwiper}
+                        controller={{ control: thumbSwiper }}
+                        className={cx('swiper-container')}
+                      >
+                        {product.images.map((item, index) => (
+                          <SwiperSlide key={index}>
+                            <div className={cx('media')}>
+                              <img
+                                data-fancybox="gallery"
+                                className={cx('h-[100%] w-[100%]')}
+                                src={item.url}
+                                alt="error"
+                              />
+                            </div>
+                          </SwiperSlide>
+                        ))}
+                      </Swiper>
+                    )}
+                  </div>
+                </Fancybox>
+                <div className={cx('productView-thumbnail', 'mt-[50px]')}>
                   {product && (
                     <Swiper
-                      modules={[Controller, Pagination]}
+                      modules={[Controller, Navigation, Pagination]}
                       spaceBetween={10}
-                      slidesPerView={1}
-                      pagination={{ clickable: true }}
-                      onSwiper={setMainSwiper}
-                      controller={{ control: thumbSwiper }}
+                      slidesPerView={4}
+                      navigation
+                      onSwiper={setThumbSwiper}
+                      controller={{ control: mainSwiper }}
                       className={cx('swiper-container')}
                     >
                       {product.images.map((item, index) => (
-                        <SwiperSlide key={index}>
+                        <SwiperSlide key={index} onClick={() => handleThumbnailClick(index)}>
                           <div className={cx('media')}>
                             <img
-                              data-fancybox="gallery"
-                              className={cx('h-[100%] w-[100%]')}
+                              className={cx('h-[100%] w-[100%]', 'cursor-pointer')}
                               src={item.url}
-                              alt="error"
+                              alt={`Thumbnail ${index}`}
                             />
                           </div>
                         </SwiperSlide>
@@ -336,311 +383,298 @@ const ProductPage = () => {
                     </Swiper>
                   )}
                 </div>
-              </Fancybox>
-              <div className={cx('productView-thumbnail', 'mt-[50px]')}>
-                {product && (
-                  <Swiper
-                    modules={[Controller, Navigation, Pagination]}
-                    spaceBetween={10}
-                    slidesPerView={4}
-                    navigation
-                    onSwiper={setThumbSwiper}
-                    controller={{ control: mainSwiper }}
-                    className={cx('swiper-container')}
-                  >
-                    {product.images.map((item, index) => (
-                      <SwiperSlide key={index} onClick={() => handleThumbnailClick(index)}>
-                        <div className={cx('media')}>
-                          <img
-                            className={cx('h-[100%] w-[100%]', 'cursor-pointer')}
-                            src={item.url}
-                            alt={`Thumbnail ${index}`}
-                          />
-                        </div>
-                      </SwiperSlide>
-                    ))}
-                  </Swiper>
-                )}
               </div>
             </div>
-          </div>
-          <div className={cx('productView-right', 'productView_right-custom phone:mt-[30px]')}>
-            <h1 className={cx('productView__right-item', 'title')}>
-              <span className={cx('text', 'text-[30px] font-[600] italic phone:text-[25px]')}>{product.title}</span>
-            </h1>
-            <div className={cx('productView__right-item', 'reviews-badge')}>
-              <a href="#section-reviews" className="flex w-[fit-content] items-center gap-[5px]">
-                <div className={cx('reviews-star')}>{renderStar(totalReview)}</div>
-                <p className={cx('text-start')}>{product.reviews.length} reviews</p>
-              </a>
-            </div>
+            <div className={cx('productView-right', 'productView_right-custom phone:mt-[30px]')}>
+              <h1 className={cx('productView__right-item', 'title')}>
+                <span className={cx('text', 'text-[30px] font-[600] italic phone:text-[25px]')}>{product.title}</span>
+              </h1>
+              <div className={cx('productView__right-item', 'reviews-badge')}>
+                <a href="#section-reviews" className="flex w-[fit-content] items-center gap-[5px]">
+                  <div className={cx('reviews-star')}>{renderStar(totalReview)}</div>
+                  <p className={cx('text-start')}>{product.reviews.length} reviews</p>
+                </a>
+              </div>
 
-            <div className={cx('productView__right-item', 'price')}>
-              <div className={cx('price-item', 'price__item-regular')}>
-                <span data-currency-value={product.price} className={cx('money')}>
-                  {product.price}
-                </span>
-              </div>
-            </div>
-            <div className={cx('productView__right-item', 'description', 'font-normal opacity-80')}>
-              {product.description}
-            </div>
-            <div className="form-AddToCart">
-              {product.variants && product.variants.length > 0 && (
-                <div className={cx('productView__right-item', 'product-variant')}>
-                  <ProductVariantComponent
-                    callback={(variantId, isAllVariantSelected, quantityInStock, canPurchase) => {
-                      if (variantId) {
-                        setAddToCartForm({
-                          ...addToCartForm,
-                          variantId
-                        });
-                      }
-                      setIsAllVariantsSelected(isAllVariantSelected);
-                      if (quantityInStock) {
-                        setQuantityInStock(quantityInStock);
-                      }
-                      setCanPurchase(canPurchase);
-                    }}
-                    product={product}
-                  />
-                </div>
-              )}
-              <div className={cx('productView__right-item', 'product-quantity', 'mt-[20px]')}>
-                <label className={cx('quantity-label')} htmlFor="">
-                  Quantity:
-                </label>
-                <div className={cx('mt-[10px]')}>
-                  <QuantityBoxComponent
-                    onChange={(event) => {
-                      setAddToCartForm({
-                        ...addToCartForm,
-                        quantity: parseInt(event.target.value)
-                      });
-                      setCanPurchase(parseInt(event.target.value) <= quantityInStock);
-                    }}
-                    callback={(quantity) => {
-                      setAddToCartForm({
-                        ...addToCartForm,
-                        quantity: quantity
-                      });
-                      setCanPurchase(quantity <= quantityInStock);
-                    }}
-                  />
-                </div>
-              </div>
-              <div className={cx('productView__right-item', 'sub-total', 'mt-[20px] font-normal')}>
-                Subtotal:
-                <span className="sub-total-value ml-[5px] font-[900]">
-                  <span data-currency-value={product.price} className="money">
+              <div className={cx('productView__right-item', 'price')}>
+                <div className={cx('price-item', 'price__item-regular')}>
+                  <span data-currency-value={product.price} className={cx('money')}>
                     {product.price}
                   </span>
-                </span>
+                </div>
+              </div>
+              <div className={cx('productView__right-item', 'description', 'font-normal opacity-80')}>
+                {product.description}
+              </div>
+              <div className="form-AddToCart">
+                {product.variants && product.variants.length > 0 && (
+                  <div className={cx('productView__right-item', 'product-variant')}>
+                    <ProductVariantComponent
+                      callback={(variantId, isAllVariantSelected, quantityInStock, canPurchase) => {
+                        if (variantId) {
+                          setAddToCartForm({
+                            ...addToCartForm,
+                            variantId
+                          });
+                        }
+                        setIsAllVariantsSelected(isAllVariantSelected);
+                        if (quantityInStock) {
+                          setQuantityInStock(quantityInStock);
+                        }
+                        setCanPurchase(canPurchase);
+                      }}
+                      product={product}
+                    />
+                  </div>
+                )}
+                <div className={cx('productView__right-item', 'product-quantity', 'mt-[20px]')}>
+                  <label className={cx('quantity-label')} htmlFor="">
+                    Quantity:
+                  </label>
+                  <div className={cx('mt-[10px]')}>
+                    <QuantityBoxComponent
+                      onChange={(event) => {
+                        setAddToCartForm({
+                          ...addToCartForm,
+                          quantity: parseInt(event.target.value)
+                        });
+                        setCanPurchase(parseInt(event.target.value) <= quantityInStock);
+                      }}
+                      callback={(quantity) => {
+                        setAddToCartForm({
+                          ...addToCartForm,
+                          quantity: quantity
+                        });
+                        setCanPurchase(quantity <= quantityInStock);
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className={cx('productView__right-item', 'sub-total', 'mt-[20px] font-normal')}>
+                  Subtotal:
+                  <span className="sub-total-value ml-[5px] font-[900]">
+                    <span data-currency-value={product.price} className="money">
+                      {product.price}
+                    </span>
+                  </span>
+                </div>
+                <div
+                  className={cx('productView__right-item', 'product-action', 'mt-[20px] flex items-center gap-[10px]')}
+                >
+                  <AddToCartComponent
+                    isAllVariantsSelected={isAllVariantsSelected}
+                    dataAddToCart={addToCartForm}
+                    product={product}
+                    className={cx('mt-[unset] w-[100%]')}
+                    canPurchase={canPurchase}
+                  />
+                  <div
+                    className={cx(
+                      'wish-list',
+                      'cursor-pointer rounded-[50%] border border-solid border-[#c7c7c7] p-[10px]',
+                      user && wishlist.length > 0 && 'is-activated'
+                    )}
+                    onClick={() => {
+                      if (!user) {
+                        toast.warning('Please log in to continue');
+                        return;
+                      }
+                      user && !(wishlist.length > 0)
+                        ? handleAddWishList()
+                        : handleRemoveWishList(wishlist && wishlist[0]?.id);
+                    }}
+                  >
+                    <WishListIcon />
+                  </div>
+                </div>
               </div>
               <div
-                className={cx('productView__right-item', 'product-action', 'mt-[20px] flex items-center gap-[10px]')}
+                className={cx('productView__right-item', 'delivery-return', 'mt-[20px] flex items-center gap-[20px]')}
               >
-                <AddToCartComponent
-                  isAllVariantsSelected={isAllVariantsSelected}
-                  dataAddToCart={addToCartForm}
-                  product={product}
-                  className={cx('mt-[unset] w-[100%]')}
-                  canPurchase={canPurchase}
-                />
-                <div
-                  className={cx(
-                    'wish-list',
-                    'cursor-pointer rounded-[50%] border border-solid border-[#c7c7c7] p-[10px]',
-                    user && wishlist.length > 0 && 'is-activated'
-                  )}
-                  onClick={() => {
-                    if (!user) {
-                      toast.warning('Please log in to continue');
-                      return;
-                    }
-                    user && !(wishlist.length > 0)
-                      ? handleAddWishList()
-                      : handleRemoveWishList(wishlist && wishlist[0]?.id);
-                  }}
-                >
-                  <WishListIcon />
+                <div className={cx('icon', 'max-w-[25px]')}>
+                  <DeliveryIcon />
+                </div>
+                <p>
+                  Estimate delivery times:<strong> 3-5 days International.</strong>
+                </p>
+              </div>
+              <div className={cx('productView__right-item', 'live-view', 'mt-[20px] flex items-center gap-[20px]')}>
+                <div className={cx('icon', 'max-w-[25px]')}>
+                  <EyeIcon />
+                </div>
+                <p>
+                  <span ref={refLiveViewCount}>25</span> peoples are viewing this right now
+                </p>
+              </div>
+              <div className={cx('productView__right-item', 'product-tabs', 'mt-[40px]')}>
+                <div id="description-tab" className="tab py-[10px]">
+                  <CollapsibleBlock className="text-[16px] font-bold" title="Product Details">
+                    <p className="pb-[20px]">{product.description}</p>
+                  </CollapsibleBlock>
+                </div>
+                <div id="additional-information-tab" className="tab py-[10px]">
+                  <CollapsibleBlock className="text-[16px] font-bold" title="Additional Information">
+                    <p className="pb-[20px]">{product.description}</p>
+                  </CollapsibleBlock>
                 </div>
               </div>
             </div>
-            <div className={cx('productView__right-item', 'delivery-return', 'mt-[20px] flex items-center gap-[20px]')}>
-              <div className={cx('icon', 'max-w-[25px]')}>
-                <DeliveryIcon />
-              </div>
-              <p>
-                Estimate delivery times:<strong> 3-5 days International.</strong>
-              </p>
-            </div>
-            <div className={cx('productView__right-item', 'live-view', 'mt-[20px] flex items-center gap-[20px]')}>
-              <div className={cx('icon', 'max-w-[25px]')}>
-                <EyeIcon />
-              </div>
-              <p>
-                <span ref={refLiveViewCount}>25</span> peoples are viewing this right now
-              </p>
-            </div>
-            <div className={cx('productView__right-item', 'product-tabs', 'mt-[40px]')}>
-              <div id="description-tab" className="tab py-[10px]">
-                <CollapsibleBlock className="text-[16px] font-bold" title="Product Details">
-                  <p className="pb-[20px]">{product.description}</p>
-                </CollapsibleBlock>
-              </div>
-              <div id="additional-information-tab" className="tab py-[10px]">
-                <CollapsibleBlock className="text-[16px] font-bold" title="Additional Information">
-                  <p className="pb-[20px]">{product.description}</p>
-                </CollapsibleBlock>
-              </div>
-            </div>
           </div>
-        </div>
-        <div id="section-reviews" className={cx('section-reviews')}>
-          <div className={cx('section-header')}>
-            <h3 className="title">
-              <span className="text">Customer Reviews</span>
-            </h3>
-            <div className={cx('section__header-top', 'mt-[40px] flex items-center justify-between phone:flex-col')}>
-              <div className={cx('stars-summary', 'phone:w-full')}>
-                <div className={cx('stars__summary-star')}>Base on 5 reviews</div>
-                <div className={cx('stars__summary-star')}>{renderStar(totalReview)}</div>
+          <div id="section-reviews" className={cx('section-reviews')}>
+            <div className={cx('section-header')}>
+              <h3 className="title">
+                <span className="text">Customer Reviews</span>
+              </h3>
+              <div className={cx('section__header-top', 'mt-[40px] flex items-center justify-between phone:flex-col')}>
+                <div className={cx('stars-summary', 'phone:w-full')}>
+                  <div className={cx('stars__summary-star')}>Base on 5 reviews</div>
+                  <div className={cx('stars__summary-star')}>{renderStar(totalReview)}</div>
+                </div>
+                <div className={cx('stars', 'phone:w-full')}>{renderHistogram()}</div>
+                <div className={cx('review-action', 'min-w-[240px] phone:mt-[20px]')}>
+                  {showWritingReviewSection ? (
+                    <ButtonComponent
+                      className="bg-white text-black"
+                      onClick={() => {
+                        setShowWritingReviewSection(false);
+                      }}
+                    >
+                      Cancel Review
+                    </ButtonComponent>
+                  ) : (
+                    <ButtonComponent
+                      onClick={() => {
+                        if (user) {
+                          setShowWritingReviewSection(true);
+                        } else {
+                          toast.warning('Please log in before writing a review');
+                        }
+                      }}
+                    >
+                      Write a review
+                    </ButtonComponent>
+                  )}
+                </div>
               </div>
-              <div className={cx('stars', 'phone:w-full')}>{renderHistogram()}</div>
-              <div className={cx('review-action', 'min-w-[240px] phone:mt-[20px]')}>
-                {showWritingReviewSection ? (
+            </div>
+            {showWritingReviewSection && (
+              <div className={cx('review-form')}>
+                <div className="line"></div>
+                <div className={cx('field')}>
+                  <label htmlFor="rating-review">
+                    <span>Rating</span>
+                    {reviewErrors.rating && <span className="error">{reviewErrors.rating}</span>}
+                  </label>
+                  <Rate
+                    id="rating-review"
+                    onChange={(value) => {
+                      setReviewFormData({ ...reviewFormData, rating: value });
+                    }}
+                    value={reviewFormData.rating}
+                  />
+                </div>
+                <div className={cx('field')}>
+                  <label htmlFor="">
+                    <span>Review Title</span>
+                    {reviewErrors.title && <span className="error">{reviewErrors.title}</span>}
+                  </label>
+                  <InputComponent
+                    onChange={handleReviewChange}
+                    name="title"
+                    className={cx('mt-[0]')}
+                    placeholder="Give your review a title"
+                    value={reviewFormData.title}
+                  />
+                </div>
+                <div className={cx('field')}>
+                  <label htmlFor="">
+                    <span>Review</span>
+                    {reviewErrors.content && <span className="error">{reviewErrors.content}</span>}
+                  </label>
+                  <textarea
+                    onChange={handleReviewChange}
+                    value={reviewFormData.content}
+                    name="content"
+                    className="min-h-[12rem] w-full rounded-[10px] border p-[10px] outline-none"
+                    form="cart"
+                    id="Cart-note"
+                    placeholder="Write your comment here"
+                    data-listener-added_e50af269="true"
+                  ></textarea>
+                </div>
+                <div className={cx('field')}>
+                  <label htmlFor="">Picture(optional)</label>
+                  <div>
+                    <Upload
+                      listType="picture-card"
+                      fileList={fileList}
+                      onPreview={handlePreview}
+                      onChange={handleChange}
+                    >
+                      {fileList.length >= 2 ? null : uploadButton}
+                    </Upload>
+                    {previewImage && (
+                      <Image
+                        wrapperStyle={{ display: 'none' }}
+                        preview={{
+                          visible: previewOpen,
+                          onVisibleChange: (visible) => setPreviewOpen(visible),
+                          afterOpenChange: (visible) => !visible && setPreviewImage('')
+                        }}
+                        src={previewImage}
+                      />
+                    )}
+                  </div>
+                </div>
+                <div className={cx('form-action', 'flex gap-[10px]')}>
                   <ButtonComponent
-                    className="bg-white text-black"
                     onClick={() => {
                       setShowWritingReviewSection(false);
                     }}
+                    className="bg-[white] text-black"
                   >
                     Cancel Review
                   </ButtonComponent>
-                ) : (
-                  <ButtonComponent
-                    onClick={() => {
-                      if (user) {
-                        setShowWritingReviewSection(true);
-                      } else {
-                        toast.warning('Please log in before writing a review');
-                      }
-                    }}
-                  >
-                    Write a review
+                  <ButtonComponent isLoading={isAddReviewLoading} onClick={handleSubmitReview}>
+                    Submit review
                   </ButtonComponent>
-                )}
-              </div>
-            </div>
-          </div>
-          {showWritingReviewSection && (
-            <div className={cx('review-form')}>
-              <div className="line"></div>
-              <div className={cx('field')}>
-                <label htmlFor="rating-review">
-                  <span>Rating</span>
-                  {reviewErrors.rating && <span className="error">{reviewErrors.rating}</span>}
-                </label>
-                <Rate
-                  id="rating-review"
-                  onChange={(value) => {
-                    setReviewFormData({ ...reviewFormData, rating: value });
-                  }}
-                  value={reviewFormData.rating}
-                />
-              </div>
-              <div className={cx('field')}>
-                <label htmlFor="">
-                  <span>Review Title</span>
-                  {reviewErrors.title && <span className="error">{reviewErrors.title}</span>}
-                </label>
-                <InputComponent
-                  onChange={handleReviewChange}
-                  name="title"
-                  className={cx('mt-[0]')}
-                  placeholder="Give your review a title"
-                  value={reviewFormData.title}
-                />
-              </div>
-              <div className={cx('field')}>
-                <label htmlFor="">
-                  <span>Review</span>
-                  {reviewErrors.content && <span className="error">{reviewErrors.content}</span>}
-                </label>
-                <textarea
-                  onChange={handleReviewChange}
-                  value={reviewFormData.content}
-                  name="content"
-                  className="min-h-[12rem] w-full rounded-[10px] border p-[10px] outline-none"
-                  form="cart"
-                  id="Cart-note"
-                  placeholder="Write your comment here"
-                  data-listener-added_e50af269="true"
-                ></textarea>
-              </div>
-              <div className={cx('field')}>
-                <label htmlFor="">Picture(optional)</label>
-                <div>
-                  <Upload listType="picture-card" fileList={fileList} onPreview={handlePreview} onChange={handleChange}>
-                    {fileList.length >= 2 ? null : uploadButton}
-                  </Upload>
-                  {previewImage && (
-                    <Image
-                      wrapperStyle={{ display: 'none' }}
-                      preview={{
-                        visible: previewOpen,
-                        onVisibleChange: (visible) => setPreviewOpen(visible),
-                        afterOpenChange: (visible) => !visible && setPreviewImage('')
-                      }}
-                      src={previewImage}
-                    />
-                  )}
                 </div>
+                <div className="line"></div>
               </div>
-              <div className={cx('form-action', 'flex gap-[10px]')}>
-                <ButtonComponent
-                  onClick={() => {
-                    setShowWritingReviewSection(false);
-                  }}
-                  className="bg-[white] text-black"
-                >
-                  Cancel Review
-                </ButtonComponent>
-                <ButtonComponent isLoading={isAddReviewLoading} onClick={handleSubmitReview}>
-                  Submit review
-                </ButtonComponent>
-              </div>
-              <div className="line"></div>
-            </div>
-          )}
+            )}
 
-          {product.reviews.length > 0 && (
-            <div className={cx('review-list mt-[50px]')}>
-              {product.reviews.map((review, index) => {
-                return (
-                  <div key={index}>
-                    <ReviewItemComponent
-                      callback={renderStar}
-                      review={review}
-                      handleRemoveReview={handleRemoveReview}
-                    ></ReviewItemComponent>
-                    {index != product.reviews?.length - 1 && <div className="line my-[30px]"></div>}
-                  </div>
-                );
-              })}
-            </div>
-          )}
+            {product.reviews.length > 0 && (
+              <div className={cx('review-list mt-[50px]')}>
+                {product.reviews.map((review, index) => {
+                  return (
+                    <div key={index}>
+                      <ReviewItemComponent
+                        callback={renderStar}
+                        review={review}
+                        handleRemoveReview={handleRemoveReview}
+                      ></ReviewItemComponent>
+                      {index != product.reviews?.length - 1 && <div className="line my-[30px]"></div>}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+          <div className="line"></div>
+          <div className={cx('section-related-product')}>
+            <ProductBlockComponent viewAllButton={false} title="Relate Product" collectionHandle="new-in" />
+          </div>
+          <div className="line"></div>
+          <div className={cx('section-recently-viewed-product')}>
+            <ProductBlockComponent
+              type="recently-viewed"
+              viewAllButton={false}
+              title="Recently Viewed Products"
+              collectionHandle="new-in"
+            />
+          </div>
         </div>
-        <div className="line"></div>
-        <div className={cx('section-related-product')}>
-          <ProductBlockComponent viewAllButton={false} title="Relate Product" collectionHandle="new-in" />
-        </div>
-        <div className="line"></div>
-        <div className={cx('section-recently-viewed-product')}>
-          <ProductBlockComponent viewAllButton={false} title="Recently Viewed Products" collectionHandle="new-in" />
-        </div>
-      </div>
+      )}
     </div>
   );
 };

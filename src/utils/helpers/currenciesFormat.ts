@@ -410,8 +410,8 @@ export var Currency = {
         const element = item as HTMLElement;
         if (element.dataset.currencyValue) {
           const currencyValue = parseInt(element.dataset.currencyValue);
+          // @ts-ignore
           const formatString = currencyConverter.moneyFormats[to].money_format;
-
           const newPrice = currencyConverter.convert(currencyValue, from, to);
           const decimalPrice = currencyConverter.formatNumber(newPrice, 2);
           const formattedPrice = formatString.replace('{{amount}}', decimalPrice);

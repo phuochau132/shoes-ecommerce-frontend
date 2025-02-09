@@ -37,9 +37,12 @@
 
     .list-unstyled {
         list-style: none;
+        border-bottom: 1px solid transparent;
 
         @include screen(phoneUp) {
             li {
+                transition: all 0.5s ease;
+
                 &:hover {
                     .text {
                         border-bottom: 1px solid white;
@@ -48,6 +51,7 @@
             }
         }
     }
+
 }
 
 .footer-social {

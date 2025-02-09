@@ -13,6 +13,7 @@ import { useAddWishlistMutation, useGetInfoMutation, useRemoveWishlistMutation }
 import { setUser } from '@/redux/slice/user/user.slice';
 import { UserType } from '@/types/user';
 import { toast } from 'react-toastify';
+import LoaderComponent from '@/components/commons/loader';
 
 interface ProductCardComponentProps {
   style?: CSSProperties;
@@ -28,6 +29,24 @@ const ProductCardComponent: React.FC<ProductCardComponentProps> = memo(({ produc
   const [removeWishlist, { isLoading: removeWishlistIsLoading }] = useRemoveWishlistMutation();
   const [getUserInfo] = useGetInfoMutation();
 
+  const handleRedirectPage = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+
+    const target = event.currentTarget;
+    const productId = target.dataset.productId;
+
+    if (!productId) return;
+
+    const storedItems = localStorage.getItem('recently-viewed');
+    const recentlyViewed: string[] = storedItems ? JSON.parse(storedItems) : [];
+
+    if (!recentlyViewed.includes(productId)) {
+      recentlyViewed.push(productId);
+    }
+    localStorage.setItem('recently-viewed', JSON.stringify(recentlyViewed));
+    window.location.href = target.href;
+  };
+
   const handleQuickView = useCallback(() => {
     dispatch(
       setQuickViewPopup({
@@ -39,15 +58,21 @@ const ProductCardComponent: React.FC<ProductCardComponentProps> = memo(({ produc
   const handleAddWishList = useCallback(async () => {
     if (user) {
       try {
-        await addWishlist({
+        const response = await addWishlist({
           product_id: product.id
         }).unwrap();
-        const updateUser = await getUserInfo().unwrap();
-        dispatch(setUser(updateUser.data));
+        dispatch(
+          setUser({
+            ...user,
+            wishlists: response.data.wishlists
+          })
+        );
         if (callback) {
           await callback();
         }
-      } catch (error) {}
+      } catch (error) {
+        console.error(error);
+      }
     }
   }, [user]);
   const wishlist =
@@ -59,20 +84,26 @@ const ProductCardComponent: React.FC<ProductCardComponentProps> = memo(({ produc
     async (id: number) => {
       if (user && id) {
         try {
-          await removeWishlist({
+          const response = await removeWishlist({
             id: id
           }).unwrap();
-          const updateUser = await getUserInfo().unwrap();
-          dispatch(setUser(updateUser.data));
+          dispatch(
+            setUser({
+              ...user,
+              wishlists: response.data.wishlists
+            })
+          );
           if (callback) {
             await callback();
           }
-        } catch (error) {}
+        } catch (error) {
+          console.error(error);
+        }
       }
     },
     [user]
   );
-
+  console.log('', product.label);
   return (
     <div className={cx('card', className)}>
       <div className={cx('card-product', 'rounded-[10px]')}>
@@ -83,7 +114,12 @@ const ProductCardComponent: React.FC<ProductCardComponentProps> = memo(({ produc
               <img className={cx('second-image')} src={product.images[1].url} alt="" />
             </>
           )}
-          <a href={`/products/${product.handle}`} className={cx('card-link', 'cursor-pointer')}></a>
+          <a
+            onClick={handleRedirectPage}
+            data-product-id={product.id}
+            href={`/products/${product.handle}`}
+            className={cx('card-link', 'cursor-pointer')}
+          ></a>
         </div>
         <div className={cx('card-action')}>
           <AddToCartComponent
@@ -110,13 +146,12 @@ const ProductCardComponent: React.FC<ProductCardComponentProps> = memo(({ produc
             className={cx(
               'card__group-wishlist',
               'cart__group-action',
-              'relative p-[10px]',
-              {
-                loader: removeWishlistIsLoading
-              },
+              'relative overflow-hidden p-[10px]',
               user && wishlist.length > 0 && 'is-activated'
             )}
           >
+            {removeWishlistIsLoading && <LoaderComponent />}
+            {addWishlistIsLoading && <LoaderComponent />}
             <WishListIcon className={`${cx('icon')} fade-in-up`} />
           </div>
           <div
@@ -126,20 +161,27 @@ const ProductCardComponent: React.FC<ProductCardComponentProps> = memo(({ produc
             <QuickViewIcon className={`${cx('icon')} fade-in-up`} />
           </div>
         </div>
-        <div className={cx('card-badge')}>
-          <div className={cx('sale-badge')}>
-            <span className={cx('text')}>New</span>
+        {product.label && (
+          <div className={cx('card-badge')}>
+            <div
+              className={cx('sale-badge', 'capitalize')}
+              style={{ backgroundColor: product.label === 'featured' ? 'rgb(50 94 167)' : 'red' }}
+            >
+              <span className={cx('text')}>{product.label}</span>
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <div className={cx('card-information', 'mt-[10px]')}>
         <div className={cx('card-vendor', 'text-center')}>
-          <a href={`/products/${product.handle}`} title={product.vendor}>
+          <a onClick={handleRedirectPage} title={product.vendor}>
             {product.vendor}
           </a>
         </div>
         <div className={cx('card-title', 'text-center')}>
-          <a href={`/products/${product.handle}`}>{product.title}</a>
+          <a data-product-id={product.id} onClick={handleRedirectPage} href={`/products/${product.handle}`}>
+            {product.title}
+          </a>
         </div>
         <div className={cx('card-review', 'text-center')}>
           <ProductReviewComponent product={product} />

@@ -6,11 +6,7 @@ import { bindClassNames } from '@/utils/helpers/cx';
 
 const cx = bindClassNames(styles);
 
-const messages = [
-  { text: 'SUMMER SALE: UP TO 70% OFF SELECTED ITEMS', link: 'https://shopify.pxf.io/oq3WaO' },
-  { text: 'WINTER COLLECTION NOW AVAILABLE!', link: 'https://shopify.pxf.io/oq3WaO' },
-  { text: 'FREE SHIPPING ON ORDERS OVER $50', link: 'https://shopify.pxf.io/oq3WaO' }
-];
+const messages = [{ text: 'FREE SHIPPING ON ORDERS OVER $800', link: 'https://shopify.pxf.io/oq3WaO' }];
 
 const AnnouncementBar: React.FC = memo(() => {
   return (

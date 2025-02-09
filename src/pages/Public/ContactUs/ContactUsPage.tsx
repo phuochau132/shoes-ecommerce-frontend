@@ -1,16 +1,37 @@
 import styles from './contactUs.module.scss';
 import { bindClassNames } from '@/utils/helpers/cx';
 import { ButtonComponent, InputComponent } from '@/components/commons';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import TermAndConditionComponent from '@/components/cart/termAndConditionButton';
 import { useDispatch } from 'react-redux';
 import { setPageInfo } from '@/redux/slice/app/app.slice';
+import { useSendmailMutation } from '@/apis/user/user.api';
+import useValidation, { useForm } from '@/utils/hooks/form';
+import mailerValidationSchema from '@/validations/mailer.validation';
 
 const cx = bindClassNames(styles);
-
+export type ContactFormDataType = {
+  name: string;
+  email: string;
+  message: string;
+};
+const initialContactFormData = {
+  name: '',
+  email: '',
+  message: ''
+};
 const ContactUsPage = () => {
   const dispatch = useDispatch();
+  const [sendmail, { isLoading }] = useSendmailMutation();
   const [isTermsChecked, setIsTermsChecked] = useState<boolean>(false);
+  const { errors: sendContactFormErrors, validate: validateSendContactForm } = useValidation(
+    mailerValidationSchema.contactForm
+  );
+  const {
+    formData: contactFormData,
+    handleChange: handleContactForm,
+    setFormData: setContactFormData
+  } = useForm(initialContactFormData);
   useEffect(() => {
     dispatch(
       setPageInfo({
@@ -23,6 +44,21 @@ const ContactUsPage = () => {
       })
     );
   }, []);
+  const handleSendContactForm = useCallback(
+    async (values: ContactFormDataType) => {
+      const errors: any = await validateSendContactForm(values);
+      console.log(errors);
+      if (Object.keys(errors).length === 0) {
+        try {
+          const res = await sendmail(values).unwrap();
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    },
+    [contactFormData]
+  );
+
   return (
     <div className={cx('mx-[auto]', 'contact-page')}>
       <div className={cx('page-content')}>
@@ -49,7 +85,7 @@ const ContactUsPage = () => {
                 Customer Care:
                 <br />
               </strong>
-              Phone: +1 (973) 435-3638
+              Phone: +84 (979) 574-301
               <br />
               Email: info@fashionwomen.com
               <br />
@@ -60,14 +96,14 @@ const ContactUsPage = () => {
                 Wholesale:
                 <br />
               </strong>
-              Email: sale@fashionwomen.com
+              Email: nguyenhauxmvt@gmail.com
               <br />
               <br />
               <strong className="text-[20px]">
                 Press Enquiries:
                 <br />
               </strong>
-              Email: press@fashionwomen.com
+              Email: nguyenhauxmvt@gmail.com
             </p>
           </div>
           <div
@@ -82,12 +118,28 @@ const ContactUsPage = () => {
             </div>
             <form className={cx('mt-[20px]')}>
               <div className={cx('flex', 'gap-[10px]')}>
-                <InputComponent className="rounded-[10px]" placeholder="Your Name" title="Your name"></InputComponent>
-                <InputComponent className="rounded-[10px]" placeholder="Your Email" title="Your Email"></InputComponent>
+                <InputComponent
+                  name="name"
+                  onChange={handleContactForm}
+                  value={contactFormData.name}
+                  className={`rounded-[10px] ${sendContactFormErrors.name && 'border-red-500'}`}
+                  placeholder="Your Name"
+                  title="Your name"
+                ></InputComponent>
+                <InputComponent
+                  name="email"
+                  onChange={handleContactForm}
+                  value={contactFormData.email}
+                  className={`rounded-[10px] ${sendContactFormErrors.email && 'border-red-500'}`}
+                  placeholder="Your Email"
+                  title="Your Email"
+                ></InputComponent>
               </div>
               <textarea
-                className="mt-[20px] min-h-[12rem] w-full rounded-[10px] border p-[10px] outline-none"
-                name="note"
+                onChange={handleContactForm}
+                value={contactFormData.message}
+                className={`mt-[20px] min-h-[12rem] w-full rounded-[10px] border p-[10px] outline-none ${sendContactFormErrors.message && 'border-red-500'}`}
+                name="message"
                 form="cart"
                 id="Cart-note"
                 placeholder="How can we help you?"
@@ -100,7 +152,12 @@ const ContactUsPage = () => {
               />
               <div className="flex">
                 <ButtonComponent
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleSendContactForm(contactFormData);
+                  }}
                   disabled={!isTermsChecked}
+                  isLoading={isLoading}
                   className={`max-w-[200px] ${!isTermsChecked ? 'pointer-events-none cursor-not-allowed opacity-50' : 'pointer-events-auto'}`}
                 >
                   Send

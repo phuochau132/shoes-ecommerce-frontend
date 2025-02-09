@@ -2,11 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 import styles from './account.module.scss';
 import { bindClassNames } from '@/utils/helpers/cx';
 import { useDispatch } from 'react-redux';
-import { setPageInfo } from '@/redux/slice/app/app.slice';
+import { setOrderDetailsPopupInfo, setPageInfo } from '@/redux/slice/app/app.slice';
 import { AccountPageEnum } from '@/types/enum/accountPage';
 import { useSelector } from 'react-redux';
 import { ButtonComponent, InputComponent } from '@/components/commons';
-import { Image, Upload, UploadFile, UploadProps } from 'antd';
+import { Button, Image, Space, Table, TableProps, Tag, Upload, UploadFile, UploadProps } from 'antd';
 import { FileType, getBase64 } from '@/utils/helpers/base64';
 import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { clearUser, setUser } from '@/redux/slice/user/user.slice';
@@ -14,6 +14,10 @@ import useValidation, { useForm } from '@/utils/hooks/form';
 import { uploadFile } from '@/utils/helpers/cloudinary';
 import { useUpdateProfileMutation } from '@/apis/user/user.api';
 import { authSchema } from '@/validations/auth.validation';
+import { useGetOrderMutation } from '@/apis/order/order.api';
+import { EPaymentMethod } from '../Checkout/CheckoutPage';
+import { Currency } from '@/utils/helpers/currenciesFormat';
+import { OrderType } from '@/types/order';
 
 const cx = bindClassNames(styles);
 
@@ -26,12 +30,20 @@ const AccountDetailPage = () => {
   const [previewImage, setPreviewImage] = useState('');
   const { errors: updateErrors, validate: validateUpdateForm } = useValidation(authSchema);
   const [updateProfile, { isLoading: isUpdateLoading }] = useUpdateProfileMutation();
+  const [getOrderByUser, { isLoading: isGetOrderLoading }] = useGetOrderMutation();
+  const [orders, setOrders] = useState([]);
   const {
     formData: infoFormdata,
     handleChange: handleChangeInfoChange,
     setFormData: setInfoFormdata
   } = useForm({ ...user });
   useEffect(() => {
+    const getOrder = async () => {
+      try {
+        const response = await getOrderByUser({}).unwrap();
+        setOrders(response.data);
+      } catch (error) {}
+    };
     dispatch(
       setPageInfo({
         breadcrumb: [
@@ -41,7 +53,11 @@ const AccountDetailPage = () => {
         title: 'My Account'
       })
     );
+    getOrder();
   }, []);
+  useEffect(() => {
+    Currency.initializeCurrency();
+  }, [orders]);
   const checkDifferences = useCallback(() => {
     if (fileList.length) return true;
     for (let key in user) {
@@ -96,6 +112,129 @@ const AccountDetailPage = () => {
       }
     }
   }, [infoFormdata, fileList]);
+  const columns: TableProps<OrderType>['columns'] = [
+    {
+      title: 'Order ID',
+      dataIndex: 'id',
+      key: 'id'
+    },
+    {
+      title: 'Created',
+      dataIndex: 'timestamp',
+      key: 'timestamp',
+      render: (timestamp) => {
+        return (
+          <div>
+            {new Date(timestamp.created_at).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}
+          </div>
+        );
+      }
+    },
+    {
+      title: 'Total',
+      dataIndex: 'total_amount',
+      key: 'total_amount',
+      render: (total_amount: string) => {
+        return (
+          <span data-currency-value={total_amount} className="money text-red-color">
+            {total_amount}
+          </span>
+        );
+      }
+    },
+    {
+      title: 'Detail Address',
+      dataIndex: 'detail_address',
+      key: 'detail_address'
+    },
+    {
+      title: 'City',
+      dataIndex: 'city',
+      key: 'city'
+    },
+    {
+      title: 'Country',
+      dataIndex: 'country',
+      key: 'country'
+    },
+    {
+      title: 'Status',
+      key: 'status',
+      dataIndex: 'status',
+      render: (status: string) => {
+        let color = '';
+        let text = '';
+
+        switch (status) {
+          case 'pending':
+            color = 'orange';
+            text = 'Pending';
+            break;
+          case 'paid':
+            color = 'green';
+            text = 'Paid';
+            break;
+          case 'failed':
+            color = 'red';
+            text = 'Failed';
+            break;
+          default:
+            color = 'default';
+            text = status;
+        }
+
+        return <Tag color={color}>{text}</Tag>;
+      }
+    },
+    {
+      title: 'Payment Method',
+      key: 'payment_method',
+      dataIndex: 'payment_method',
+      render: (payment_method: EPaymentMethod) => {
+        let color = payment_method === EPaymentMethod.cash_on_delivery ? 'green' : 'volcano';
+        let text = payment_method === EPaymentMethod.cash_on_delivery ? 'Cash on Delivery' : 'PayPal';
+        return <Tag color={color}>{text}</Tag>;
+      }
+    },
+    {
+      title: 'Fulfillment',
+      key: 'fulfillment',
+      dataIndex: 'fulfillment',
+      render: (fulfillment: number) => {
+        let color = fulfillment === 1 ? 'green' : 'red';
+        let text = fulfillment === 1 ? 'Paid' : 'Unpaid';
+        return <Tag color={color}>{text}</Tag>;
+      }
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (_, record) => {
+        return (
+          <Space size="middle">
+            <Button
+              onClick={() => {
+                dispatch(
+                  setOrderDetailsPopupInfo({
+                    items: record.items,
+                    isShowed: true
+                  })
+                );
+              }}
+            >
+              View Detail
+            </Button>
+          </Space>
+        );
+      }
+    }
+  ];
+
+  const data: OrderType[] = orders;
 
   return (
     <div className={cx('mx-[auto]', 'contact-page')}>
@@ -138,33 +277,39 @@ const AccountDetailPage = () => {
             </li>
           </ul>
         </div>
-        <div className={cx('right__content', 'flex-[1]')}>
+        <div className={cx('right__content', 'flex-[1] phoneUp:max-w-[75%]')}>
           {page == AccountPageEnum.dashboard && (
             <div className={cx('dashboard-content')}>
               <div className="mb-30 text-[15px]">
                 <span>
                   Welcome
-                  <strong className="ml-[5px]">Michael Riven</strong>!
+                  <strong className="ml-[5px]">{user.full_name ? user.full_name : 'you'}</strong>!
                 </span>
                 <span>
                   (Not?
-                  <strong className="ml-[5px]">Michael Riven</strong>
-                  <a href="/account/logout" className="ml-[5px] underline">
+                  <strong className="ml-[5px]">{user.full_name ? user.full_name : 'you'}</strong>
+                  <a
+                    onClick={(e) => {
+                      e.preventDefault();
+                      dispatch(clearUser());
+                    }}
+                    className="ml-[5px] underline"
+                  >
                     Log Out
                   </a>
                   )
                 </span>
               </div>
-              <div className="order-section mt-[30px]">
+              <div className="order-section relative mt-[30px]">
                 <h3 className="heading">Order history</h3>
-                {!user?.orders?.length && (
-                  <div className="no-order mt-[20px] rounded-[5px] bg-[#e3fadf] px-[2.5rem] py-[1.6rem] text-[14px] text-[#008a00]">
-                    <a className="border-b border-[#008a00] font-bold no-underline" href="/collections">
-                      Make your first order.
-                    </a>
-                    <span className="ml-[5px]">You haven't placed any orders yet.</span>
-                  </div>
-                )}
+                <Table<OrderType>
+                  loading={isGetOrderLoading}
+                  className="mt-[20px] border"
+                  scroll={{ x: '100%' }}
+                  columns={columns}
+                  dataSource={data}
+                  pagination={{ pageSize: 5 }}
+                />
               </div>
             </div>
           )}

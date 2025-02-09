@@ -4,6 +4,7 @@ export type CollectionType = {
   products: ProductType[];
   description?: string;
   image?: string;
-  link: string;
+  handle: string;
   name: string;
+  total: number;
 };

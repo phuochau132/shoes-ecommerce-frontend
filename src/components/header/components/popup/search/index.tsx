@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useRef, useState } from 'react';
 import styles from './search.module.scss';
 import { CloseIcon, SearchIcon } from '@/utils/icons';
 import { useDispatch } from 'react-redux';
@@ -13,10 +13,9 @@ import LoaderComponent from '@/components/commons/loader';
 const cx = bindClassNames(styles);
 
 const trendingSearches = [
-  { link: '#', title: 'dempus' },
-  { link: '#', title: 'sample' },
-  { link: '#', title: 'magnis' },
-  { link: '#', title: 'loremous saliduar' }
+  { link: '#', title: 'Amber' },
+  { link: '#', title: 'Product' },
+  { link: '#', title: 'Handi-Car®' }
 ];
 
 const SearchPopup: React.FC = memo(() => {
@@ -27,6 +26,8 @@ const SearchPopup: React.FC = memo(() => {
   const [hasInputFocused, setHasInputFocused] = useState<boolean>(false);
   const [searchResults, setSearchResults] = useState<ProductType[]>([]);
   const [filterProducts, { isLoading }] = useFilterProductsMutation();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const searchInput = useRef<HTMLInputElement | null>(null);
 
   const handleProductSearch = async (query: string) => {
     if (query) {
@@ -42,6 +43,14 @@ const SearchPopup: React.FC = memo(() => {
       setIsPredictResultsVisible(false);
       setIsSearchBlockVisible(true);
     }
+  };
+  const debounceHandleSearch = (query: string) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(() => {
+      handleProductSearch(query);
+    }, 500);
   };
   return (
     <div
@@ -68,7 +77,8 @@ const SearchPopup: React.FC = memo(() => {
             }
             setHasInputFocused(true);
           }}
-          onChange={(event) => handleProductSearch(event.target.value)}
+          onChange={(event) => debounceHandleSearch(event.target.value)}
+          ref={searchInput}
           type="text"
           placeholder="Search for a product..."
           className="flex-1 border-x-0 border-b border-t-0 border-[#333] p-[10px] outline-none"
@@ -92,9 +102,17 @@ const SearchPopup: React.FC = memo(() => {
                   {trendingSearches.map((item, index) => (
                     <li
                       key={index}
-                      className="item inline-block rounded-[5px] bg-[#e5e5e5] px-[10px] py-[5px] opacity-[0.5] duration-300 hover:opacity-[1]"
+                      className="item inline-block cursor-pointer rounded-[5px] bg-[#e5e5e5] px-[10px] py-[5px] opacity-[0.5] duration-300 hover:opacity-[1]"
                     >
-                      <a className="link flex items-center gap-[5px]" href="/search?q=dempus*&amp;type=product">
+                      <a
+                        onClick={() => {
+                          if (searchInput?.current) {
+                            searchInput.current.value = item.title;
+                            debounceHandleSearch(item.title);
+                          }
+                        }}
+                        className="link flex items-center gap-[5px]"
+                      >
                         <SearchIcon className="h-[15px] w-[15px] rotate-[270deg]" />
                         <span className="text text-[12px]">{item.title}</span>
                       </a>

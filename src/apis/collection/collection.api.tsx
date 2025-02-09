@@ -1,5 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { axiosBaseQuery } from '@/base/BaseQuery';
+import { CollectionType } from '@/types/collection';
 export type ErrorType = {
   error: {
     status: number;
@@ -17,9 +18,16 @@ const CollectionApi = createApi({
         method: 'Get',
         showToast: false
       })
+    }),
+    getAll: builder.mutation<{ data: { collections: CollectionType[] } }, void>({
+      query: () => ({
+        url: `${baseUrl}/`,
+        method: 'Get',
+        showToast: false
+      })
     })
   })
 });
 
-export const { useGetCollectionMutation } = CollectionApi;
+export const { useGetCollectionMutation, useGetAllMutation } = CollectionApi;
 export default CollectionApi;

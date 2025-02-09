@@ -723,7 +723,7 @@ const PaypalIcon: React.FC<IconProps> = ({ className }) => {
       width="124px"
       height="33px"
       viewBox="0 0 124 33"
-      enable-background="new 0 0 124 33"
+      enableBackground="new 0 0 124 33"
     >
       <path
         fill="#253B80"

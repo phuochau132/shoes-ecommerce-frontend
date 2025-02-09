@@ -7,10 +7,10 @@ import { useSelector } from 'react-redux';
 import ProductReviewComponent from '../productReview';
 import ProductVariantComponent from '../productVariant';
 import QuantityBoxComponent from '../quantity';
-import { DeliveryIcon, WishListIcon } from '@/utils/icons';
+import { DeliveryIcon } from '@/utils/icons';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Controller } from 'swiper/modules';
-import { Currency } from '@/utils/helpers/CurrenciesFormat';
+import { Currency } from '@/utils/helpers/currenciesFormat';
 import AddToCartComponent from '../addToCart';
 import { AddToCartForm } from '@/pages/Public/Product/ProductPage';
 interface QuickViewComponentProps {
@@ -23,11 +23,13 @@ const QuickViewComponent: React.FC<QuickViewComponentProps> = memo(({}) => {
   const [canPurchase, setCanPurchase] = useState<boolean>(false);
   const [addToCartForm, setAddToCartForm] = useState<AddToCartForm>({
     productId: parseInt(product.id as any),
-    quantity: 1,
-    variantId: null
+    quantity: 1
   });
   useEffect(() => {
     setCanPurchase(product.quantity > 0);
+    if (!product.variants.length) {
+      setQuantityInStock(product.quantity);
+    }
   }, [product]);
 
   const [quantityInStock, setQuantityInStock] = useState<number>(0);
@@ -35,6 +37,7 @@ const QuickViewComponent: React.FC<QuickViewComponentProps> = memo(({}) => {
   useEffect(() => {
     Currency.initializeCurrency();
   }, []);
+
   return (
     <>
       <div className={cx('productView-left', 'phoneUp:pr-[20px]', 'phoneUp:max-w-[50%]')}>
@@ -91,7 +94,6 @@ const QuickViewComponent: React.FC<QuickViewComponentProps> = memo(({}) => {
         <div className={cx('productView__right-item', 'description', 'font-normal opacity-80')}>
           {product.description}
         </div>
-
         {product.variants && (
           <div className={cx('productView__right-item', 'product-variant')}>
             <ProductVariantComponent
@@ -153,11 +155,6 @@ const QuickViewComponent: React.FC<QuickViewComponentProps> = memo(({}) => {
             className={cx('mt-[unset] w-[100%]')}
             canPurchase={canPurchase}
           />
-          <div
-            className={cx('wish-list', 'cursor-pointer rounded-[50%] border border-solid border-[#c7c7c7] p-[10px]')}
-          >
-            <WishListIcon />
-          </div>
         </div>
         <div className={cx('productView__right-item', 'delivery-return', 'mt-[20px] flex items-center gap-[20px]')}>
           <div className={cx('icon', 'max-w-[25px]')}>

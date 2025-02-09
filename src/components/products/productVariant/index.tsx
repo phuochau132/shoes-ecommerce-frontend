@@ -1,11 +1,11 @@
-import React, { memo, CSSProperties, useCallback, ChangeEvent } from 'react';
+import React, { memo, CSSProperties, useCallback, ChangeEvent, useId } from 'react';
 import styles from './product-variant.module.scss';
 import { ProductType, VariantType } from '@/types/product';
 import { bindClassNames } from '@/utils/helpers/cx';
 import { ProductVariantEnum } from '@/types/enum/products';
 import { getParentsByClass } from '@/utils/helpers/$.parents';
 import { groupedOptionsFc } from '@/utils/helpers/groupOptions';
-import { Currency } from '@/utils/helpers/CurrenciesFormat';
+import { Currency } from '@/utils/helpers/currenciesFormat';
 
 interface ProductBlockProps {
   style?: CSSProperties;
@@ -20,6 +20,8 @@ const cx = bindClassNames(styles);
 
 const ProductVariantComponent: React.FC<ProductBlockProps> = memo(
   ({ callback, product, className, isCard = false, isQuickView = false }) => {
+    const uniqueId = useId();
+
     const handleChangingVariant = useCallback(
       (e: ChangeEvent) => {
         const target = e.target as HTMLInputElement;
@@ -36,24 +38,14 @@ const ProductVariantComponent: React.FC<ProductBlockProps> = memo(
             parseInt((document.querySelector('.product-quantity input') as HTMLInputElement)?.value) <=
               parseInt(currentVariant.stock as any)
           );
-          if (!isQuickView) {
-            document
-              .querySelector('.productView_right-custom')
-              ?.querySelectorAll('.money')
-              .forEach((item) => {
-                item.setAttribute('data-currency-value', currentVariant.price);
-              });
-          } else {
-            document
-              .querySelector('.quickView-modal')
-              ?.querySelectorAll('.money')
-              .forEach((item) => {
-                item.setAttribute('data-currency-value', currentVariant.price);
-              });
-          }
+          const priceElements = isQuickView
+            ? document.querySelector('.quickView-modal')?.querySelectorAll('.money')
+            : document.querySelector('.productView_right-custom')?.querySelectorAll('.money');
+          priceElements?.forEach((item) => {
+            item.setAttribute('data-currency-value', currentVariant.price);
+          });
         } else {
-          // @ts-ignore
-          callback(null, false, null, false);
+          callback(null as any, false, null as any, false);
         }
         Currency.initializeCurrency();
       },
@@ -61,83 +53,65 @@ const ProductVariantComponent: React.FC<ProductBlockProps> = memo(
     );
 
     const groupedOptions = groupedOptionsFc([product]);
-    const getCurrentVariant = (): VariantType | undefined => {
-      const numberOfOption = !isQuickView
-        ? document.querySelectorAll('.form-AddToCart fieldset').length
-        : document.querySelectorAll('.quickView-modal .product-variant fieldset').length;
-      console.log('numberOfOption', numberOfOption);
-      const inputsIsChecked = Array.from(
-        !isQuickView
-          ? document.querySelector('.product-page .product-variant')?.querySelectorAll('input:checked') || []
-          : document.querySelector('.quickView-modal .product-variant')?.querySelectorAll('input:checked') || []
-      ) as HTMLInputElement[];
 
-      if (inputsIsChecked && inputsIsChecked.length) {
-        const values = inputsIsChecked.map((input) => {
-          return input.value;
-        });
-        if (product.variants && values.length == numberOfOption) {
-          const variant = product.variants.filter((variant) => {
-            return values.every((value) =>
-              variant.options.some((option) => {
-                return option.value === value;
-              })
-            );
-          });
-          return variant[0];
-        }
+    const getCurrentVariant = (): VariantType | undefined => {
+      const selector = isQuickView ? '.quickView-modal .product-variant' : '.product-page .product-variant';
+      const inputsIsChecked = Array.from(document.querySelector(selector)?.querySelectorAll('input:checked') || []);
+
+      if (inputsIsChecked.length) {
+        const values = inputsIsChecked.map((input) => (input as HTMLInputElement).value);
+        return product.variants?.find((variant) =>
+          values.every((value) => variant.options.some((option) => option.value === value))
+        );
       }
     };
 
     return (
       <>
         {groupedOptions &&
-          Object.values(groupedOptions)?.map((option, index) => {
-            return (
-              <fieldset
-                key={index}
-                data-variant-type={option.type}
-                className={cx('product__form-input', 'mt-[10px]', className, {
-                  hidden: option.type != ProductVariantEnum.swatch && isCard
-                })}
-              >
-                {!isCard && (
-                  <legend className={cx('form__label', 'font-[500]')}>
-                    {option.name}: <span className={cx('current-value', 'font-[300]')}>{option.values[0].value}</span>
-                  </legend>
-                )}
-                <div
-                  className={cx('values', 'row flex gap-[10px]', { 'justify-center': isCard, 'mt-[10px]': !isCard })}
-                >
-                  {option.values.map((optionValue, optionIndex) => {
-                    return (
-                      <div className="field" key={optionIndex}>
-                        <input
-                          value={optionValue.value}
-                          onChange={(e) => handleChangingVariant(e)}
-                          id={`option-${product.id}-${optionValue.id}`}
-                          data-variant-id={optionValue.id}
-                          type="radio"
-                          name={option.name}
-                        />
-                        <label
-                          className={cx('product__form-label', { 'w-[30px]': isCard, 'h-[30px]': isCard })}
-                          htmlFor={`option-${product.id}-${optionValue.id}`}
+          Object.values(groupedOptions).map((option, index) => (
+            <fieldset
+              key={index}
+              data-variant-type={option.type}
+              className={cx('product__form-input', 'mt-[10px]', className, {
+                hidden: option.type !== ProductVariantEnum.swatch && isCard
+              })}
+            >
+              {!isCard && (
+                <legend className={cx('form__label', 'font-[500]')}>
+                  {option.name}: <span className={cx('current-value', 'font-[300]')}>{option.values[0].value}</span>
+                </legend>
+              )}
+              <div className={cx('values', 'row flex gap-[10px]', { 'justify-center': isCard, 'mt-[10px]': !isCard })}>
+                {option.values.map((optionValue, optionIndex) => {
+                  const inputId = `${uniqueId}-option-${product.id}-${optionValue.id}`;
+                  return (
+                    <div className="field" key={optionIndex}>
+                      <input
+                        value={optionValue.value}
+                        onChange={handleChangingVariant}
+                        id={inputId}
+                        data-variant-id={optionValue.id}
+                        type="radio"
+                        name={option.name}
+                      />
+                      <label
+                        className={cx('product__form-label', { 'w-[30px]': isCard, 'h-[30px]': isCard })}
+                        htmlFor={inputId}
+                      >
+                        <span
+                          className={cx(option.type)}
+                          style={{ '--variant-background': optionValue.value } as React.CSSProperties}
                         >
-                          <span
-                            className={cx(option.type)}
-                            style={{ '--variant-background': optionValue.value } as React.CSSProperties}
-                          >
-                            {option.type != ProductVariantEnum.swatch && optionValue.value}
-                          </span>
-                        </label>
-                      </div>
-                    );
-                  })}
-                </div>
-              </fieldset>
-            );
-          })}
+                          {option.type !== ProductVariantEnum.swatch && optionValue.value}
+                        </span>
+                      </label>
+                    </div>
+                  );
+                })}
+              </div>
+            </fieldset>
+          ))}
       </>
     );
   }

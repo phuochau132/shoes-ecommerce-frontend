@@ -41,13 +41,11 @@ const AddToCartComponent: React.FC<AddToCartComponentProps> = memo(
     const handleAddToCart = async () => {
       try {
         await addToCart({ data: dataAddToCart });
-        if (document.querySelector('.cart-page')) {
-          try {
-            const response = await getCart({}).unwrap();
-            dispatch(setCart(response.data));
-          } catch (error) {}
-        }
-      } catch (error) {}
+        const response = await getCart({}).unwrap();
+        dispatch(setCart(response.data));
+      } catch (error) {
+        console.error(error);
+      }
     };
 
     return (

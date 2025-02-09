@@ -7,12 +7,13 @@ import { bindClassNames } from '@/utils/helpers/cx';
 import { ProductType } from '@/types/product';
 import { useGetCollectionMutation } from '@/apis/collection/collection.api';
 import ProductCardLoadingComponent from '../cardLoading';
-import { Currency } from '@/utils/helpers/CurrenciesFormat';
+import { Currency } from '@/utils/helpers/currenciesFormat';
 import PaginatorComponent from '@/components/commons/paginator';
+import { useGetProductsByIdsMutation } from '@/apis/product/product.api';
 
 interface ProductBlockProps {
   style?: CSSProperties;
-  collectionHandle: string;
+  collectionHandle?: string;
   title?: string;
   viewAllButton?: boolean;
   limit?: number;
@@ -20,12 +21,13 @@ interface ProductBlockProps {
   sectionClass?: string;
   useHeader?: boolean;
   layout?: string;
+  type?: string;
 }
 
 const cx = bindClassNames(styles);
 const ProductBlockComponent: React.FC<ProductBlockProps> = memo(
   ({
-    collectionHandle,
+    collectionHandle = '',
     title,
     viewAllButton = false,
     useHeader = true,
@@ -33,10 +35,12 @@ const ProductBlockComponent: React.FC<ProductBlockProps> = memo(
     style,
     limit = 8,
     titleClass,
-    layout = 'slider'
+    layout = 'slider',
+    type = 'normal'
   }) => {
     const [products, setProducts] = useState<ProductType[]>([]);
     const [getCollection, { isLoading }] = useGetCollectionMutation();
+    const [fetchProducts, { isLoading: isGetProductsLoading }] = useGetProductsByIdsMutation();
     const [page, setPage] = useState(1);
     const sectionRef = useRef<HTMLDivElement>(null);
     const [numberOfPage, setNumberOfPage] = useState(1);
@@ -45,12 +49,22 @@ const ProductBlockComponent: React.FC<ProductBlockProps> = memo(
       if (layout == 'grid') {
         query = `page=${page}&limit=${limit}`;
       }
-      const response = await getCollection({
-        handle: collectionHandle,
-        query: query
-      }).unwrap();
-      setNumberOfPage(Math.ceil(parseInt(response.data.total) / limit));
-      setProducts(response.data.products);
+      try {
+        if (type == 'normal') {
+          const response = await getCollection({
+            handle: collectionHandle,
+            query: query
+          }).unwrap();
+          setNumberOfPage(Math.ceil(parseInt(response.data.total) / limit));
+          setProducts(response.data.products);
+        }
+        if (type == 'recently-viewed') {
+          const storedItems = localStorage.getItem('recently-viewed');
+          const recentlyViewedIds: string[] = storedItems ? JSON.parse(storedItems) : [];
+          const response = await fetchProducts({ ids: recentlyViewedIds }).unwrap();
+          setProducts(response.data.products);
+        }
+      } catch (error) {}
     };
     useEffect(() => {
       const handleIntersection = (entries: IntersectionObserverEntry[]) => {
@@ -85,14 +99,17 @@ const ProductBlockComponent: React.FC<ProductBlockProps> = memo(
         }).unwrap();
         setPage(page + 1);
         setProducts((prev) => [...prev, ...response.data.products]);
-      } catch (error) {}
+      } catch (error) {
+        console.error(error);
+      }
     };
+
     return (
       <section ref={sectionRef} style={style} className={cx('section-product-block', sectionClass && sectionClass)}>
         {useHeader && (
           <div className={cx('section-header', 'mb-[30px]')}>
             <h3 className={cx('title')}>
-              <span className={cx('text', titleClass && titleClass)}>{title ? title : 'New Arrivals'}</span>
+              <span className={cx('text', titleClass && titleClass)}>{title}</span>
             </h3>
             {viewAllButton && (
               <div className="view-all">
@@ -132,28 +149,40 @@ const ProductBlockComponent: React.FC<ProductBlockProps> = memo(
               </Swiper>
             ) : (
               <div className="products flex">
-                {Array.from({ length: 4 }).map(() => {
+                {Array.from({ length: 5 }).map(() => {
                   return (
-                    <ProductCardLoadingComponent className="phone::min-w-[50%] w-full mobileTablet:min-w-[33%] mobileTabletUp:min-w-[25%]" />
+                    <ProductCardLoadingComponent className="w-full p-[10px] phone:min-w-[50%] tablet:min-w-[33%] largeDesktop:min-w-[20%]" />
                   );
                 })}
               </div>
             )
           ) : (
-            <div className="product-grid">
-              <div className="products flex-column flex flex-wrap">
-                {products?.map((item: ProductType, index: number) => {
-                  return (
-                    <ProductCardComponent
-                      key={index}
-                      className="w-full p-[10px] phone:max-w-[50%] tablet:max-w-[33%] mobileTabletUp:max-w-[25%]"
-                      product={item}
-                    />
-                  );
-                })}
-              </div>
-              {numberOfPage != page && (
-                <PaginatorComponent isLoading={isLoading} handleShowMore={handleShowMore} className="mt-[30px]" />
+            <div className="product-grid relative min-h-[200px]">
+              {products && products.length > 0 ? (
+                <>
+                  <div className="products flex-column flex flex-wrap">
+                    {products?.map((item: ProductType, index: number) => {
+                      return (
+                        <ProductCardComponent
+                          key={index}
+                          className="w-full p-[10px] phone:max-w-[50%] tablet:max-w-[33%] mobileTabletUp:max-w-[25%]"
+                          product={item}
+                        />
+                      );
+                    })}
+                  </div>
+                  {numberOfPage != page && (
+                    <PaginatorComponent isLoading={isLoading} handleShowMore={handleShowMore} className="mt-[30px]" />
+                  )}
+                </>
+              ) : (
+                <div className="products flex flex-wrap">
+                  {Array.from({ length: 4 }).map(() => {
+                    return (
+                      <ProductCardLoadingComponent className="w-full p-[10px] phone:max-w-[50%] tablet:max-w-[33%] mobileTabletUp:max-w-[25%]" />
+                    );
+                  })}
+                </div>
               )}
             </div>
           )}

@@ -2,7 +2,7 @@ import React, { memo, CSSProperties, useRef, useState } from 'react';
 import styles from './quantity.module.scss';
 import { MinusIcon, PlusIcon } from '@/utils/icons';
 import { bindClassNames } from '@/utils/helpers/cx';
-import { CartItemType, ProductCartType } from '@/types/cart';
+import { CartItemType } from '@/types/cart';
 
 interface QuantityBoxComponentProps extends React.InputHTMLAttributes<HTMLInputElement> {
   style?: CSSProperties;
