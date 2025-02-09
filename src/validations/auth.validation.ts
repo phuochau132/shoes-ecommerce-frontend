@@ -6,7 +6,7 @@ const authSchema = yup.object().shape({
     .max(100, 'Full name must be at most 100 characters'),
   telephone: yup
     .string()
-    .matches(/^\+84[1-9][0-9]{7,11}$/, 'Invalid telephone number')
+    .matches(/^\+84[1-9][0-9]{7,11}$/, 'Invalid telephone number. Format: +84XXXXXXXXX')
     .min(10, 'Telephone must be at least 10 digits')
     .max(15, 'Telephone must be at most 15 digits'),
   address: yup

@@ -101,7 +101,6 @@ const ProductCardComponent: React.FC<ProductCardComponentProps> = memo(({ produc
     },
     [user]
   );
-  console.log('', product.label);
   return (
     <div className={cx('card', className)}>
       <div className={cx('card-product', 'rounded-[10px]')}>

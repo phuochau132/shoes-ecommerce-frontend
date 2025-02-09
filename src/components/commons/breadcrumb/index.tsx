@@ -19,7 +19,7 @@ const BreadcrumbComponent: React.FC<BreadcrumbComponentType> = memo(({ path, cla
       {path?.map((item, index) => {
         return (
           <div key={index} className={cx('breadcrumb-item', className, { 'text-black': index == path.length - 1 })}>
-            <a className={cx('link')} href={item.path}>
+            <a className={cx('link', 'capitalize')} href={item.path}>
               {item.title}
             </a>
             {index != path.length - 1 && (

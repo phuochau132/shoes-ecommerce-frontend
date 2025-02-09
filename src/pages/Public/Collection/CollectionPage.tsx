@@ -147,7 +147,7 @@ const CollectionPage: React.FC = () => {
           </div>
           <div className={cx('collection__content-grid', 'relative pl-[50px] phone:pl-[0]')}>
             <div className={cx('collection-heading', 'mb-[20px] pl-[10px] pr-[10px]')}>
-              <h1 className={cx('title', 'heading font-[700]')}>{collection.name}</h1>
+              <h1 className={cx('title', 'heading font-[700] capitalize')}>{collection.name}</h1>
               <p className={cx('description', 'mt-[10px] text-[15px]')}>
                 <span className={cx('text', 'font-normal italic')}>{collection.description}</span>
               </p>

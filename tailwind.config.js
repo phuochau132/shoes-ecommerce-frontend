@@ -66,7 +66,8 @@ const config = {
       largeDesktop: { min: '1200px' },
       mobileTablet: { max: '1023px' },
       mobileTabletUp: { min: '1024px' },
-      tabletUp: { min: '768px' }
+      tabletUp: { min: '768px' },
+      mediumDesktop: { min: '1024px', max: '1199px' }
     },
     boxShadow: {
       custom: '0 0 40px 0 rgba(0,0,0,.45)'

@@ -25,33 +25,28 @@ const MobileNavigation: React.FC<{ menu: Navigation[] }> = memo(({ menu }) => {
   };
 
   return (
-    <div className={cx('mobile-menu', 'sidebar', 'z-[4] flex flex-col items-center p-[30px]')}>
-      <div className={cx('sidebar__menu-header flex w-full justify-between')}>
-        <div className={cx('sidebar__menu-logo', 'flex items-center')}>
-          <a href="#" className={cx('logo-link')}>
-            <img
-              src="https://res.cloudinary.com/dvgjegefi/image/upload/v1734491076/logo_usfwfm.png"
-              alt="error"
-              width="70"
-              height="28"
-              className={cx('header__heading-logo', 'rounded-[0]')}
-            />
-          </a>
+    <div className={cx('mobile-menu', 'sidebar', 'z-[4] flex flex-col items-center px-[20px] pb-[30px] pt-[20px]')}>
+      <div className={cx('sidebar__menu-header flex w-full items-center justify-between')}>
+        <div className={cx('sidebar__menu-header', 'flex')}>
+          <div className={cx('heading')}>Menu</div>
         </div>
         <div className={cx('close-btn', 'cursor-pointer')} onClick={() => dispatch(setMenuSidebarState(false))}>
           <CloseIcon className={cx('rotate')} />
         </div>
       </div>
-      <ul className={cx('list-menu', 'wrap mt-[20px] w-full flex-1 flex-wrap gap-[10px] overflow-y-auto')}>
+
+      <ul className={cx('list-menu', 'wrap mt-[20px] w-full flex-1 flex-wrap gap-[10px]')}>
         {menu.map((item) => (
           <li className={cx('menu__item', 'menu-lv1')} key={item.name}>
             <div className={cx('menu__item-link', 'flex items-center justify-between')}>
               <a className={cx('link', 'flex-1')} href={item.link}>
                 <span className={cx('text', 'text-[16px] font-bold')}>{item.name}</span>
               </a>
-              <div className={cx('cursor-pointer', 'p-[10px]')} onClick={() => toggleMenu(item.name, 'lv1')}>
-                {openMenus[item.name] ? <MinusIcon /> : <PlusIcon />}
-              </div>
+              {item.children && (
+                <div className={cx('cursor-pointer p-[10px]')} onClick={() => toggleMenu(item.name, 'lv1')}>
+                  {openMenus[item.name] ? <MinusIcon /> : <PlusIcon />}
+                </div>
+              )}
             </div>
             {item.children && (
               <div
@@ -65,12 +60,14 @@ const MobileNavigation: React.FC<{ menu: Navigation[] }> = memo(({ menu }) => {
                       <a className={cx('link', 'flex-1')} href={menu_lv2.link}>
                         <span className={cx('text', 'text-[13px] font-[600]')}>{menu_lv2.name}</span>
                       </a>
-                      <div
-                        className={cx('cursor-pointer', 'p-[10px]')}
-                        onClick={() => toggleMenu(menu_lv2.name, 'submenu')}
-                      >
-                        {openMenus[menu_lv2.name] ? <MinusIcon /> : <PlusIcon />}
-                      </div>
+                      {item.children && (
+                        <div
+                          className={cx('cursor-pointer p-[10px]')}
+                          onClick={() => toggleMenu(menu_lv2.name, 'submenu')}
+                        >
+                          {openMenus[menu_lv2.name] ? <MinusIcon /> : <PlusIcon />}
+                        </div>
+                      )}
                     </div>
                     {menu_lv2.children && (
                       <div
@@ -100,7 +97,7 @@ const MobileNavigation: React.FC<{ menu: Navigation[] }> = memo(({ menu }) => {
         <a className="link" href="/">
           <img
             className="w-full"
-            src="https://cdn.shopify.com/s/files/1/0282/6678/files/effiel_new-ezgif.com-resize.png?v=1731488456"
+            src="https://res.cloudinary.com/dvgjegefi/image/upload/v1739107238/effiel_new-ezgif.com-resize_areov3.png"
             alt="logo"
             loading="lazy"
           />

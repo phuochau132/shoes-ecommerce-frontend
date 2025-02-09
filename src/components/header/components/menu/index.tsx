@@ -214,7 +214,7 @@ const MainHeader: React.FC = memo(() => {
         <div className={cx('header__heading')}>
           <a href="/" className={cx('header__heading-link')}>
             <img
-              src="https://res.cloudinary.com/dvgjegefi/image/upload/v1734491076/logo_usfwfm.png"
+              src="https://res.cloudinary.com/dvgjegefi/image/upload/v1739106053/logo_shoesshop_nwy69f.png"
               loading="lazy"
               className={cx('header__heading-logo', 'rounded-none')}
               alt="error"
