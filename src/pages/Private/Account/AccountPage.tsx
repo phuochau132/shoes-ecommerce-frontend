@@ -32,11 +32,7 @@ const AccountDetailPage = () => {
   const [updateProfile, { isLoading: isUpdateLoading }] = useUpdateProfileMutation();
   const [getOrderByUser, { isLoading: isGetOrderLoading }] = useGetOrderMutation();
   const [orders, setOrders] = useState([]);
-  const {
-    formData: infoFormdata,
-    handleChange: handleChangeInfoChange,
-    setFormData: setInfoFormdata
-  } = useForm({ ...user });
+  const { formData: infoFormdata, handleChange: handleChangeInfoChange } = useForm({ ...user });
   useEffect(() => {
     const getOrder = async () => {
       try {

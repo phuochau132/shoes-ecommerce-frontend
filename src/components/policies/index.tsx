@@ -1,12 +1,11 @@
 import React, { memo, CSSProperties } from 'react';
-import { bindClassNames } from '@/utils/helpers/cx';
 
 interface PoliciesComponentProps {
   style?: CSSProperties;
   className?: string;
 }
 
-const PoliciesPopupComponent: React.FC<PoliciesComponentProps> = memo(({ style, className }) => {
+const PoliciesPopupComponent: React.FC<PoliciesComponentProps> = memo(({ style }) => {
   return (
     <div className="policies-wrapper w-full" style={style}>
       <div className="heading mb-[20px]">

@@ -1,8 +1,6 @@
 import React, { memo } from 'react';
 import styles from '../card/product-card.module.scss';
-import { QuickViewIcon, WishListIcon } from '@/utils/icons';
 import { bindClassNames } from '@/utils/helpers/cx';
-import LoaderComponent from '@/components/commons/loader';
 
 const cx = bindClassNames(styles);
 const ProductCardLoadingComponent: React.FC<{ className?: string }> = memo(({ className }) => {

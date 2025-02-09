@@ -1,4 +1,4 @@
-import { OptionType, ProductImageType, VariantType } from '../product';
+import { OptionType, ProductImageType } from '../product';
 import { ReviewType } from '../review';
 
 export type CartType = {

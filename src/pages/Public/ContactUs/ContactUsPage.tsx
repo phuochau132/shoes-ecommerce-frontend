@@ -27,11 +27,7 @@ const ContactUsPage = () => {
   const { errors: sendContactFormErrors, validate: validateSendContactForm } = useValidation(
     mailerValidationSchema.contactForm
   );
-  const {
-    formData: contactFormData,
-    handleChange: handleContactForm,
-    setFormData: setContactFormData
-  } = useForm(initialContactFormData);
+  const { formData: contactFormData, handleChange: handleContactForm } = useForm(initialContactFormData);
   useEffect(() => {
     dispatch(
       setPageInfo({
@@ -50,7 +46,7 @@ const ContactUsPage = () => {
       console.log(errors);
       if (Object.keys(errors).length === 0) {
         try {
-          const res = await sendmail(values).unwrap();
+          await sendmail(values).unwrap();
         } catch (error) {
           console.error(error);
         }

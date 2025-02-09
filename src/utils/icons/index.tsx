@@ -26,7 +26,7 @@ const SearchIcon: React.FC<IconProps> = ({ className, style }) => {
     </svg>
   );
 };
-const HideIcon: React.FC<IconProps> = ({ className, style }) => {
+const HideIcon: React.FC<IconProps> = ({ className }) => {
   return (
     <svg width="14" height="15" fill="none" className={className && className}>
       <path
@@ -36,7 +36,7 @@ const HideIcon: React.FC<IconProps> = ({ className, style }) => {
     </svg>
   );
 };
-const ViewIcon: React.FC<IconProps> = ({ className, style }) => {
+const ViewIcon: React.FC<IconProps> = ({ className }) => {
   return (
     <svg className={className && className} width="14" height="12" viewBox="0 0 14 12" fill="none">
       <path
@@ -261,7 +261,7 @@ const ArrowIcon: React.FC<IconProps> = ({ style, className }) => {
     </svg>
   );
 };
-const CheckedIcon: React.FC<IconProps> = ({ style, className }) => {
+const CheckedIcon: React.FC<IconProps> = ({ className }) => {
   return (
     <svg width="10" height="7" fill="none" className={className && `${className}`}>
       <path
@@ -271,7 +271,7 @@ const CheckedIcon: React.FC<IconProps> = ({ style, className }) => {
     </svg>
   );
 };
-const GridModeIcon1: React.FC<IconProps> = ({ style, className }) => {
+const GridModeIcon1: React.FC<IconProps> = ({ className }) => {
   return (
     <svg className={className && `${className}`} xmlns="http://www.w3.org/2000/svg" width="20" height="14" fill="none">
       <g fill="currentColor">
@@ -280,7 +280,7 @@ const GridModeIcon1: React.FC<IconProps> = ({ style, className }) => {
     </svg>
   );
 };
-const GridModeIcon2: React.FC<IconProps> = ({ style, className }) => {
+const GridModeIcon2: React.FC<IconProps> = ({ className }) => {
   return (
     <svg className={className && `${className}`} xmlns="http://www.w3.org/2000/svg" width="15" height="14" fill="none">
       <g fill="currentColor">
@@ -289,7 +289,7 @@ const GridModeIcon2: React.FC<IconProps> = ({ style, className }) => {
     </svg>
   );
 };
-const GridModeIcon3: React.FC<IconProps> = ({ style, className }) => {
+const GridModeIcon3: React.FC<IconProps> = ({ className }) => {
   return (
     <svg className={className && `${className}`} xmlns="http://www.w3.org/2000/svg" width="15" height="14" fill="none">
       <g fill="currentColor">
@@ -298,7 +298,7 @@ const GridModeIcon3: React.FC<IconProps> = ({ style, className }) => {
     </svg>
   );
 };
-const GridModeIcon4: React.FC<IconProps> = ({ style, className }) => {
+const GridModeIcon4: React.FC<IconProps> = ({ className }) => {
   return (
     <svg className={className && `${className}`} xmlns="http://www.w3.org/2000/svg" width="20" height="14" fill="none">
       <g fill="currentColor">
@@ -307,7 +307,7 @@ const GridModeIcon4: React.FC<IconProps> = ({ style, className }) => {
     </svg>
   );
 };
-const FilterIcon: React.FC<IconProps> = ({ style, className }) => {
+const FilterIcon: React.FC<IconProps> = ({ className }) => {
   return (
     <svg className={className && `${className}`} width="14" height="13" fill="none">
       <path

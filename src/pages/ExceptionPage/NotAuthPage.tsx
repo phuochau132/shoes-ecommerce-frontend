@@ -15,8 +15,8 @@ const NotAuthPage = () => {
             <Button className="mx-auto w-fit" type="default" onClick={() => navigate(-1)}>
               Back
             </Button>
-            <Button className="mx-auto w-fit" type="primary" onClick={() => navigate(paths.login)}>
-              Login
+            <Button className="mx-auto w-fit" type="primary" onClick={() => navigate(paths.home)}>
+              Home
             </Button>
           </div>
         </div>

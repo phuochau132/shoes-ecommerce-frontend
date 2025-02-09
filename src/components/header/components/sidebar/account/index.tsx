@@ -38,7 +38,7 @@ const AccountSidebar: React.FC = memo(() => {
   const [inputType, setInputType] = useState(InputEnum.password);
   const [contentSidebar, setSidebarContent] = useState(AccountSidebarEnum.login);
   const [register, { isLoading: isRegisterLoading, isSuccess: isRegisterSuccess }] = useRegisterMutation();
-  const [login, { isLoading: isLoginLoading, isSuccess: isLoginSuccess }] = useLoginMutation();
+  const [login, { isLoading: isLoginLoading }] = useLoginMutation();
   const [forgotPassword, { isLoading: isForgotPasswordLoading, isSuccess: isForgotPasswordSuccess }] =
     useForgotPasswordMutation();
   const { errors: loginErrors, validate: validateLoginForm } = useValidation(authSchema);

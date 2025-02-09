@@ -1,4 +1,4 @@
-import React, { FC, memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import styles from './sidebar.module.scss';
 import { bindClassNames } from '@/utils/helpers/cx';
 import CollapsibleBlock from '@/components/commons/collapse';

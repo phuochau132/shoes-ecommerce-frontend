@@ -1,5 +1,4 @@
 import React, { memo, CSSProperties, useCallback } from 'react';
-import { bindClassNames } from '@/utils/helpers/cx';
 import { ProductType } from '@/types/product';
 import { calTotalReview } from '@/utils/helpers/review';
 

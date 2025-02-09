@@ -12,7 +12,7 @@ const cx = bindClassNames(styles);
 
 const CollectionListPage: React.FC = () => {
   const dispatch = useDispatch();
-  const [fetchAllCollections, { isLoading, isSuccess }] = useGetAllMutation();
+  const [fetchAllCollections, { isLoading }] = useGetAllMutation();
   const [collections, setCollections] = useState<CollectionType[]>([]);
   const getAllCollections = async () => {
     try {

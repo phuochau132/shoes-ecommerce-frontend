@@ -1,6 +1,5 @@
 import React, { useRef } from 'react';
 import './collapse.scss';
-import classNames from 'classnames';
 
 interface CollapseProps {
   children: React.ReactNode;

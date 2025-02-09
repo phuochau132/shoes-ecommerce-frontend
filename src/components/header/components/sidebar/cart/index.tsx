@@ -30,7 +30,7 @@ const CartSidebar: React.FC = memo(() => {
 
   const noteElement = useRef(null);
   const [getCart, { isLoading: isGetCartLoading }] = useGetCartMutation();
-  const handleClickAddon = useCallback((event: React.MouseEvent<HTMLElement>, className: string) => {
+  const handleClickAddon = useCallback((className: string) => {
     if (wrapper.current) {
       wrapper.current.classList.add(className);
     }
@@ -155,8 +155,8 @@ const CartSidebar: React.FC = memo(() => {
             <div className={cx('previewCart-addons', 'flex min-h-[50px] items-center justify-center gap-[10px]')}>
               <div className="cart-note">
                 <button
-                  onClick={(event) => {
-                    handleClickAddon(event, 'note-activation');
+                  onClick={() => {
+                    handleClickAddon('note-activation');
                   }}
                 >
                   <NoteIcon />
@@ -164,8 +164,8 @@ const CartSidebar: React.FC = memo(() => {
               </div>
               <div className={cx('cart-gift')}>
                 <button
-                  onClick={(event) => {
-                    handleClickAddon(event, 'giftWrap-activation');
+                  onClick={() => {
+                    handleClickAddon('giftWrap-activation');
                   }}
                 >
                   <GiftIcon />
