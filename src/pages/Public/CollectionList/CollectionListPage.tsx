@@ -1,7 +1,6 @@
 import styles from './collectionList.module.scss';
 import { bindClassNames } from '@/utils/helpers/cx';
 import { CollectionType } from '@/types/collection';
-import { ButtonComponent } from '@/components/commons';
 import { useEffect, useState } from 'react';
 import { setPageInfo } from '@/redux/slice/app/app.slice';
 import { useDispatch } from 'react-redux';
