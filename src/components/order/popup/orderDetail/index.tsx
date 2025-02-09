@@ -33,7 +33,7 @@ const OrderDetailComponent: React.FC<OrderDetailProps> = memo(({ style }) => {
       title: 'Image',
       dataIndex: 'images',
       key: 'images',
-      render: (value, record: OrderItemType) => {
+      render: (_, record: OrderItemType) => {
         if (!record.product.images || record.product.images.length === 0) return null;
         return (
           <div className="relative">
