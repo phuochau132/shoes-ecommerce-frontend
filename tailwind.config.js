@@ -1,6 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-// eslint-disable-next-line no-undef
-module.exports = {
+const config = {
   content: ['./src/**/*.{js,jsx,ts,tsx}', '!./src/**/*.tdc.tsx'],
   theme: {
     extend: {
@@ -29,13 +28,10 @@ module.exports = {
         'danger-color': '#D1293D',
         'danger-color-hover': '#BA1B2E',
         'danger-color-disabled': '#F76F7F',
-
         'color-border': '#d2ddec',
         'grey-color': 'rgba(17, 17, 17, 0.55)',
         'grey-bg': '#f5f5f5',
-
         'red-color': '#d0473e',
-
         'free-shipping-bg': '#ffc206'
       },
       flex: {
@@ -73,9 +69,11 @@ module.exports = {
       tabletUp: { min: '768px' }
     },
     boxShadow: {
-      custom: ' 0 0 40px 0 rgba(0,0,0,.45);'
+      custom: '0 0 40px 0 rgba(0,0,0,.45)'
     }
   },
   plugins: [],
   important: true
 };
+
+export default config;
