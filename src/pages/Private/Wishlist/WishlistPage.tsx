@@ -45,14 +45,14 @@ const WishlistPage = () => {
           {isGetWishlistLoading
             ? Array.from({ length: 4 }).map(() => {
                 return (
-                  <ProductCardLoadingComponent className="largeDesktop:max-w-[20%] w-full p-[10px] phone:max-w-[50%] tablet:max-w-[33%]" />
+                  <ProductCardLoadingComponent className="mediumDesktop:max-w-[25%] w-full p-[10px] phone:max-w-[50%] tablet:max-w-[33%] largeDesktop:max-w-[20%]" />
                 );
               })
             : wishlists &&
               wishlists?.map((wishlist) => {
                 return (
                   <ProductCardComponent
-                    className="largeDesktop:max-w-[20%] w-full p-[10px] phone:max-w-[50%] tablet:max-w-[33%]"
+                    className="mediumDesktop:max-w-[25%] w-full p-[10px] phone:max-w-[50%] tablet:max-w-[33%] largeDesktop:max-w-[20%]"
                     callback={getWishlistsFunc}
                     product={wishlist.product}
                   />

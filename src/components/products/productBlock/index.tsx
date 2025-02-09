@@ -113,7 +113,7 @@ const ProductBlockComponent: React.FC<ProductBlockProps> = memo(
             </h3>
             {viewAllButton && (
               <div className="view-all">
-                <a className={cx('link')} href="/collections/collections-home-shoes-new-arrivals" title="View all">
+                <a className={cx('link')} href={`/collections/${collectionHandle}`} title="View all">
                   View all
                 </a>
               </div>
@@ -151,7 +151,7 @@ const ProductBlockComponent: React.FC<ProductBlockProps> = memo(
               <div className="products flex">
                 {Array.from({ length: 5 }).map(() => {
                   return (
-                    <ProductCardLoadingComponent className="w-full p-[10px] phone:min-w-[50%] tablet:min-w-[33%] largeDesktop:min-w-[20%]" />
+                    <ProductCardLoadingComponent className="mediumDesktop:min-w-[25%] w-full p-[10px] phone:min-w-[50%] tablet:min-w-[33%] largeDesktop:min-w-[20%]" />
                   );
                 })}
               </div>
@@ -165,7 +165,7 @@ const ProductBlockComponent: React.FC<ProductBlockProps> = memo(
                       return (
                         <ProductCardComponent
                           key={index}
-                          className="w-full p-[10px] phone:max-w-[50%] tablet:max-w-[33%] mobileTabletUp:max-w-[25%]"
+                          className="mediumDesktop:max-w-[25%] w-full p-[10px] phone:max-w-[50%] tablet:max-w-[33%] mobileTabletUp:max-w-[25%]"
                           product={item}
                         />
                       );
@@ -179,7 +179,7 @@ const ProductBlockComponent: React.FC<ProductBlockProps> = memo(
                 <div className="products flex flex-wrap">
                   {Array.from({ length: 4 }).map(() => {
                     return (
-                      <ProductCardLoadingComponent className="w-full p-[10px] phone:max-w-[50%] tablet:max-w-[33%] mobileTabletUp:max-w-[25%]" />
+                      <ProductCardLoadingComponent className="mediumDesktop:max-w-[25%] w-full p-[10px] phone:max-w-[50%] tablet:max-w-[33%] mobileTabletUp:max-w-[25%]" />
                     );
                   })}
                 </div>

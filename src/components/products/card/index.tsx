@@ -101,7 +101,6 @@ const ProductCardComponent: React.FC<ProductCardComponentProps> = memo(({ produc
     },
     [user]
   );
-  console.log('', product.label);
   return (
     <div className={cx('card', className)}>
       <div className={cx('card-product', 'rounded-[10px]')}>
@@ -133,25 +132,29 @@ const ProductCardComponent: React.FC<ProductCardComponentProps> = memo(({ produc
           ></AddToCartComponent>
         </div>
         <div className={cx('card-group')}>
-          <div
-            onClick={() => {
-              if (!user) {
-                toast.warning('Please log in to continue');
-                return;
-              }
-              user && !(wishlist.length > 0) ? handleAddWishList() : handleRemoveWishList(wishlist && wishlist[0]?.id);
-            }}
-            className={cx(
-              'card__group-wishlist',
-              'cart__group-action',
-              'relative overflow-hidden p-[10px]',
-              user && wishlist.length > 0 && 'is-activated'
-            )}
-          >
-            {removeWishlistIsLoading && <LoaderComponent />}
-            {addWishlistIsLoading && <LoaderComponent />}
-            <WishListIcon className={`${cx('icon')} fade-in-up`} />
-          </div>
+          {user && (
+            <div
+              onClick={() => {
+                if (!user) {
+                  toast.warning('Please log in to continue');
+                  return;
+                }
+                user && !(wishlist.length > 0)
+                  ? handleAddWishList()
+                  : handleRemoveWishList(wishlist && wishlist[0]?.id);
+              }}
+              className={cx(
+                'card__group-wishlist',
+                'cart__group-action',
+                'relative overflow-hidden p-[10px]',
+                user && wishlist.length > 0 && 'is-activated'
+              )}
+            >
+              {removeWishlistIsLoading && <LoaderComponent />}
+              {addWishlistIsLoading && <LoaderComponent />}
+              <WishListIcon className={`${cx('icon')} fade-in-up`} />
+            </div>
+          )}
           <div
             onClick={handleQuickView}
             className={cx('card__group-quickView', 'cart__group-action', 'mt-[10px] p-[10px]')}

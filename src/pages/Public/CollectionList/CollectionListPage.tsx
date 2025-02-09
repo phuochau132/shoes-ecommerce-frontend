@@ -72,9 +72,9 @@ const CollectionListPage: React.FC = () => {
         <div className={cx('page-content', 'flex flex-wrap')}>
           {isLoading ? <LoaderComponent /> : renderCollectionItem()}
         </div>
-        <div className={cx('showMore-btn', 'flex justify-center')}>
+        {/* <div className={cx('showMore-btn', 'flex justify-center')}>
           <ButtonComponent className={cx('max-w-[200px] rounded-[10px]')}>Show more</ButtonComponent>
-        </div>
+        </div> */}
       </>
     </div>
   );

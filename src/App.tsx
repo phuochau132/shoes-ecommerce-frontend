@@ -160,7 +160,7 @@ function App() {
       )}
 
       <Helmet>
-        <title>{`Ecommerce-${pathname}`}</title>
+        <title>{`Ecommerce-${pathname ? pathname : 'home'}`}</title>
       </Helmet>
       {searchPopupState && <SearchPopup />}
       {accountSidebarState && <AccountSidebar />}

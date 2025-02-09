@@ -63,9 +63,18 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-      <ProductBlockComponent title="New Arrivals" layout="grid" collectionHandle="new-in"></ProductBlockComponent>
+      <ProductBlockComponent
+        viewAllButton={true}
+        title="New Arrivals"
+        layout="grid"
+        collectionHandle="new-in"
+      ></ProductBlockComponent>
       <div className="line"></div>
-      <ProductBlockComponent title="Best Sellers" collectionHandle="best-sellers"></ProductBlockComponent>
+      <ProductBlockComponent
+        viewAllButton={true}
+        title="Best Sellers"
+        collectionHandle="best-sellers"
+      ></ProductBlockComponent>
     </div>
   );
 };

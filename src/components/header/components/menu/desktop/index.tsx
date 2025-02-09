@@ -9,7 +9,7 @@ const cx = bindClassNames(styles);
 const DesktopNavigation: React.FC<{ menu: Navigation[] }> = memo(({ menu }) => {
   return (
     <div className={cx('main-menu header-item flex items-center gap-[50px]')}>
-      <ul className={cx('list-menu', 'flex', 'gap-[50px]')}>
+      <ul className={cx('list-menu', 'flex gap-[50px]')}>
         {menu.map((item, index) => {
           if (item.style === 'dropdown') {
             return (
