@@ -10,9 +10,9 @@ export type CartItemType = {
   id: number;
   quantity: number;
   price: number;
-  product: ProductCartType;
+  product: ProductFormatType;
 };
-export type ProductCartType = {
+export type ProductFormatType = {
   id: number;
   title: string;
   price: string;

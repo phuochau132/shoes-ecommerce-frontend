@@ -14,7 +14,7 @@ const cx = bindClassNames(styles);
 
 interface SidebarProps {
   products: ProductType[];
-  callback: (searchParams: string) => Promise<void>;
+  callback: () => Promise<void>;
 }
 const PRICE_GAP = 5;
 const MAX_PRICE = 10000;
@@ -25,6 +25,8 @@ const SidebarComponent: React.FC<SidebarProps> = memo(({ products, callback }) =
   const [maxPrice, setMaxPrice] = useState(0);
   const [variants, setVariants] = useState<FormatVariantsType>();
   const dispatch = useDispatch();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null); // Ref to store timeout ID
+
   const getMinMaxPrice = useCallback((products: ProductType[]) => {
     let minPrice = Number.MAX_SAFE_INTEGER;
     let maxPrice = 0;
@@ -91,6 +93,30 @@ const SidebarComponent: React.FC<SidebarProps> = memo(({ products, callback }) =
     [minVal, maxVal, maxPrice]
   );
 
+  const handleFilter = useCallback(async () => {
+    await callback();
+  }, [callback]);
+
+  const debouncedHandleFilter = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(() => {
+      handleFilter();
+    }, 500);
+  }, [handleFilter]);
+
+  const handleFormChange = useCallback(
+    (e: React.ChangeEvent<HTMLFormElement>) => {
+      if (e.target.type === 'range') {
+        debouncedHandleFilter();
+        return;
+      }
+      callback();
+    },
+    [debouncedHandleFilter]
+  );
+
   // render option
   const renderVariantFilter = () => {
     if (variants) {
@@ -148,14 +174,9 @@ const SidebarComponent: React.FC<SidebarProps> = memo(({ products, callback }) =
       );
     }
   };
-  const handleFilter = useCallback(async (e: React.ChangeEvent<HTMLFormElement>) => {
-    const form = e.target.form;
-    const formData = new FormData(form);
-    let searchParams = new URLSearchParams(formData as any).toString();
-    await callback(searchParams);
-  }, []);
+
   return (
-    <form onChange={handleFilter} className={cx('sidebar-wrapper')}>
+    <form onChange={handleFormChange} className={cx('sidebar-wrapper')}>
       <div className={cx('sidebar-header', 'mb-[20px] hidden items-center justify-between phone:flex')}>
         <h3 className={cx('text-[18px] font-[900]')}>Filter</h3>
         <div

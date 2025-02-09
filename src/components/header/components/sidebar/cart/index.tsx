@@ -7,15 +7,16 @@ import SidebarLayout from '../layout';
 import { useDispatch } from 'react-redux';
 import { setCartSidebarState } from '@/redux/slice/app/app.slice';
 import FreeShippingComponent from '@/components/cart/freeshipping';
-import { EditingIcon, GiftIcon, LinkIcon, NoteIcon, RemoveIcon } from '@/utils/icons';
+import { GiftIcon, LinkIcon, NoteIcon, RemoveIcon } from '@/utils/icons';
 import QuantityBoxComponent from '@/components/products/quantity';
 import { ButtonComponent } from '@/components/commons';
 import TermAndConditionComponent from '@/components/cart/termAndConditionButton';
 import { useSelector } from 'react-redux';
 import { cartState } from '@/types/cart';
-import { Currency } from '@/utils/helpers/CurrenciesFormat';
-import { useRemoveItemMutation, useUpdateItemMutation } from '@/apis/cart/cart.api';
+import { Currency } from '@/utils/helpers/currenciesFormat';
+import { useGetCartMutation, useRemoveItemMutation, useUpdateItemMutation } from '@/apis/cart/cart.api';
 import { setCart } from '@/redux/slice/cart/cart.slice';
+import LoaderComponent from '@/components/commons/loader';
 
 const cx = bindClassNames(styles);
 
@@ -24,8 +25,11 @@ const CartSidebar: React.FC = memo(() => {
   const [isTermsChecked, setIsTermsChecked] = useState<boolean>(false);
   const wrapper = useRef<HTMLDivElement>(null);
   const { cart } = useSelector((state: cartState) => state.cart);
-  const [removeItem] = useRemoveItemMutation();
-  const [updateItem] = useUpdateItemMutation();
+  const [removeItem, { isLoading: removingIsLoading }] = useRemoveItemMutation();
+  const [updateItem, { isLoading: updatingIsLoading }] = useUpdateItemMutation();
+
+  const noteElement = useRef(null);
+  const [getCart, { isLoading: isGetCartLoading }] = useGetCartMutation();
   const handleClickAddon = useCallback((event: React.MouseEvent<HTMLElement>, className: string) => {
     if (wrapper.current) {
       wrapper.current.classList.add(className);
@@ -34,6 +38,9 @@ const CartSidebar: React.FC = memo(() => {
   useEffect(() => {
     Currency.initializeCurrency();
   }, [cart]);
+  useEffect(() => {
+    handleSidebarOpening();
+  }, []);
   const handleClickCancel = useCallback(() => {
     if (wrapper.current) {
       wrapper.current.classList.remove('note-activation');
@@ -45,7 +52,9 @@ const CartSidebar: React.FC = memo(() => {
       try {
         const response = await removeItem({ id: id }).unwrap();
         dispatch(setCart(response.data));
-      } catch (error) {}
+      } catch (error) {
+        console.error(error);
+      }
     },
     [cart]
   );
@@ -54,10 +63,31 @@ const CartSidebar: React.FC = memo(() => {
       try {
         const response = await updateItem({ id: id, quantity: newQuantity, itemId: itemId as any }).unwrap();
         dispatch(setCart(response.data));
-      } catch (error) {}
+      } catch (error) {
+        console.error(error);
+      }
     },
     [cart]
   );
+  const handleAddOrderNote = useCallback(() => {
+    const target = noteElement.current;
+    if (!target) {
+      return;
+    }
+    // @ts-ignore
+    const value = target.value;
+    if (value) {
+      localStorage.setItem('order-note', value);
+    }
+  }, [noteElement]);
+  const handleSidebarOpening = async () => {
+    try {
+      const response = await getCart({}).unwrap();
+      dispatch(setCart(response.data));
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <SidebarLayout
       className="!max-w-[500px]"
@@ -66,12 +96,15 @@ const CartSidebar: React.FC = memo(() => {
       }}
       title={`Shopping Cart (${cart && cart.items.length})`}
     >
-      {cart && cart.items.length > 0 && (
+      {isGetCartLoading && <LoaderComponent />}
+      {updatingIsLoading && <LoaderComponent />}
+      {removingIsLoading && <LoaderComponent />}
+      {cart && cart.items.length > 0 ? (
         <div ref={wrapper} className="previewCart-wrapper h-[100%]">
           <div className={cx('previewCart-free-shipping')}>
             <FreeShippingComponent />
           </div>
-          <div className={cx('previewCart-items', 'mt-[10px] max-h-[39%] overflow-y-auto')}>
+          <div className={cx('previewCart-items', 'relative mt-[10px] max-h-[39%] overflow-y-auto')}>
             {cart.items.map((cartItem) => {
               return (
                 <div className={cx('item', 'relative my-[20px] flex gap-[10px]')}>
@@ -105,11 +138,6 @@ const CartSidebar: React.FC = memo(() => {
                     </div>
                   </div>
                   <div className={cx('product-action', 'absolute bottom-[10%] right-[0] mt-[5px] text-[12px]')}>
-                    {/* <button
-                      className={cx('product__action-remove', 'mt-[5px] block cursor-pointer p-[5px] text-[12px]')}
-                    >
-                      <EditingIcon />
-                    </button> */}
                     <button
                       onClick={() => {
                         handleRemoveItem(cartItem.id);
@@ -171,7 +199,7 @@ const CartSidebar: React.FC = memo(() => {
                 aria-disabled={isTermsChecked}
                 className={`rounded-[5px] bg-white text-black ${!isTermsChecked ? 'pointer-events-none cursor-not-allowed opacity-50' : 'pointer-events-auto'}`}
                 as="a"
-                link="/cart"
+                link="/checkout"
               >
                 Checkout
               </ButtonComponent>
@@ -188,6 +216,7 @@ const CartSidebar: React.FC = memo(() => {
               </label>
             </div>
             <textarea
+              ref={noteElement}
               className="mt-[10px] min-h-[12rem] w-full rounded-[10px] border p-[10px] outline-none"
               name="note"
               form="cart"
@@ -195,7 +224,7 @@ const CartSidebar: React.FC = memo(() => {
               placeholder="How can we help you?"
               data-listener-added_e50af269="true"
             ></textarea>
-            <ButtonComponent>Save</ButtonComponent>
+            <ButtonComponent onClick={handleAddOrderNote}>Save</ButtonComponent>
             <ButtonComponent
               onClick={() => {
                 handleClickCancel();
@@ -223,6 +252,10 @@ const CartSidebar: React.FC = memo(() => {
               Cancel
             </ButtonComponent>
           </div>
+        </div>
+      ) : (
+        <div>
+          <p className="mt-[50%] text-center text-[30px] font-bold text-red-color">Your Cart is empty!</p>
         </div>
       )}
     </SidebarLayout>

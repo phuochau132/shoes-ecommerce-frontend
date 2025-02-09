@@ -1,7 +1,6 @@
-import React, { memo, CSSProperties, useCallback } from 'react';
+import React, { memo, CSSProperties } from 'react';
 import { ReviewType } from '@/types/review';
 import { useSelector } from 'react-redux';
-import { useRemoveReviewMutation } from '@/apis/product/product.api';
 import { RemoveIcon } from '@/utils/icons';
 
 interface ReviewItemComponentProps {
@@ -15,7 +14,6 @@ interface ReviewItemComponentProps {
 const ReviewItemComponent: React.FC<ReviewItemComponentProps> = memo(
   ({ review, callback, className, handleRemoveReview }) => {
     const { user } = useSelector((state: any) => state.user);
-    console.log('review', review);
     return (
       <div className={`review-item ${className && className}`}>
         <div className="review-header flex justify-between">

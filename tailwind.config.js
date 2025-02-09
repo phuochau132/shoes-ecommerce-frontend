@@ -66,7 +66,8 @@ module.exports = {
       phone: { max: '767px' },
       phoneUp: { min: '768px' },
       tablet: { min: '768px', max: '1024px' },
-      desktop: { min: '1025' },
+      desktop: { min: '1025px' },
+      largeDesktop: { min: '1200px' },
       mobileTablet: { max: '1023px' },
       mobileTabletUp: { min: '1024px' },
       tabletUp: { min: '768px' }

@@ -6,12 +6,13 @@ export type ProductType = {
   title: string;
   price: string;
   images: ProductImageType[];
-  quantity?: number;
+  quantity: number;
   description: string;
   handle: string;
   vendor: string;
   variants?: VariantType[];
   reviews: ReviewType[];
+  label: string;
 };
 
 export type ProductImageType = {

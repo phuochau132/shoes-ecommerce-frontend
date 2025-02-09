@@ -23,7 +23,8 @@ const initialRegisterData = {
   email: '',
   password: '',
   telephone: '',
-  address: ''
+  address: '',
+  full_name: ''
 };
 const initialLoginData = {
   email: '',
@@ -63,14 +64,14 @@ const AccountSidebar: React.FC = memo(() => {
   const handleRegister = useCallback(
     async (values: Record<string, string>) => {
       const errors: any = await validateRegisterForm(values);
-      console.log('test1', values);
-
-      console.log('test', errors);
-
       if (Object.keys(errors).length === 0) {
-        const res = await register(registerFormData).unwrap();
-        if (!res.error) {
-          setRegisterFormData(initialRegisterData);
+        try {
+          const res = await register(registerFormData).unwrap();
+          if (!res.error) {
+            setRegisterFormData(initialRegisterData);
+          }
+        } catch (error) {
+          console.error(error);
         }
       }
     },
@@ -81,15 +82,17 @@ const AccountSidebar: React.FC = memo(() => {
     async (values: Record<string, string>) => {
       const errors: any = await validateLoginForm(values);
       if (Object.keys(errors).length === 0) {
-        const loginResponse = await login(loginFormData).unwrap();
-        if (!loginResponse.error) {
-          setLoginFormData(initialLoginData);
-          dispatch(setAccountSidebarState(false));
-          Cookies.set('access_token', loginResponse.data.token);
-          const userInfoResponse = await getInfo().unwrap();
-          console.log(123);
-
-          dispatch(setUser(userInfoResponse.data));
+        try {
+          const loginResponse = await login(loginFormData).unwrap();
+          if (!loginResponse.error) {
+            setLoginFormData(initialLoginData);
+            dispatch(setAccountSidebarState(false));
+            Cookies.set('access_token', loginResponse.data.token);
+            const userInfoResponse = await getInfo().unwrap();
+            dispatch(setUser(userInfoResponse.data));
+          }
+        } catch (error) {
+          console.error(error);
         }
       }
     },
@@ -99,9 +102,13 @@ const AccountSidebar: React.FC = memo(() => {
     async (values: Record<string, string>) => {
       const errors: any = await validateForgotPasswordForm(values);
       if (Object.keys(errors).length === 0) {
-        const res = await forgotPassword({ email: forgotPasswordFormData.email }).unwrap();
-        if (!res.error) {
-          setForgotPasswordFormData(initialForgotPasswordData);
+        try {
+          const res = await forgotPassword({ email: forgotPasswordFormData.email }).unwrap();
+          if (!res.error) {
+            setForgotPasswordFormData(initialForgotPasswordData);
+          }
+        } catch (error) {
+          console.error(error);
         }
       }
     },
@@ -202,8 +209,8 @@ const AccountSidebar: React.FC = memo(() => {
         </div>
       )}
       {contentSidebar == AccountSidebarEnum.register && (
-        <div className="flex flex-col">
-          <div className={cx('register__sidebar-form', 'flex-1')}>
+        <div className="flex h-full flex-col">
+          <div className={cx('register__sidebar-form', 'flex-1 overflow-y-scroll')}>
             <div className={cx('form-fields')}>
               <div className="mb-[8px] flex justify-between">
                 <label className="flex-1" htmlFor="customer-email">
@@ -274,6 +281,22 @@ const AccountSidebar: React.FC = memo(() => {
                 name="telephone"
                 className={cx('field')}
                 placeholder="Your Phone"
+              />
+            </div>
+            <div className={cx('form-fields')}>
+              <div className="mb-[8px] flex justify-between">
+                <label className="flex-1" htmlFor="customer-address">
+                  Full Name <small>*</small>
+                </label>
+                {registerErrors.full_name && <span className="error">{registerErrors.full_name}</span>}
+              </div>
+              <InputComponent
+                value={registerFormData.full_name}
+                onChange={handleRegisterChange}
+                id="customer-address"
+                name="full_name"
+                className={cx('field')}
+                placeholder="Full Name"
               />
             </div>
             <div className={cx('form-fields')}>

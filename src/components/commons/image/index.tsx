@@ -5,9 +5,10 @@ import LoaderComponent from '../loader';
 interface ImageComponentProps {
   src: string;
   aspect_ratio?: string;
+  link?: string;
 }
 const cx = bindClassNames(styles);
-const ImageComponent: React.FC<ImageComponentProps> = memo(({ src, aspect_ratio = '40%' }) => {
+const ImageComponent: React.FC<ImageComponentProps> = memo(({ src, aspect_ratio = '40%', link = '#' }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const handleImageLoad = () => {
@@ -16,12 +17,12 @@ const ImageComponent: React.FC<ImageComponentProps> = memo(({ src, aspect_ratio 
 
   return (
     <div className={cx('adaptive-height', 'animation', 'border')} style={{ paddingTop: aspect_ratio }}>
-      <a href="#" className={cx('image')}>
+      <a href={link} className={cx('image')}>
         {isLoading && <LoaderComponent />}
         <img
           src={src}
           sizes="100vw"
-          alt=""
+          alt="error"
           loading="lazy"
           onLoad={handleImageLoad}
           className={cx({ 'image-hidden': isLoading })}

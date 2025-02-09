@@ -12,6 +12,7 @@ export type RouteType = {
   private?: 'public' | 'auth' | 'admin';
   children?: RouteType[];
 };
+
 const LazyHomePage = LazyLoadComponent(() => import('../pages/Public/Home/HomePage'))(true);
 const LazyProductPage = LazyLoadComponent(() => import('../pages/Public/Product/ProductPage'))(true);
 const LazyCollectionPage = LazyLoadComponent(() => import('../pages/Public/Collection/CollectionPage'))(true);
@@ -22,7 +23,6 @@ const LazyCollectionListPage = LazyLoadComponent(() => import('../pages/Public/C
 const LazyContactUsPage = LazyLoadComponent(() => import('../pages/Public/ContactUs/ContactUsPage'))(true);
 const LazyFaqPage = LazyLoadComponent(() => import('../pages/Public/FAQ/FaqPage'))(true);
 const LazyWishlistPage = LazyLoadComponent(() => import('../pages/Private/Wishlist/WishlistPage'))(true);
-// Account
 const LazyAccountPage = LazyLoadComponent(() => import('../pages/Private/Account/AccountPage'))(true);
 const LazyCheckoutPage = LazyLoadComponent(() => import('../pages/Private/Checkout/CheckoutPage'))(true);
 
@@ -44,7 +44,7 @@ export const PUBLIC_ROUTES: RouteType[] = [
     useFooter: true
   },
   {
-    path: paths.collection,
+    path: paths.collection.main,
     element: <LazyCollectionPage />,
     layout: DefaultLayout,
     useHeader: true,

@@ -78,6 +78,7 @@
             cursor: pointer;
 
             &.card__group-wishlist {
+
                 &.is-activated {
                     background-color: black;
 
@@ -86,6 +87,7 @@
                     }
                 }
             }
+
 
             .icon {
                 width: 15px !important;
@@ -102,7 +104,6 @@
 
         .sale-badge {
             font-weight: bold;
-            background-color: red;
             color: white;
             padding: 0px 8px;
             border-radius: 4px;

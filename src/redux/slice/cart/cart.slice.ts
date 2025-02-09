@@ -8,9 +8,14 @@ export const cartSlice = createSlice({
   initialState: initialState,
   name: 'cart',
   reducers: {
-    setCart: (state, action: PayloadAction<CartType>) => {
+    setCart: (state, action: PayloadAction<CartType | null>) => {
+      if (!action.payload) {
+        state.cart = null;
+        return;
+      }
       const { items, ...rest } = action.payload;
-      const reversedItems = [...items].reverse();
+      const reversedItems = items?.length ? [...items].reverse() : [];
+
       state.cart = {
         ...rest,
         items: reversedItems

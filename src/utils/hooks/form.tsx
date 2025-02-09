@@ -14,13 +14,14 @@ const useForm = <T extends Record<string, any>>(initialState: T) => {
 
 const useValidation = (schema: any) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const validate = async (values: Record<string, any>) => {
+  const validate = async (values: Record<string, any>, isErrorSet: boolean = true) => {
     try {
       await schema.validate(values, { abortEarly: false });
-      setErrors({});
+      if (isErrorSet) {
+        setErrors({});
+      }
       return {};
     } catch (err) {
-      console.log(123123123);
       if (err instanceof ValidationError) {
         const newErrors: Record<string, string> = {};
         err.inner.forEach((validationError) => {
@@ -28,7 +29,9 @@ const useValidation = (schema: any) => {
             newErrors[validationError.path] = validationError.message;
           }
         });
-        setErrors(newErrors);
+        if (isErrorSet) {
+          setErrors(newErrors);
+        }
         return newErrors;
       }
     }

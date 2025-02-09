@@ -12,7 +12,9 @@ import {
   setMenuSidebarState,
   setQuickViewPopup,
   setSearchPopupState,
-  THEME
+  THEME,
+  setPoliciesPopupState,
+  setOrderDetailsPopupInfo
 } from '@/redux/slice/app/app.slice';
 import { PRIVATE_ROUTES, PUBLIC_ROUTES, RouteType } from './routes/routes';
 import { useSelector } from 'react-redux';
@@ -24,6 +26,12 @@ import QuickViewComponent from './components/products/quickView';
 import { CloseIcon } from './utils/icons';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import PoliciesPopupComponent from './components/policies';
+import OrderDetailComponent from './components/order/popup/orderDetail';
+import { useGetCartMutation } from './apis/cart/cart.api';
+import { setCart } from './redux/slice/cart/cart.slice';
+import { useGetInfoMutation } from './apis/user/user.api';
+import { setUser } from './redux/slice/user/user.slice';
 
 function App() {
   const location = window.location;
@@ -37,7 +45,10 @@ function App() {
   const cartSidebarState = useSelector((state: any) => state.app.cartSidebarState);
   const menuSidebarState = useSelector((state: any) => state.app.menuSidebarState);
   const quickViewInfo = useSelector((state: any) => state.app.quickViewInfo);
-
+  const policiesPopupState = useSelector((state: any) => state.app.policiesPopupState);
+  const orderDetailsPopupInfo = useSelector((state: any) => state.app.orderDetailsPopupInfo);
+  const [getCart, { isLoading }] = useGetCartMutation();
+  const [fetchUserInfo] = useGetInfoMutation();
   const pageInfo = useSelector((state: any) => state.app.pageInfo);
   useEffect(() => {
     setPathname(location?.pathname?.split('/')[1]);
@@ -48,22 +59,49 @@ function App() {
     document.body.classList.remove('dark-mode', 'light-mode');
     document.body.classList.add(bodyClass);
   }, [theme]);
+
   useEffect(() => {
-    const anchors = document.querySelectorAll('a[href^="#"]') as NodeListOf<HTMLElement>;
-    anchors.forEach((anchor) => {
-      anchor.addEventListener('click', function (e: Event) {
-        e.preventDefault();
-        const targetAnchor = e.currentTarget as HTMLElement | null;
-        if (targetAnchor) {
-          const target = document.querySelector(targetAnchor.getAttribute('href')!) as HTMLElement | null;
-          if (target) {
-            target.scrollIntoView({
-              behavior: 'smooth'
-            });
+    const getUserInfo = async () => {
+      try {
+        const updateUser = await fetchUserInfo().unwrap();
+        dispatch(setUser(updateUser.data));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const handleSmoothLink = () => {
+      const anchors = document.querySelectorAll('a[href^="#"]:not([href="#"])') as NodeListOf<HTMLElement>;
+      anchors.forEach((anchor) => {
+        anchor.addEventListener('click', function (e: Event) {
+          e.preventDefault();
+          const targetAnchor = e.currentTarget as HTMLElement | null;
+          if (targetAnchor) {
+            const target = document.querySelector(targetAnchor.getAttribute('href')!) as HTMLElement | null;
+            if (target) {
+              target.scrollIntoView({
+                behavior: 'smooth'
+              });
+            }
           }
-        }
+        });
       });
-    });
+    };
+    const handleGetCart = async () => {
+      try {
+        const response = await getCart({}).unwrap();
+        dispatch(setCart(response.data));
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    setTimeout(() => {
+      handleSmoothLink();
+    }, 2000);
+    if (user) {
+      handleGetCart();
+      getUserInfo();
+    }
   }, []);
 
   return (
@@ -87,7 +125,9 @@ function App() {
         filterSidebarState ||
         cartSidebarState ||
         menuSidebarState ||
-        quickViewInfo.isShowed) && (
+        quickViewInfo.isShowed ||
+        orderDetailsPopupInfo.isShowed ||
+        policiesPopupState) && (
         <div
           onClick={() => {
             if (searchPopupState) {
@@ -108,6 +148,12 @@ function App() {
             if (quickViewInfo.isShowed) {
               dispatch(setQuickViewPopup({ product: null, isShowed: false }));
             }
+            if (policiesPopupState) {
+              dispatch(setPoliciesPopupState(false));
+            }
+            if (orderDetailsPopupInfo.isShowed) {
+              dispatch(setOrderDetailsPopupInfo({ order: null, isShowed: false }));
+            }
           }}
           className="background-overlay cursor-pointer"
         ></div>
@@ -119,25 +165,50 @@ function App() {
       {searchPopupState && <SearchPopup />}
       {accountSidebarState && <AccountSidebar />}
       {cartSidebarState && <CartSidebar />}
-      {quickViewInfo.isShowed && quickViewInfo.product && (
+      {(quickViewInfo.isShowed && quickViewInfo.product) ||
+      policiesPopupState ||
+      (orderDetailsPopupInfo.isShowed && orderDetailsPopupInfo.items) ? (
         <div className="modal overflow-hidden">
-          <div className="modal-content quickView-modal flex phone:flex-col">
-            {quickViewInfo.isShowed && <QuickViewComponent product={quickViewInfo.product} />}
-          </div>
+          {/* QuickView Modal */}
+          {quickViewInfo.isShowed && quickViewInfo.product && (
+            <div className="modal-content quickView-modal flex h-full overflow-y-scroll phone:flex-col">
+              <QuickViewComponent product={quickViewInfo.product} />
+            </div>
+          )}
+
+          {/* Policies Modal */}
+          {policiesPopupState && (
+            <div className="modal-content policies-modal flex phone:flex-col">
+              <PoliciesPopupComponent />
+            </div>
+          )}
+          {/* Order Details Modal */}
+          {orderDetailsPopupInfo.isShowed && (
+            <div className="modal-content order-detail__modal flex h-full phone:flex-col">
+              <OrderDetailComponent />
+            </div>
+          )}
+
+          {/* Close Button */}
           <div
             onClick={() => {
               if (quickViewInfo.isShowed) {
-                if (quickViewInfo.isShowed) {
-                  dispatch(setQuickViewPopup({ product: null, isShowed: false }));
-                }
+                dispatch(setQuickViewPopup({ product: null, isShowed: false }));
+              }
+              if (policiesPopupState) {
+                dispatch(setPoliciesPopupState(false));
+              }
+              if (orderDetailsPopupInfo.isShowed) {
+                dispatch(setOrderDetailsPopupInfo({ items: null, isShowed: false }));
               }
             }}
-            className="popup-close-wrapper rotate absolute right-[20px] top-[10px] z-[4] cursor-pointer p-[10px]"
+            className="popup-close-wrapper rotate absolute right-[5px] top-[5px] z-[4] cursor-pointer p-[10px]"
           >
             <CloseIcon style={{ float: 'right' }} />
           </div>
         </div>
-      )}
+      ) : null}
+
       <main>
         <Router>
           <Routes>
@@ -152,7 +223,7 @@ function App() {
                 title: pageInfo.title,
                 description: pageInfo.description
               };
-              if (route.path == '/pages/wishlist' || route.path == '/pages/contact-us' || route.path == '/pages/faq') {
+              if (route.path == '/pages/contact-us' || route.path == '/pages/faq') {
                 container = 'container-1200';
               }
               return (
@@ -186,12 +257,7 @@ function App() {
                   title: pageInfo.title,
                   description: pageInfo.description
                 };
-                if (
-                  route.path == '/pages/wishlist' ||
-                  route.path == '/pages/contact-us' ||
-                  route.path == '/pages/faq' ||
-                  route.path == '/checkout'
-                ) {
+                if (route.path == '/pages/contact-us' || route.path == '/pages/faq' || route.path == '/checkout') {
                   container = 'container-1200';
                 }
                 return (

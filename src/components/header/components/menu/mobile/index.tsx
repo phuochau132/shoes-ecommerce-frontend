@@ -31,7 +31,7 @@ const MobileNavigation: React.FC<{ menu: Navigation[] }> = memo(({ menu }) => {
           <a href="#" className={cx('logo-link')}>
             <img
               src="https://res.cloudinary.com/dvgjegefi/image/upload/v1734491076/logo_usfwfm.png"
-              alt="new-ella-demo"
+              alt="error"
               width="70"
               height="28"
               className={cx('header__heading-logo', 'rounded-[0]')}

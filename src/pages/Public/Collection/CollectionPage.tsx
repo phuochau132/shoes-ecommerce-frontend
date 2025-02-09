@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './collection.module.scss';
 import { CollectionType } from '@/types/collection';
 import { bindClassNames } from '@/utils/helpers/cx';
@@ -11,7 +11,8 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useGetCollectionMutation } from '@/apis/collection/collection.api';
 import LoaderComponent from '@/components/commons/loader';
-import { Currency } from '@/utils/helpers/CurrenciesFormat';
+import { Currency } from '@/utils/helpers/currenciesFormat';
+import PaginatorComponent from '@/components/commons/paginator';
 
 const cx = bindClassNames(styles);
 
@@ -22,8 +23,11 @@ const CollectionPage: React.FC = () => {
   const [getCollection, { isLoading }] = useGetCollectionMutation();
   const [collection, setCollection] = useState<CollectionType>();
   const [firstCollection, setFirstCollection] = useState<CollectionType>();
+  const [page, setPage] = useState(0);
   const dispatch = useDispatch();
   const { handle } = useParams();
+  const [numberOfPage, setNumberOfPage] = useState(1);
+
   const handleClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
     const target = event.target as HTMLDivElement;
     const modeIsActivated = gridModeRefs.current.find((item) => item.classList.contains('is-activated'));
@@ -42,16 +46,33 @@ const CollectionPage: React.FC = () => {
       }
     }
   }, []);
+
   const handleGetProducts = useCallback(async () => {
     if (handle) {
-      const response = await getCollection({
-        handle: handle,
-        query: window.location.search ? window.location.search.split('?')[1] : ''
-      }).unwrap();
-      setCollection(response.data);
-      setFirstCollection(response.data);
+      try {
+        const response = await getCollection({
+          handle: handle,
+          query: window.location.search ? window.location.search.split('?')[1] : ''
+        }).unwrap();
+        setPage(1);
+        setCollection(response.data);
+        setFirstCollection(response.data);
+      } catch (error) {
+        console.error(error);
+      }
     }
   }, [handle]);
+
+  const handleShowMore = async () => {
+    if (!handle) return;
+    try {
+      const newPage = page + 1;
+      await handleFilter(newPage);
+      setPage(newPage);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   useEffect(() => {
     if (collection) {
       if (window.innerWidth < 768) {
@@ -69,7 +90,9 @@ const CollectionPage: React.FC = () => {
         })
       );
     }
+    setNumberOfPage(Math.ceil(parseInt(collection?.total as any) / 8));
   }, [collection]);
+
   useEffect(() => {
     handleGetProducts();
   }, []);
@@ -78,20 +101,37 @@ const CollectionPage: React.FC = () => {
       Currency.initializeCurrency();
     }
   }, [collection]);
-  const handleFilter = async (searchParams: string) => {
+  const handleFilter = async (page?: number) => {
+    const searchParams = await getSearchParams();
     window.history.pushState({}, '', `${handle}?${searchParams}`);
     if (handle) {
       const response = await getCollection({
         handle: handle,
-        query: searchParams
+        query: `${searchParams}${page ? `&page=${page}` : ''}`
       }).unwrap();
-      setCollection(response.data);
+      if (!page) {
+        setCollection(response.data);
+        setPage(1);
+      } else {
+        // @ts-ignore
+        setCollection((prev: CollectionType) => ({
+          ...prev,
+          products: [...prev.products, ...response.data.products]
+        }));
+      }
     }
   };
+  const getSearchParams = async () => {
+    const form = document.querySelector('.sidebar-wrapper') as HTMLFormElement;
+    const formData = new FormData(form);
+    let searchParams = new URLSearchParams(formData as any).toString();
+    return searchParams;
+  };
   return (
-    <div className={cx('collection-page')}>
+    <div className={cx('collection-page', 'relative min-h-[400px]')}>
+      {isLoading && page == 0 && <LoaderComponent></LoaderComponent>}
       {collection && (
-        <div className={cx('collection-content', 'flex')}>
+        <div className={cx('collection-content', 'flex items-start')}>
           <div
             className={cx(
               'collection__content-sidebar',
@@ -105,17 +145,18 @@ const CollectionPage: React.FC = () => {
           >
             {firstCollection && <SidebarComponent callback={handleFilter} products={firstCollection.products} />}
           </div>
-          <div className={cx('collection__content-grid', 'pl-[50px] phone:pl-[0]')}>
+          <div className={cx('collection__content-grid', 'relative pl-[50px] phone:pl-[0]')}>
             <div className={cx('collection-heading', 'mb-[20px] pl-[10px] pr-[10px]')}>
               <h1 className={cx('title', 'heading font-[700]')}>{collection.name}</h1>
-              <p className={cx('description', 'text-bold mt-[10px] text-[15px]')}>
-                <span className={cx('text', 'font-bold')}>{collection.description}</span>
+              <p className={cx('description', 'mt-[10px] text-[15px]')}>
+                <span className={cx('text', 'font-normal italic')}>{collection.description}</span>
               </p>
             </div>
             <div className={cx('toolbar', 'flex justify-between pl-[10px] pr-[10px]')}>
               <div className={cx('result', 'phone:hidden')}>
-                {/* @ts-ignore */}
-                <p className={cx('text font-normal text-[#444444]')}>There are {collection.total} results in total</p>
+                <p className={cx('text font-normal text-[#444444]')}>
+                  There are <span className="font-bold">{collection.total} results</span> in total
+                </p>
               </div>
               <button
                 onClick={() => {
@@ -158,13 +199,19 @@ const CollectionPage: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div ref={productGridRef} className={cx('product-grid', 'relative mt-[30px] flex flex-wrap')}>
-              {isLoading && <LoaderComponent />}
+            <div ref={productGridRef} className={cx('product-grid', 'mt-[30px] flex flex-wrap')}>
               {collection.products.map((product, index) => (
                 <div key={index} className={cx('product', 'p-[10px]')}>
                   <ProductCardComponent product={product} />
                 </div>
               ))}
+              {numberOfPage != page && numberOfPage > 1 && (
+                <PaginatorComponent
+                  isLoading={isLoading}
+                  handleShowMore={handleShowMore}
+                  className="m-auto mt-[30px] w-full max-w-[300px]"
+                />
+              )}
             </div>
           </div>
         </div>

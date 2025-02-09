@@ -6,12 +6,12 @@ import { bindClassNames } from '@/utils/helpers/cx';
 
 const cx = bindClassNames(styles);
 export type BreadcrumbItemType = {
-  link: string;
+  path: string;
   title: string;
 };
 export type BreadcrumbComponentType = {
   path: BreadcrumbItemType[];
-  className?: any;
+  className?: string;
 };
 const BreadcrumbComponent: React.FC<BreadcrumbComponentType> = memo(({ path, className }) => {
   return (
@@ -19,7 +19,7 @@ const BreadcrumbComponent: React.FC<BreadcrumbComponentType> = memo(({ path, cla
       {path?.map((item, index) => {
         return (
           <div key={index} className={cx('breadcrumb-item', className, { 'text-black': index == path.length - 1 })}>
-            <a className={cx('link')} href={item.link}>
+            <a className={cx('link')} href={item.path}>
               {item.title}
             </a>
             {index != path.length - 1 && (

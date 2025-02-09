@@ -12,11 +12,9 @@ import {
 } from '@/redux/slice/app/app.slice';
 import LoadingPage from '@/pages/commons/LoadingPage';
 import { bindClassNames } from '@/utils/helpers/cx';
-import { Currency } from '@/utils/helpers/CurrenciesFormat';
+import { Currency } from '@/utils/helpers/currenciesFormat';
 import { paths } from '@/routes/paths';
-import { useGetInfoMutation } from '@/apis/user/user.api';
-import { useGetCartMutation } from '@/apis/cart/cart.api';
-import { setCart } from '@/redux/slice/cart/cart.slice';
+import { cartState } from '@/types/cart';
 
 export type Navigation = {
   name: string;
@@ -29,15 +27,21 @@ const cx = bindClassNames(styles);
 
 const currencies = [{ isoCode: 'USD' }, { isoCode: 'EUR' }, { isoCode: 'GBP' }, { isoCode: 'CHF' }];
 
-const menu = [
+const menu: any[] = [
   {
-    name: 'shop',
-    link: '/',
+    name: 'home',
+    link: paths.home,
+    style: 'dropdown'
+  },
+  ,
+  {
+    name: 'Shop',
+    link: '/collections',
     style: 'dropdown',
     children: [
       {
-        name: 'Collection List Page',
-        link: '#',
+        name: 'New in',
+        link: paths.collection.newIn,
         children: [
           { name: 'Collection List 1', link: '#' },
           { name: 'Collection List 2', link: '#' },
@@ -46,8 +50,28 @@ const menu = [
         ]
       },
       {
-        name: 'Collection Page',
-        link: '#',
+        name: 'Best Sellers',
+        link: paths.collection.bestSeller,
+        children: [
+          { name: 'Collection Page 1', link: '#' },
+          { name: 'Collection Page 2', link: '#' },
+          { name: 'Collection Page 3', link: '#' },
+          { name: 'Collection Page 4', link: '#' }
+        ]
+      },
+      {
+        name: 'Man',
+        link: paths.collection.man,
+        children: [
+          { name: 'Collection Page 1', link: '#' },
+          { name: 'Collection Page 2', link: '#' },
+          { name: 'Collection Page 3', link: '#' },
+          { name: 'Collection Page 4', link: '#' }
+        ]
+      },
+      {
+        name: 'Woman',
+        link: paths.collection.woman,
         children: [
           { name: 'Collection Page 1', link: '#' },
           { name: 'Collection Page 2', link: '#' },
@@ -58,35 +82,19 @@ const menu = [
     ]
   },
   {
-    name: 'blog',
-    link: '#',
-    style: 'dropdown',
-    children: [
-      {
-        name: 'Blog Default',
-        link: '#',
-        children: [
-          { name: 'Blog Default 1', link: '#' },
-          { name: 'Blog Default 2', link: '#' },
-          { name: 'Blog Default 3', link: '#' },
-          { name: 'Blog Default 4', link: '#' },
-          { name: 'Blog Default 1', link: '#' },
-          { name: 'Blog Default 2', link: '#' },
-          { name: 'Blog Default 3', link: '#' },
-          { name: 'Blog Default 4', link: '#' }
-        ]
-      },
-      {
-        name: 'Blog Simple',
-        link: '#',
-        children: [
-          { name: 'Blog Simple 1', link: '#' },
-          { name: 'Blog Simple 2', link: '#' },
-          { name: 'Blog Simple 3', link: '#' },
-          { name: 'Blog Simple 4', link: '#' }
-        ]
-      }
-    ]
+    name: 'Collection List',
+    link: paths.collectionsList,
+    style: 'dropdown'
+  },
+  {
+    name: 'faq',
+    link: paths.faq,
+    style: 'dropdown'
+  },
+  {
+    name: 'Contact Us',
+    link: paths.contact,
+    style: 'dropdown'
   }
 ];
 
@@ -100,7 +108,7 @@ const MainHeader: React.FC = memo(() => {
   const currenciesToggleEl = useRef<HTMLDivElement>(null);
   const currentlyCurrencyEl = useRef<HTMLDivElement>(null);
   const menuSidebarState = useSelector((state: any) => state.app.menuSidebarState);
-
+  const { cart } = useSelector((state: cartState) => state.cart);
   const handleResize = useCallback(() => {
     if (window.innerWidth < 768) {
       setIsMobile(true);
@@ -108,6 +116,7 @@ const MainHeader: React.FC = memo(() => {
       setIsMobile(false);
     }
   }, []);
+
   const renderCurrencies = useCallback(() => {
     return currencies.map((currency, index) => {
       return (
@@ -173,13 +182,7 @@ const MainHeader: React.FC = memo(() => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-  const [getCart, { isLoading }] = useGetCartMutation();
-  const handleSidebarOpening = async () => {
-    try {
-      const response = await getCart({}).unwrap();
-      dispatch(setCart(response.data));
-    } catch (error) {}
-  };
+
   return (
     <div className={cx('navigation', 'align-center container flex justify-between py-[10px] phone:pr-[15px]')}>
       {isMobile && (
@@ -214,7 +217,7 @@ const MainHeader: React.FC = memo(() => {
               src="https://res.cloudinary.com/dvgjegefi/image/upload/v1734491076/logo_usfwfm.png"
               loading="lazy"
               className={cx('header__heading-logo', 'rounded-none')}
-              alt="new-ella-demo"
+              alt="error"
               width="70"
               height="28"
             />
@@ -263,10 +266,14 @@ const MainHeader: React.FC = memo(() => {
           <div
             onClick={() => {
               dispatch(setCartSidebarState(true));
-              handleSidebarOpening();
             }}
-            className={cx('header__icon-item', 'header__icon--cart')}
+            className={cx('header__icon-item', 'header__icon--cart', 'relative')}
           >
+            {cart && cart.items.length > 0 && (
+              <div className="cart-count-buble absolute -right-[10px] -top-[10px] z-[2] h-[20px] w-[20px] rounded-full bg-[#333] text-center text-[12px] text-white">
+                <span>{cart.items.length}</span>
+              </div>
+            )}
             <CartIcon className={cx('icon', 'fade-in-up')} />
           </div>
         )}

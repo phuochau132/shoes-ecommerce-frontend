@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { axiosBaseQuery } from '@/base/BaseQuery';
-import { UserType, WishlistDetailType } from '@/types/user';
+import { UserType, WishlistDetailType, WishlistType } from '@/types/user';
 export type ErrorType = {
   error: {
     status: number;
@@ -27,7 +27,7 @@ const UserApi = createApi({
         }
       })
     }),
-    addWishlist: builder.mutation<any, any>({
+    addWishlist: builder.mutation<{ data: { wishlists: WishlistType[] } }, { product_id: number }>({
       query: (Payload) => ({
         url: `/user/wishlist/add`,
         method: 'Post',
@@ -36,7 +36,7 @@ const UserApi = createApi({
         }
       })
     }),
-    removeWishlist: builder.mutation<any, { id: number }>({
+    removeWishlist: builder.mutation<{ data: { wishlists: WishlistType[] } }, { id: number }>({
       query: (Payload) => ({
         url: `/user/wishlist/remove/${Payload.id}`,
         method: 'Delete'
@@ -48,6 +48,13 @@ const UserApi = createApi({
         showToast: false,
         method: 'GET'
       })
+    }),
+    sendmail: builder.mutation<void, { name: string; email: string; message: string }>({
+      query: (payload) => ({
+        url: `/mail/send`,
+        method: 'POST',
+        data: payload
+      })
     })
   })
 });
@@ -57,6 +64,7 @@ export const {
   useUpdateProfileMutation,
   useAddWishlistMutation,
   useRemoveWishlistMutation,
-  useGetWishlistsMutation
+  useGetWishlistsMutation,
+  useSendmailMutation
 } = UserApi;
 export default UserApi;

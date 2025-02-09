@@ -2,6 +2,8 @@ import React, { CSSProperties, memo } from 'react';
 import styles from './termAndConditionButton.module.scss';
 import { bindClassNames } from '@/utils/helpers/cx';
 import { CheckedIcon } from '@/utils/icons';
+import { useDispatch } from 'react-redux';
+import { setPoliciesPopupState } from '@/redux/slice/app/app.slice';
 
 const cx = bindClassNames(styles);
 
@@ -12,6 +14,7 @@ interface ElementProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 const TermAndConditionComponent: React.FC<ElementProps> = memo(({ callback }) => {
+  const dispatch = useDispatch<any>();
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (callback) callback(event.target.checked);
   };
@@ -24,9 +27,17 @@ const TermAndConditionComponent: React.FC<ElementProps> = memo(({ callback }) =>
           <span className={cx('content-center', 'h-[20px] w-[20px] border')}>
             <CheckedIcon />
           </span>
-          <p className="font-bold">
-            I agree with <span className="font-normal">Terms & Conditions</span>
-          </p>
+          <div className="font-bold">
+            I agree with
+            <a
+              onClick={() => {
+                dispatch(setPoliciesPopupState(true));
+              }}
+              className="ml-[5px] font-normal underline"
+            >
+              Terms & Conditions
+            </a>
+          </div>
         </label>
       </div>
     </div>

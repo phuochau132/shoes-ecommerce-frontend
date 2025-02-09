@@ -1,11 +1,11 @@
-import React, { memo, CSSProperties, useEffect, useState, useRef } from 'react';
+import React, { memo, CSSProperties, useEffect } from 'react';
 import styles from '../productBlock/product-block.module.scss';
 import ProductCardComponent from '../card';
 import { Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { bindClassNames } from '@/utils/helpers/cx';
 import { ProductType } from '@/types/product';
-import { Currency } from '@/utils/helpers/CurrenciesFormat';
+import { Currency } from '@/utils/helpers/currenciesFormat';
 
 interface ProductBlockProps {
   style?: CSSProperties;

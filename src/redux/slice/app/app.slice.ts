@@ -24,6 +24,11 @@ export type InitialStateProps = {
     isShowed: boolean;
     product: ProductType | null;
   };
+  policiesPopupState: boolean;
+  orderDetailsPopupInfo: {
+    items: ProductType[] | null;
+    isShowed: boolean;
+  };
 };
 
 const initialState: InitialStateProps = {
@@ -40,6 +45,11 @@ const initialState: InitialStateProps = {
   },
   quickViewInfo: {
     product: null,
+    isShowed: false
+  },
+  policiesPopupState: false,
+  orderDetailsPopupInfo: {
+    items: null,
     isShowed: false
   }
 };
@@ -71,6 +81,12 @@ export const appSlice = createSlice({
     },
     setQuickViewPopup: (state, action) => {
       state.quickViewInfo = action.payload;
+    },
+    setPoliciesPopupState: (state, action) => {
+      state.policiesPopupState = action.payload;
+    },
+    setOrderDetailsPopupInfo: (state, action) => {
+      state.orderDetailsPopupInfo = action.payload;
     }
   }
 });
@@ -83,7 +99,9 @@ export const {
   setFilterSidebarState,
   setCartSidebarState,
   setPageInfo,
-  setQuickViewPopup
+  setQuickViewPopup,
+  setPoliciesPopupState,
+  setOrderDetailsPopupInfo
 } = appSlice.actions;
 
 const rootReducer = {

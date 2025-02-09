@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import styles from './footer.module.scss';
 import { FbIcon, InstagramIcon, Message2Icon, MessageIcon, PinterestIcon, TwitterIcon } from '@/utils/icons';
 import { bindClassNames } from '@/utils/helpers/cx';
+import { paths } from '@/routes/paths';
 
 const cx = bindClassNames(styles);
 
@@ -12,10 +13,10 @@ const FooterComponent: React.FC = memo(() => {
         <div className={cx('footer-content-top')}>
           <div className={cx('container')}>
             <div className={cx('footer-block-item', 'footer-text')}>
-              <p className={cx('text')}> 685 Market Street</p>
-              <p className={cx('text')}>San Francisco, CA 94105,</p>
+              <p className={cx('text')}>150 Phan Van Tri, Go Vap District</p>
+              <p className={cx('text')}>Ho Chi Minh City</p>
               <p className={cx('text')} style={{ marginBottom: '20px' }}>
-                United States
+                Vietnam
               </p>
               <div className="mb-[5px] flex gap-[5px]">
                 <span className="icon">
@@ -23,7 +24,7 @@ const FooterComponent: React.FC = memo(() => {
                 </span>
                 <div>
                   <p className={cx('text')}>
-                    Text: <a href="tel:%20%20091-123-ELLA">(091)-123-ELLA</a>
+                    Text: <a href="tel:+84979574301">+84 (979) 574-301</a>
                   </p>
                 </div>
               </div>
@@ -33,7 +34,7 @@ const FooterComponent: React.FC = memo(() => {
                 </span>
                 <div>
                   <p className={cx('text')}>
-                    <a href="mailto:email@domain.com">email@domain.com</a>
+                    <a href="mailto:nguyenhauxmvt@gmail.com">nguyenhauxmvt@gmail.com</a>
                   </p>
                 </div>
               </div>
@@ -45,23 +46,23 @@ const FooterComponent: React.FC = memo(() => {
               <div className={cx('footer__link-list')}>
                 <ul className={cx('list-unstyled')}>
                   <li>
-                    <a href="#" className="link">
+                    <a href={paths.collection.newIn} className="link">
                       <span className={cx('text')}>New in</span>
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="link">
-                      <span className={cx('text')}>New in</span>
+                    <a href={paths.collection.bestSeller} className="link">
+                      <span className={cx('text')}>Best Sellers</span>
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="link">
-                      <span className={cx('text')}>New in</span>
+                    <a href={paths.collection.man} className="link">
+                      <span className={cx('text')}>Man</span>
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="link">
-                      <span className={cx('text')}>New in</span>
+                    <a href={paths.collection.woman} className="link">
+                      <span className={cx('text')}>Woman</span>
                     </a>
                   </li>
                 </ul>
@@ -103,23 +104,8 @@ const FooterComponent: React.FC = memo(() => {
               <div className={cx('footer__link-list')}>
                 <ul className={cx('list-unstyled')}>
                   <li>
-                    <a href="#" className="link">
-                      <span className={cx('text')}>New in</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="link">
-                      <span className={cx('text')}>New in</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="link">
-                      <span className={cx('text')}>New in</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="link">
-                      <span className={cx('text')}>New in</span>
+                    <a href={paths.contact} className="link">
+                      <span className={cx('text')}>Contact us</span>
                     </a>
                   </li>
                 </ul>
@@ -129,15 +115,15 @@ const FooterComponent: React.FC = memo(() => {
               <div className={cx('footer__social-header')}>
                 <h2 className={cx('title')}>Follow Us</h2>
               </div>
-              <div className={cx('footer__social-list')}>
+              <div className={cx('footer__social-list', 'mt-[10px]')}>
                 <ul className={cx('list-unstyled')}>
                   <li className={cx('social-item')}>
-                    <a href="#" className={cx('link')}>
+                    <a href="https://www.facebook.com/hau.phuoc.1293575/" className={cx('link')}>
                       <FbIcon className={cx('icon', 'h-[20px] w-[20px]')} />
                     </a>
                   </li>
                   <li className={cx('social-item')}>
-                    <a href="#" className={cx('link')}>
+                    <a href="https://www.instagram.com/ph_hau56/" className={cx('link')}>
                       <InstagramIcon className={cx('icon', 'h-[20px] w-[20px]')} />
                     </a>
                   </li>

@@ -1,5 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { axiosBaseQuery } from '@/base/BaseQuery';
+import { ProductType } from '@/types/product';
 export type ErrorType = {
   error: {
     status: number;
@@ -11,16 +12,17 @@ const ProductApi = createApi({
   reducerPath: 'ProductApi',
   baseQuery: axiosBaseQuery,
   endpoints: (builder) => ({
-    getProductsByIds: builder.mutation<any, { ids: number }>({
+    getProductsByIds: builder.mutation<any, { ids: string[] }>({
       query: (payload) => ({
         url: `${baseUrl}/`,
         method: 'Post',
+        showToast: false,
         data: {
           ids: payload.ids
         }
       })
     }),
-    getProduct: builder.mutation<any, { handle: string }>({
+    getProduct: builder.query<{ data: { product: ProductType } }, { handle: string }>({
       query: (payload) => ({
         url: `${baseUrl}/${payload.handle}`,
         method: 'GET',
@@ -44,5 +46,6 @@ const ProductApi = createApi({
   })
 });
 
-export const { useGetProductMutation, useAddReviewMutation, useRemoveReviewMutation } = ProductApi;
+export const { useGetProductQuery, useAddReviewMutation, useRemoveReviewMutation, useGetProductsByIdsMutation } =
+  ProductApi;
 export default ProductApi;

@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { AuthApi, UserApi, CartApi, SearchApi, CollectionApi, ProductApi } from '@/apis';
+import { AuthApi, UserApi, CartApi, SearchApi, CollectionApi, ProductApi, OrderApi } from '@/apis';
 import rootReducer from './slice/app/app.slice';
 import userReducer from './slice/user/user.slice';
 import cartReducer from './slice/cart/cart.slice';
@@ -12,6 +12,7 @@ export const store = configureStore({
     [CollectionApi.reducerPath]: CollectionApi.reducer,
     [SearchApi.reducerPath]: SearchApi.reducer,
     [CartApi.reducerPath]: CartApi.reducer,
+    [OrderApi.reducerPath]: OrderApi.reducer,
     app: rootReducer.app,
     user: userReducer.user,
     cart: cartReducer.cart
@@ -23,6 +24,7 @@ export const store = configureStore({
       ProductApi.middleware,
       CollectionApi.middleware,
       SearchApi.middleware,
-      CartApi.middleware
+      CartApi.middleware,
+      OrderApi.middleware
     )
 });
