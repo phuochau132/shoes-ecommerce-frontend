@@ -3,6 +3,7 @@ import { AuthApi, UserApi, CartApi, SearchApi, CollectionApi, ProductApi, OrderA
 import rootReducer from './slice/app/app.slice';
 import userReducer from './slice/user/user.slice';
 import cartReducer from './slice/cart/cart.slice';
+import ChatBoxApi from '@/apis/chatbox/chatbox.api';
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
     [SearchApi.reducerPath]: SearchApi.reducer,
     [CartApi.reducerPath]: CartApi.reducer,
     [OrderApi.reducerPath]: OrderApi.reducer,
+    [ChatBoxApi.reducerPath]: ChatBoxApi.reducer,
     app: rootReducer.app,
     user: userReducer.user,
     cart: cartReducer.cart
@@ -25,6 +27,7 @@ export const store = configureStore({
       CollectionApi.middleware,
       SearchApi.middleware,
       CartApi.middleware,
-      OrderApi.middleware
+      OrderApi.middleware,
+      ChatBoxApi.middleware
     )
 });

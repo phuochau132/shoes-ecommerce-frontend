@@ -3,6 +3,7 @@ import React, { PropsWithChildren } from 'react';
 import HeaderComponent from '../../components/header/header.component';
 import FooterComponent from '@/components/footer';
 import BreadcrumbComponent from '@/components/commons/breadcrumb';
+import ChatBoxComponent from '@/components/chatbox';
 
 const { Content } = Layout;
 export type pageHeaderType = {
@@ -28,7 +29,6 @@ const DefaultLayout: React.FC<PropsWithChildren<DefaultLayoutProps>> = ({
   return (
     <div className="default-layout">
       {useHeader && <HeaderComponent />}
-
       <main className={`justify-center', ${useFooter && 'pb-[80px]'} : 'pb-[20px]' flex w-full`}>
         <Content style={{ minHeight: 'calc(100vh - 120px)' }} className={`flex w-full justify-center duration-200`}>
           <div className={`h-full w-full ${container}`}>
@@ -54,7 +54,7 @@ const DefaultLayout: React.FC<PropsWithChildren<DefaultLayoutProps>> = ({
           </div>
         </Content>
       </main>
-
+      <ChatBoxComponent />
       {/* Footer */}
       {useFooter && <FooterComponent />}
     </div>
