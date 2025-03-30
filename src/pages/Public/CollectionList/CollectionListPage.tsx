@@ -46,7 +46,7 @@ const CollectionListPage: React.FC = () => {
               href={`/collections/${collection.handle}`}
             >
               <img
-                className="transition-transform duration-300 ease-in-out group-hover:scale-110"
+                className="w-full transition-transform duration-300 ease-in-out group-hover:scale-110"
                 src={collection.image}
                 alt={`${collection.name} image`}
               />

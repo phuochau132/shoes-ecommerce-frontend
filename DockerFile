@@ -1,0 +1,26 @@
+# Sử dụng Node.js image chính thức
+FROM node:18 AS build
+
+# Thiết lập thư mục làm việc
+WORKDIR /app
+
+# Copy package.json và package-lock.json để cài đặt dependencies trước
+COPY package*.json ./
+
+# Cài đặt dependencies
+RUN npm install
+
+# Copy toàn bộ mã nguồn vào container
+COPY . .
+
+# Build ứng dụng
+RUN npm run build
+
+# Dùng Nginx để serve file tĩnh
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+
+# Mở cổng 80
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
